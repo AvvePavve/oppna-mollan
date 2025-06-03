@@ -1,0 +1,16 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+header {
+  background-color: #004466;
+  color: white;
+  padding: 1em;
+  text-align: center;
+}
+
+#map {
+  height: calc(100vh - 100px); /* justera efter headerhöjd */
+  width: 100%;
+}
