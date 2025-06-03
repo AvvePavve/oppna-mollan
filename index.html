@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8" />
+  <title>Min Webbkarta</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <!-- Egen CSS -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <h1>Min Webbkarta</h1>
+    <p>En öppen karta byggd med Leaflet</p>
+  </header>
+
+  <div id="map"></div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <!-- GeoJSON-data -->
+  <script src="data/geojson_example.geojson" type="application/json"></script>
+
+  <script>
+    // Skapa kartan
+    const map = L.map('map').setView([59.33, 18.06], 10); // Stockholm som exempel
+
+    // Lägg till baskarta
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    // Ladda GeoJSON-data
+    fetch('data/geojson_example.geojson')
+      .then(response => response.json())
+      .then(data => {
+        L.geoJSON(data, {
+          onEachFeature: function (feature, layer) {
+            if (feature.properties) {
+              let popupContent = '';
+              for (let key in feature.properties) {
+                popupContent += `<strong>${key}</strong>: ${feature.properties[key]}<br>`;
+              }
+              layer.bindPopup(popupContent);
+            }
+          }
+        }).addTo(map);
+      });
+  </script>
+
+</body>
+</html>
