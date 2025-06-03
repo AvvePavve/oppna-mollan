@@ -1,0 +1,16 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "namn": "Exempelpunkten",
+        "kategori": "Test"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [18.06, 59.33]
+      }
+    }
+  ]
+}
