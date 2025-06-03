@@ -2,20 +2,19 @@
 <html lang="sv">
 <head>
   <meta charset="utf-8" />
-  <title>Min Webbkarta</title>
+  <title>Min Webbkarta – Möllevången</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-
   <!-- Egen CSS -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
   <header>
-    <h1>Min Webbkarta</h1>
-    <p>En öppen karta byggd med Leaflet</p>
+    <h1>Möllevången i Malmö</h1>
+    <p>Intressanta platser i området</p>
   </header>
 
   <div id="map"></div>
@@ -23,16 +22,13 @@
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-  <!-- GeoJSON-data -->
-  <script src="data/geojson_example.geojson" type="application/json"></script>
-
   <script>
-    // Skapa kartan
-    const map = L.map('map').setView([59.33, 18.06], 10); // Stockholm som exempel
+    // Skapa kartan centrerad över Möllevången
+    const map = L.map('map').setView([55.5928, 13.0060], 16);
 
-    // Lägg till baskarta
+    // CartoDB Positron baskarta med Retina-stöd
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; OpenStreetMap, &copy; CartoDB',
+      attribution: '&copy; OpenStreetMap &copy; CartoDB',
       subdomains: 'abcd',
       detectRetina: true
     }).addTo(map);
