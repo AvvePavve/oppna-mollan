@@ -4,12 +4,34 @@
     {
       "type": "Feature",
       "properties": {
-        "namn": "Exempelpunkten",
-        "kategori": "Test"
+        "namn": "Möllevångstorget",
+        "kategori": "Torg"
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [18.06, 59.33]
+        "coordinates": [13.0027, 55.5932]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "namn": "Folkets Park",
+        "kategori": "Park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [13.0130, 55.5925]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "namn": "Mitt Möllan",
+        "kategori": "Galleria"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [13.0073, 55.5913]
       }
     }
   ]
