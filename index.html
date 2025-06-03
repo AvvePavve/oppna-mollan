@@ -49,6 +49,34 @@
           }
         }).addTo(map);
       });
+
+    // Visa användarens plats med en blå cirkel
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        function (position) {
+          const userLat = position.coords.latitude;
+          const userLng = position.coords.longitude;
+
+          // Rita en cirkel för användarens position
+          const circle = L.circle([userLat, userLng], {
+            radius: 20,            // meter
+            color: '#007bff',      // blå kant
+            fillColor: '#007bff',  // blå fyllning
+            fillOpacity: 0.4
+          }).addTo(map);
+
+          circle.bindPopup("Du är här!").openPopup();
+
+          // Flytta kartan till användarens plats
+          map.setView([userLat, userLng], 16);
+        },
+        function (error) {
+          console.warn("Plats kunde inte hämtas:", error.message);
+        }
+      );
+    } else {
+      console.warn("Geolokalisering stöds inte av denna webbläsare.");
+    }
   </script>
 
 </body>
