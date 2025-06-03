@@ -9,12 +9,39 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <!-- Egen CSS -->
   <link rel="stylesheet" href="style.css" />
+
+  <!-- Ikon för GPS -->
+  <style>
+    #gps-indicator {
+      display: inline-block;
+      margin-left: 10px;
+      width: 16px;
+      height: 16px;
+      background: url('https://cdn-icons-png.flaticon.com/512/684/684908.png') no-repeat center;
+      background-size: contain;
+      vertical-align: middle;
+    }
+
+    header {
+      background-color: #333;
+      color: white;
+      padding: 0.5rem;
+      text-align: center;
+    }
+
+    #map {
+      height: calc(100vh - 70px);
+      width: 100%;
+    }
+  </style>
 </head>
 <body>
 
   <header>
-    <h1>Möllevången i Malmö</h1>
-    <p>Intressanta platser i området</p>
+    <h1 style="margin: 0; font-size: 1.2rem;">
+      Möllevången i Malmö
+      <span id="gps-indicator" title="GPS aktiv"></span>
+    </h1>
   </header>
 
   <div id="map"></div>
@@ -50,28 +77,35 @@
         }).addTo(map);
       });
 
-    // Visa användarens plats med en blå cirkel
+    // Liveuppdatera användarens plats
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
+      let userCircle;
+
+      navigator.geolocation.watchPosition(
         function (position) {
           const userLat = position.coords.latitude;
           const userLng = position.coords.longitude;
 
-          // Rita en cirkel för användarens position
-          const circle = L.circle([userLat, userLng], {
-            radius: 20,            // meter
-            color: '#007bff',      // blå kant
-            fillColor: '#007bff',  // blå fyllning
-            fillOpacity: 0.4
-          }).addTo(map);
+          if (userCircle) {
+            userCircle.setLatLng([userLat, userLng]);
+          } else {
+            userCircle = L.circle([userLat, userLng], {
+              radius: 20,
+              color: '#007bff',
+              fillColor: '#007bff',
+              fillOpacity: 0.4
+            }).addTo(map).bindPopup("Du är här!").openPopup();
 
-          circle.bindPopup("Du är här!").openPopup();
-
-          // Flytta kartan till användarens plats
-          map.setView([userLat, userLng], 16);
+            map.setView([userLat, userLng], 16);
+          }
         },
         function (error) {
           console.warn("Plats kunde inte hämtas:", error.message);
+        },
+        {
+          enableHighAccuracy: true,
+          maximumAge: 10000,
+          timeout: 20000
         }
       );
     } else {
