@@ -4,13 +4,13 @@ body {
 }
 
 header {
-  background-color: #004466;
+  background-color: #333;
   color: white;
-  padding: 1em;
+  padding: 1rem;
   text-align: center;
 }
 
 #map {
-  height: calc(100vh - 100px); /* justera efter headerhöjd */
+  height: calc(100vh - 100px);
   width: 100%;
 }
