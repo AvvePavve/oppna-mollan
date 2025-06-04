@@ -77,15 +77,28 @@ fetch('data/geojson_example.geojson')
           for (let key in feature.properties) {
             popupContent += `<strong>${key}</strong>: ${feature.properties[key]}<br>`;
           }
+
           const coords = feature.geometry.coordinates.slice().reverse();
-          popupContent += `<button class="route-btn" onclick='routeTo([${coords}])'>Visa rutt</button>`;
-          layer.bindPopup(popupContent);
+
+          layer.on('popupopen', () => {
+            const popup = L.DomUtil.create('div');
+            popup.innerHTML = popupContent;
+
+            const button = L.DomUtil.create('button', 'route-btn', popup);
+            button.textContent = 'Visa rutt';
+            button.style.marginTop = '6px';
+            button.addEventListener('click', () => routeTo(coords));
+
+            layer.setPopupContent(popup);
+          });
+
+          layer.bindPopup('Laddar...');
         }
       }
     }).addTo(map);
   });
 
-// Adresser med filter, popup och ikon
+// Adresser
 const addressIcon = L.icon({
   iconUrl: 'marker.png',
   iconSize: [25, 41],
@@ -111,12 +124,24 @@ function renderAddressMarkers(filteredFeatures) {
       const props = feature.properties;
       const coords = feature.geometry.coordinates.slice().reverse();
 
-      const popupContent = `
+      let popupContent = `
         <strong>Adress:</strong> ${props.Adress}<br>
         <strong>Aktivitet:</strong> ${props.Aktivitet}<br>
-        <button class="route-btn" onclick='routeTo([${coords}])'>Visa rutt</button>
       `;
-      layer.bindPopup(popupContent);
+
+      layer.on('popupopen', () => {
+        const popup = L.DomUtil.create('div');
+        popup.innerHTML = popupContent;
+
+        const button = L.DomUtil.create('button', 'route-btn', popup);
+        button.textContent = 'Visa rutt';
+        button.style.marginTop = '6px';
+        button.addEventListener('click', () => routeTo(coords));
+
+        layer.setPopupContent(popup);
+      });
+
+      layer.bindPopup('Laddar...');
     }
   }).addTo(map);
 }
@@ -127,7 +152,6 @@ fetch('data/adresser.geojson')
     allAddressFeatures = data.features.filter(f => f.properties.oppen === "Ja");
     renderAddressMarkers(allAddressFeatures);
 
-    // Fyll dropdown med unika aktiviteter
     const activitySet = new Set(allAddressFeatures.map(f => f.properties.Aktivitet).filter(Boolean));
     const filterSelect = document.getElementById('activityFilter');
 
@@ -155,6 +179,8 @@ function routeTo(destinationLatLng) {
     return;
   }
 
+  console.log("Skapar rutt från", userLatLng, "till", destinationLatLng);
+
   if (routingControl) {
     map.removeControl(routingControl);
   }
@@ -171,7 +197,11 @@ function routeTo(destinationLatLng) {
     createMarker: () => null,
     lineOptions: {
       styles: [{ color: '#ea4644', weight: 5 }]
-    }
+    },
+    router: L.Routing.osrmv1({ serviceUrl: 'https://router.project-osrm.org/route/v1' })
+  }).on('routingerror', function (e) {
+    console.error("Routingfel:", e.error);
+    alert("Kunde inte hitta en rutt.");
   }).addTo(map);
 
   removeRouteBtn.style.display = 'block';
