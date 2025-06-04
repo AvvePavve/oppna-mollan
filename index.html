@@ -7,30 +7,34 @@
 
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <!-- Egen CSS -->
-  <link rel="stylesheet" href="style.css" />
 
-  <!-- Ikon för GPS -->
   <style>
-    #gps-indicator {
-      display: inline-block;
-      margin-left: 10px;
-      width: 16px;
-      height: 16px;
-      background: url('https://cdn-icons-png.flaticon.com/512/684/684908.png') no-repeat center;
-      background-size: contain;
-      vertical-align: middle;
+    body {
+      margin: 0;
+      font-family: sans-serif;
     }
 
     header {
-      background-color: #333;
+      display: flex;
+      align-items: center;
+      background-color: #ea4644;
       color: white;
-      padding: 0.5rem;
-      text-align: center;
+      padding: 0.5rem 1rem;
+      height: 60px;
+    }
+
+    header img {
+      height: 40px;
+      margin-right: 1rem;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.2rem;
     }
 
     #map {
-      height: calc(100vh - 70px);
+      height: calc(100vh - 60px);
       width: 100%;
     }
   </style>
@@ -38,10 +42,8 @@
 <body>
 
   <header>
-    <h1 style="margin: 0; font-size: 1.2rem;">
-      Möllevången i Malmö
-      <span id="gps-indicator" title="GPS aktiv"></span>
-    </h1>
+    <img src="logo.png" alt="Logotyp">
+    <h1>Möllevången i Malmö</h1>
   </header>
 
   <div id="map"></div>
@@ -50,17 +52,17 @@
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
   <script>
-    // Skapa kartan centrerad över Möllevången
+    // Initiera karta
     const map = L.map('map').setView([55.5928, 13.0060], 16);
 
-    // CartoDB Positron baskarta med Retina-stöd
+    // CartoDB Positron baskarta
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; OpenStreetMap &copy; CartoDB',
       subdomains: 'abcd',
       detectRetina: true
     }).addTo(map);
 
-    // Ladda GeoJSON-data
+    // Ladda GeoJSON
     fetch('data/geojson_example.geojson')
       .then(response => response.json())
       .then(data => {
@@ -77,23 +79,24 @@
         }).addTo(map);
       });
 
-    // Liveuppdatera användarens plats
+    // Följ användarens plats med en punkt (circleMarker)
     if (navigator.geolocation) {
-      let userCircle;
+      let userMarker;
 
       navigator.geolocation.watchPosition(
         function (position) {
           const userLat = position.coords.latitude;
           const userLng = position.coords.longitude;
 
-          if (userCircle) {
-            userCircle.setLatLng([userLat, userLng]);
+          if (userMarker) {
+            userMarker.setLatLng([userLat, userLng]);
           } else {
-            userCircle = L.circle([userLat, userLng], {
-              radius: 20,
+            userMarker = L.circleMarker([userLat, userLng], {
+              radius: 5,
               color: '#007bff',
               fillColor: '#007bff',
-              fillOpacity: 0.4
+              fillOpacity: 1,
+              weight: 1
             }).addTo(map).bindPopup("Du är här!").openPopup();
 
             map.setView([userLat, userLng], 16);
@@ -109,7 +112,7 @@
         }
       );
     } else {
-      console.warn("Geolokalisering stöds inte av denna webbläsare.");
+      console.warn("Geolokalisering stöds inte.");
     }
   </script>
 
