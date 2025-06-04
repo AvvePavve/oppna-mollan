@@ -122,7 +122,7 @@ function routeTo(destinationLatLng) {
     lineOptions: {
       styles: [{ color: '#ea4644', weight: 5 }]
     },
-    router: L.Routing.graphHopper('cd8a3c4a-2280-4e8b-8660-5ce6395a2294', {
+    router: L.Routing.GraphHopper('cd8a3c4a-2280-4e8b-8660-5ce6395a2294', {
       vehicle: 'foot',
       urlParameters: {
         locale: 'sv',
