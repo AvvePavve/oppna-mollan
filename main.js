@@ -114,10 +114,6 @@ function routeTo(destinationLatLng) {
       L.latLng(userLatLng),
       L.latLng(destinationLatLng)
     ],
-    router: L.Routing.osrmv1({
-      serviceUrl: 'https://router.project-osrm.org/route/v1',
-      profile: 'foot'
-    }),
     show: false,
     addWaypoints: false,
     draggableWaypoints: false,
@@ -125,7 +121,13 @@ function routeTo(destinationLatLng) {
     createMarker: () => null,
     lineOptions: {
       styles: [{ color: '#ea4644', weight: 5 }]
-    }
+    },
+    router: L.Routing.osrmv1({
+      serviceUrl: 'https://router.project-osrm.org',
+      profile: 'foot',
+      language: 'sv',
+      steps: false
+    })
   }).addTo(map);
 
   removeRouteBtn.style.display = 'block';
