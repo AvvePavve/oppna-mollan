@@ -1,267 +1,111 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="utf-8" />
-  <title>Min Webbkarta – Möllevången</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- iOS Status Bar -->
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-
-  <!-- Android Chrome Status Bar -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#ea4644" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Webbkarta</title>
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap" rel="stylesheet" />
-
-  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
-
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: sans-serif;
-      background-color: #ea4644;
-    }
-
-    header {
-      display: flex;
-      align-items: center;
-      background-color: #ea4644;
-      color: white;
-      padding: 0.5rem 1rem;
-      height: 60px;
-    }
-
-    .logo-link {
-      display: flex;
-      align-items: center;
-      text-decoration: none;
-    }
-
-    .logo-link img {
-      height: 40px;
-      margin-right: 1rem;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 1.2rem;
-      font-family: 'Rubik', sans-serif;
-      margin-left: 0.5rem;
-      text-transform: uppercase;
-    }
-
-    @media (max-width: 600px) {
-      header h1 {
-        font-size: 1rem;
-      }
-    }
-
-    #map {
-      height: calc(100vh - 60px);
-      width: 100%;
-    }
-
-    .remove-route-btn {
-      position: absolute;
-      bottom: 15px;
-      right: 15px;
-      z-index: 1000;
-      background-color: #ea4644;
-      color: white;
-      padding: 10px 14px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-      display: none;
-    }
-
-    .remove-route-btn:hover {
-      background-color: #c03635;
-    }
-
-    .info-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 2000;
-    }
-
-    .info-box {
-      background: #fff;
-      color: #333;
-      padding: 2rem;
-      border-radius: 10px;
-      max-width: 90%;
-      width: 400px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-      text-align: center;
-    }
-
-    .info-box h2 {
-      margin-top: 0;
-      font-family: 'Rubik', sans-serif;
-    }
-
-    .info-box button {
-      margin-top: 1rem;
-      padding: 8px 16px;
-      background: #ea4644;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .info-box button:hover {
-      background: #c03635;
-    }
-  </style>
 </head>
 <body>
+  <header>
+    <a class="logo-link" href="https://www.facebook.com/events/569497915741012?locale=sv_SE">
+      <img src="Skärmbild 2025-05-17 165220.png" alt="Logotyp" />
+    </a>
+    <h1>Platskarta</h1>
+  </header>
 
-  <!-- Info-overlay -->
+  <div id="map"></div>
+
+  <button class="remove-route-btn" id="removeRouteBtn">Ta bort rutt</button>
+
   <div class="info-overlay" id="infoOverlay">
     <div class="info-box">
       <h2>Välkommen till kartan!</h2>
-      <p>Här kan du utforska platser i Möllevången, se din egen plats och planera en rutt till punkter på kartan.</p>
-      <button onclick="closeInfo()">Stäng</button>
+      <p>Här kan du se viktiga platser i Möllevången och navigera till dem via kortaste vägen.</p>
+      <button onclick="document.getElementById('infoOverlay').style.display='none'">Stäng</button>
     </div>
   </div>
 
-  <!-- Header -->
-  <header>
-    <a class="logo-link" href="https://www.facebook.com/events/569497915741012?locale=sv_SE" rel="noopener">
-      <img src="logo.png" alt="Logotyp" />
-    </a>
-    <h1>Möllevången i Malmö</h1>
-  </header>
-
-  <!-- Karta -->
-  <div id="map"></div>
-  <button id="removeRouteBtn" class="remove-route-btn">Ta bort rutt</button>
-
-  <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.min.js"></script>
-
+  <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.min.js"></script>
   <script>
-    function closeInfo() {
-      document.getElementById("infoOverlay").style.display = "none";
-    }
+    const map = L.map('map').setView([55.5937, 13.0009], 16);
 
-    const map = L.map('map').setView([55.5928, 13.0060], 16);
-
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; OpenStreetMap &copy; CartoDB',
+    const tileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; OpenStreetMap &copy; Carto',
       subdomains: 'abcd',
-      detectRetina: true
+      maxZoom: 19
     }).addTo(map);
 
+    let routeControl;
     let userMarker;
-    let userLatLng;
-    let routingControl;
-    const removeRouteBtn = document.getElementById('removeRouteBtn');
+    const removeBtn = document.getElementById('removeRouteBtn');
 
-    if (navigator.geolocation) {
-      navigator.geolocation.watchPosition(
-        function (position) {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-          userLatLng = [lat, lng];
-
-          if (userMarker) {
-            userMarker.setLatLng(userLatLng);
-          } else {
-            userMarker = L.circleMarker(userLatLng, {
-              radius: 5,
-              color: '#007bff',
-              fillColor: '#007bff',
-              fillOpacity: 1,
-              weight: 1
-            }).addTo(map).bindPopup("Du är här!").openPopup();
-
-            map.setView(userLatLng, 16);
-          }
-        },
-        function (error) {
-          console.warn("Plats kunde inte hämtas:", error.message);
-        },
-        {
-          enableHighAccuracy: true,
-          maximumAge: 10000,
-          timeout: 20000
-        }
-      );
-    }
-
-    fetch('data/geojson_example.geojson')
-      .then(response => response.json())
-      .then(data => {
-        L.geoJSON(data, {
-          onEachFeature: function (feature, layer) {
-            if (feature.properties) {
-              let popupContent = '';
-              for (let key in feature.properties) {
-                popupContent += `<strong>${key}</strong>: ${feature.properties[key]}<br>`;
+    function addGeoJSONPoints() {
+      fetch('data/geojson_example.geojson')
+        .then(response => response.json())
+        .then(data => {
+          L.geoJSON(data, {
+            onEachFeature: function (feature, layer) {
+              if (feature.properties && feature.properties.name) {
+                layer.bindPopup(feature.properties.name);
               }
-
-              const coords = feature.geometry.coordinates.slice().reverse();
-              popupContent += `<button class="route-btn" onclick='routeTo([${coords}])'>Visa rutt</button>`;
-              layer.bindPopup(popupContent);
+              layer.on('click', function () {
+                if (userMarker) {
+                  if (routeControl) map.removeControl(routeControl);
+                  routeControl = L.Routing.control({
+                    waypoints: [userMarker.getLatLng(), layer.getLatLng()],
+                    createMarker: () => null,
+                    addWaypoints: false,
+                    routeWhileDragging: false,
+                    fitSelectedRoutes: true,
+                    show: false
+                  }).addTo(map);
+                  removeBtn.style.display = 'block';
+                } else {
+                  alert("Enhetsposition saknas.");
+                }
+              });
             }
-          }
-        }).addTo(map);
-      });
-
-    function routeTo(destinationLatLng) {
-      if (!userLatLng) {
-        alert("Din plats är inte tillgänglig än!");
-        return;
-      }
-
-      if (routingControl) {
-        map.removeControl(routingControl);
-      }
-
-      routingControl = L.Routing.control({
-        waypoints: [
-          L.latLng(userLatLng),
-          L.latLng(destinationLatLng)
-        ],
-        show: false,
-        addWaypoints: false,
-        draggableWaypoints: false,
-        routeWhileDragging: false,
-        createMarker: () => null,
-        lineOptions: {
-          styles: [{ color: '#ea4644', weight: 5 }]
-        }
-      }).addTo(map);
-
-      removeRouteBtn.style.display = 'block';
+          }).addTo(map);
+        });
     }
 
-    removeRouteBtn.addEventListener('click', () => {
-      if (routingControl) {
-        map.removeControl(routingControl);
-        routingControl = null;
-        removeRouteBtn.style.display = 'none';
+    function updateUserLocation(position) {
+      const latlng = [position.coords.latitude, position.coords.longitude];
+
+      if (!userMarker) {
+        userMarker = L.circleMarker(latlng, {
+          radius: 8,
+          fillColor: "#007aff",
+          color: "#fff",
+          weight: 2,
+          opacity: 1,
+          fillOpacity: 1
+        }).addTo(map);
+      } else {
+        userMarker.setLatLng(latlng);
+      }
+
+      map.setView(latlng, 16);
+    }
+
+    navigator.geolocation.watchPosition(updateUserLocation);
+
+    removeBtn.addEventListener('click', () => {
+      if (routeControl) {
+        map.removeControl(routeControl);
+        routeControl = null;
+        removeBtn.style.display = 'none';
       }
     });
-  </script>
 
+    addGeoJSONPoints();
+  </script>
 </body>
 </html>
