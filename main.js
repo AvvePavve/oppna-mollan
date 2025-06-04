@@ -10,14 +10,12 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
   detectRetina: true
 }).addTo(map);
 
-// Skapa separat pane för användarens position
 map.createPane('userPane');
 map.getPane('userPane').style.zIndex = 1000;
 
 let userMarker;
 let userLatLng;
 let routingControl;
-let addressLayer = null;
 const removeRouteBtn = document.getElementById('removeRouteBtn');
 
 // Geolocation
@@ -68,7 +66,7 @@ fetch('data/byggnader_mollan.geojson')
     }).addTo(map);
   });
 
-// Gårdar (geojson_example)
+// Gårdar
 fetch('data/geojson_example.geojson')
   .then(response => response.json())
   .then(data => {
@@ -79,96 +77,82 @@ fetch('data/geojson_example.geojson')
           for (let key in feature.properties) {
             popupContent += `<strong>${key}</strong>: ${feature.properties[key]}<br>`;
           }
-
-          const coords = feature.geometry.coordinates;
-          const latLng = [coords[1], coords[0]]; // säkerställ [lat, lng]
-          popupContent += `<button class="route-btn" onclick='routeTo([${latLng}])'>Visa rutt</button>`;
+          const coords = feature.geometry.coordinates.slice().reverse();
+          popupContent += `<button class="route-btn" onclick='routeTo([${coords}])'>Visa rutt</button>`;
           layer.bindPopup(popupContent);
         }
       }
     }).addTo(map);
   });
 
-// Ikon
+// Adresser med filter, popup och ikon
 const addressIcon = L.icon({
   iconUrl: 'marker.png',
-  iconSize: [30, 41],
+  iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
   shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
   shadowSize: [41, 41]
 });
 
-// Globala GeoJSON-data för adresser
-let allAddressData = [];
+let allAddressFeatures = [];
+let addressLayer;
 
-// Ladda in adresser en gång
-fetch('data/adresser.geojson')
-  .then(response => response.json())
-  .then(data => {
-    allAddressData = data.features.filter(f => f.properties.oppen === "Ja");
-    populateActivityFilter(allAddressData);
-    renderAddressLayer();
-  });
-
-// Rendera filtrerat lager
-function renderAddressLayer() {
-  const selectedActivity = document.getElementById("activityFilter").value;
-
-  const filtered = selectedActivity === "alla"
-    ? allAddressData
-    : allAddressData.filter(f => f.properties.Aktivitet === selectedActivity);
-
+function renderAddressMarkers(filteredFeatures) {
   if (addressLayer) {
     map.removeLayer(addressLayer);
   }
 
-  addressLayer = L.geoJSON({ type: "FeatureCollection", features: filtered }, {
+  addressLayer = L.geoJSON({ type: "FeatureCollection", features: filteredFeatures }, {
     pointToLayer: function (feature, latlng) {
       return L.marker(latlng, { icon: addressIcon });
     },
     onEachFeature: function (feature, layer) {
       const props = feature.properties;
-      const coords = feature.geometry.coordinates[0];
-      const latLng = [coords[1], coords[0]];
+      const coords = feature.geometry.coordinates.slice().reverse();
 
       const popupContent = `
         <strong>Adress:</strong> ${props.Adress}<br>
         <strong>Aktivitet:</strong> ${props.Aktivitet}<br>
-        <button class="route-btn" onclick='routeTo([${latLng}])'>Visa rutt</button>
+        <button class="route-btn" onclick='routeTo([${coords}])'>Visa rutt</button>
       `;
       layer.bindPopup(popupContent);
     }
   }).addTo(map);
 }
 
-// Populera dropdown med unika aktiviteter
-function populateActivityFilter(features) {
-  const select = document.getElementById("activityFilter");
-  const uniqueActivities = Array.from(new Set(features.map(f => f.properties.Aktivitet))).sort();
+fetch('data/adresser.geojson')
+  .then(response => response.json())
+  .then(data => {
+    allAddressFeatures = data.features.filter(f => f.properties.oppen === "Ja");
+    renderAddressMarkers(allAddressFeatures);
 
-  select.innerHTML = `<option value="alla">Alla aktiviteter</option>`;
-  uniqueActivities.forEach(activity => {
-    select.innerHTML += `<option value="${activity}">${activity}</option>`;
+    // Fyll dropdown med unika aktiviteter
+    const activitySet = new Set(allAddressFeatures.map(f => f.properties.Aktivitet).filter(Boolean));
+    const filterSelect = document.getElementById('activityFilter');
+
+    Array.from(activitySet).sort().forEach(activity => {
+      const option = document.createElement('option');
+      option.value = activity;
+      option.textContent = activity;
+      filterSelect.appendChild(option);
+    });
+
+    filterSelect.addEventListener('change', () => {
+      const selected = filterSelect.value;
+      if (selected === 'alla') {
+        renderAddressMarkers(allAddressFeatures);
+      } else {
+        const filtered = allAddressFeatures.filter(f => f.properties.Aktivitet === selected);
+        renderAddressMarkers(filtered);
+      }
+    });
   });
 
-  select.addEventListener("change", renderAddressLayer);
-}
-
-// Routing
 function routeTo(destinationLatLng) {
   if (!userLatLng) {
     alert("Din plats är inte tillgänglig än!");
     return;
-  }
-
-  // Säkerställ lat/lng
-  if (
-    Array.isArray(destinationLatLng) &&
-    destinationLatLng.length === 2 &&
-    destinationLatLng[0] > destinationLatLng[1]
-  ) {
-    destinationLatLng = [destinationLatLng[1], destinationLatLng[0]];
   }
 
   if (routingControl) {
