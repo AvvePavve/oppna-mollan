@@ -67,32 +67,12 @@ fetch('data/byggnader_mollan.geojson')
     }).addTo(map);
   });
 
-// Gårdar
-fetch('data/geojson_example.geojson')
-  .then(response => response.json())
-  .then(data => {
-    L.geoJSON(data, {
-      onEachFeature: function (feature, layer) {
-        if (feature.properties) {
-          const coords = feature.geometry.coordinates;
-          const latLng = [coords[1], coords[0]]; // [lat, lng]
-          let popupContent = '';
-          for (let key in feature.properties) {
-            popupContent += `<strong>${key}</strong>: ${feature.properties[key]}<br>`;
-          }
-          popupContent += `<button class="route-btn" onclick='routeTo([${latLng}])'>Visa rutt</button>`;
-          layer.bindPopup(popupContent);
-        }
-      }
-    }).addTo(map);
-  });
-
 // Adresser
 const addressIcon = L.icon({
   iconUrl: 'marker.png',
-  iconSize: [40, 40],
-  iconAnchor: [20, 40],
-  popupAnchor: [1, -34],
+  iconSize: [20, 30],
+  iconAnchor: [10, 30],
+  popupAnchor: [1, -25],
   shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
   shadowSize: [41, 41]
 });
@@ -118,6 +98,7 @@ fetch('data/adresser.geojson')
     }).addTo(map);
   });
 
+// Ruttplanering med gång/cykel via OpenRouteService
 function routeTo(destinationLatLng) {
   if (!userLatLng) {
     alert("Din plats är inte tillgänglig än!");
@@ -142,7 +123,10 @@ function routeTo(destinationLatLng) {
     createMarker: () => null,
     lineOptions: {
       styles: [{ color: '#ea4644', weight: 5 }]
-    }
+    },
+    router: new L.Routing.OpenRouteService('5b3ce3597851110001cf62484916249796ab4c6a9c1f947e1859b8d8', {
+      profile: 'foot-walking', // Alternativ: 'cycling-regular'
+    })
   }).addTo(map);
 
   removeRouteBtn.style.display = 'block';
