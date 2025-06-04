@@ -89,7 +89,7 @@ fetch('data/geojson_example.geojson')
 
 // Adresser med filtrering, popup och ikon
 const addressIcon = L.icon({
-  iconUrl: 'marker-icon-red.png',
+  iconUrl: 'marker.png',
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
