@@ -5,18 +5,27 @@
   <title>Öppna Möllan - 2025</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
+  <!-- iOS/Android status bar -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="theme-color" content="#ea4644" />
+
+  <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png" />
 
+  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap" rel="stylesheet" />
+
+  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+
+  <!-- Custom styles -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
+  <!-- Info overlay -->
   <div class="info-overlay" id="infoOverlay">
     <div class="info-box">
       <h2>Välkommen till Öppna Möllan 2025!</h2>
@@ -25,6 +34,7 @@
     </div>
   </div>
 
+  <!-- Header -->
   <header>
     <a class="logo-link" href="https://www.facebook.com/events/569497915741012?locale=sv_SE" rel="noopener">
       <img src="logo.png" alt="Logotyp" />
@@ -32,14 +42,15 @@
     <h1>ÖPPNA MÖLLAN - 2025</h1>
   </header>
 
+  <!-- Map container -->
   <div id="map"></div>
   <button id="removeRouteBtn" class="remove-route-btn">Ta bort rutt</button>
 
-  <!-- Scripts -->
+  <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.min.js"></script>
-  <script src="js/lrm-graphhopper-1.2.0.min.js"></script>
-  <script src="main.js"></script>
 
+  <!-- Your custom script -->
+  <script src="main.js"></script>
 </body>
 </html>
