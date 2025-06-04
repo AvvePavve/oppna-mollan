@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <title>Min Webbkarta – Möllevången</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
   <!-- iOS Status Bar -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -85,6 +85,30 @@
       background-color: #c03635;
     }
 
+    @media (max-width: 600px) {
+      .remove-route-btn {
+        padding: 10px;
+        font-size: 0.9rem;
+        bottom: 20px;
+        right: 20px;
+      }
+    }
+
+    .route-btn {
+      padding: 10px 16px;
+      font-size: 1rem;
+      background: #ea4644;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .route-btn:hover {
+      background: #c03635;
+    }
+
     .info-overlay {
       position: fixed;
       top: 0;
@@ -127,6 +151,17 @@
 
     .info-box button:hover {
       background: #c03635;
+    }
+
+    @media (max-width: 480px) {
+      .info-box {
+        width: 90%;
+        font-size: 0.95rem;
+      }
+
+      .info-box h2 {
+        font-size: 1.2rem;
+      }
     }
   </style>
 </head>
