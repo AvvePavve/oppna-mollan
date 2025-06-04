@@ -10,6 +10,7 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
   detectRetina: true
 }).addTo(map);
 
+// Skapa separat pane för användarens position
 map.createPane('userPane');
 map.getPane('userPane').style.zIndex = 1000;
 
@@ -66,7 +67,7 @@ fetch('data/byggnader_mollan.geojson')
     }).addTo(map);
   });
 
-// Gårdar
+// Gårdar (geojson_example)
 fetch('data/geojson_example.geojson')
   .then(response => response.json())
   .then(data => {
@@ -78,27 +79,16 @@ fetch('data/geojson_example.geojson')
             popupContent += `<strong>${key}</strong>: ${feature.properties[key]}<br>`;
           }
 
-          const coords = feature.geometry.coordinates.slice().reverse();
-
-          layer.on('popupopen', () => {
-            const popup = L.DomUtil.create('div');
-            popup.innerHTML = popupContent;
-
-            const button = L.DomUtil.create('button', 'route-btn', popup);
-            button.textContent = 'Visa rutt';
-            button.style.marginTop = '6px';
-            button.addEventListener('click', () => routeTo(coords));
-
-            layer.setPopupContent(popup);
-          });
-
-          layer.bindPopup('Laddar...');
+          const coords = feature.geometry.coordinates;
+          const latLng = [coords[1], coords[0]]; // säkerställ [lat, lng]
+          popupContent += `<button class="route-btn" onclick='routeTo([${latLng}])'>Visa rutt</button>`;
+          layer.bindPopup(popupContent);
         }
       }
     }).addTo(map);
   });
 
-// Adresser
+// Adresser med filtrering, popup och ikon
 const addressIcon = L.icon({
   iconUrl: 'marker.png',
   iconSize: [25, 41],
@@ -108,69 +98,30 @@ const addressIcon = L.icon({
   shadowSize: [41, 41]
 });
 
-let allAddressFeatures = [];
-let addressLayer;
-
-function renderAddressMarkers(filteredFeatures) {
-  if (addressLayer) {
-    map.removeLayer(addressLayer);
-  }
-
-  addressLayer = L.geoJSON({ type: "FeatureCollection", features: filteredFeatures }, {
-    pointToLayer: function (feature, latlng) {
-      return L.marker(latlng, { icon: addressIcon });
-    },
-    onEachFeature: function (feature, layer) {
-      const props = feature.properties;
-      const coords = feature.geometry.coordinates.slice().reverse();
-
-      let popupContent = `
-        <strong>Adress:</strong> ${props.Adress}<br>
-        <strong>Aktivitet:</strong> ${props.Aktivitet}<br>
-      `;
-
-      layer.on('popupopen', () => {
-        const popup = L.DomUtil.create('div');
-        popup.innerHTML = popupContent;
-
-        const button = L.DomUtil.create('button', 'route-btn', popup);
-        button.textContent = 'Visa rutt';
-        button.style.marginTop = '6px';
-        button.addEventListener('click', () => routeTo(coords));
-
-        layer.setPopupContent(popup);
-      });
-
-      layer.bindPopup('Laddar...');
-    }
-  }).addTo(map);
-}
-
 fetch('data/adresser.geojson')
   .then(response => response.json())
   .then(data => {
-    allAddressFeatures = data.features.filter(f => f.properties.oppen === "Ja");
-    renderAddressMarkers(allAddressFeatures);
+    const filtered = data.features.filter(f => f.properties.oppen === "Ja");
 
-    const activitySet = new Set(allAddressFeatures.map(f => f.properties.Aktivitet).filter(Boolean));
-    const filterSelect = document.getElementById('activityFilter');
+    L.geoJSON({ type: "FeatureCollection", features: filtered }, {
+      pointToLayer: function (feature, latlng) {
+        return L.marker(latlng, { icon: addressIcon });
+      },
+      onEachFeature: function (feature, layer) {
+        const props = feature.properties;
 
-    Array.from(activitySet).sort().forEach(activity => {
-      const option = document.createElement('option');
-      option.value = activity;
-      option.textContent = activity;
-      filterSelect.appendChild(option);
-    });
+        // Hämta första punkten från MultiPoint
+        let coords = feature.geometry.coordinates[0];
+        const latLng = [coords[1], coords[0]]; // alltid [lat, lng]
 
-    filterSelect.addEventListener('change', () => {
-      const selected = filterSelect.value;
-      if (selected === 'alla') {
-        renderAddressMarkers(allAddressFeatures);
-      } else {
-        const filtered = allAddressFeatures.filter(f => f.properties.Aktivitet === selected);
-        renderAddressMarkers(filtered);
+        const popupContent = `
+          <strong>Adress:</strong> ${props.Adress}<br>
+          <strong>Aktivitet:</strong> ${props.Aktivitet}<br>
+          <button class="route-btn" onclick='routeTo([${latLng}])'>Visa rutt</button>
+        `;
+        layer.bindPopup(popupContent);
       }
-    });
+    }).addTo(map);
   });
 
 function routeTo(destinationLatLng) {
@@ -179,7 +130,14 @@ function routeTo(destinationLatLng) {
     return;
   }
 
-  console.log("Skapar rutt från", userLatLng, "till", destinationLatLng);
+  // Säkerställ att vi har rätt ordning: [lat, lng]
+  if (
+    Array.isArray(destinationLatLng) &&
+    destinationLatLng.length === 2 &&
+    destinationLatLng[0] > destinationLatLng[1]
+  ) {
+    destinationLatLng = [destinationLatLng[1], destinationLatLng[0]];
+  }
 
   if (routingControl) {
     map.removeControl(routingControl);
@@ -197,11 +155,7 @@ function routeTo(destinationLatLng) {
     createMarker: () => null,
     lineOptions: {
       styles: [{ color: '#ea4644', weight: 5 }]
-    },
-    router: L.Routing.osrmv1({ serviceUrl: 'https://router.project-osrm.org/route/v1' })
-  }).on('routingerror', function (e) {
-    console.error("Routingfel:", e.error);
-    alert("Kunde inte hitta en rutt.");
+    }
   }).addTo(map);
 
   removeRouteBtn.style.display = 'block';
