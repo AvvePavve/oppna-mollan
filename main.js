@@ -1,19 +1,16 @@
-// Stäng informationsrutan
 function closeInfo() {
   document.getElementById("infoOverlay").style.display = "none";
 }
 
-// Initiera karta
 const map = L.map('map').setView([55.5928, 13.0060], 16);
 
-// Kartbakgrund
 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
   attribution: '&copy; OpenStreetMap &copy; CartoDB',
   subdomains: 'abcd',
   detectRetina: true
 }).addTo(map);
 
-// Användarens platsmarkör i egen "pane" överst
+// Skapa separat pane för användarens position
 map.createPane('userPane');
 map.getPane('userPane').style.zIndex = 1000;
 
@@ -22,11 +19,13 @@ let userLatLng;
 let routingControl;
 const removeRouteBtn = document.getElementById('removeRouteBtn');
 
-// Hantera geolokalisering
+// Geolocation
 if (navigator.geolocation) {
   navigator.geolocation.watchPosition(
-    position => {
-      userLatLng = [position.coords.latitude, position.coords.longitude];
+    function (position) {
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+      userLatLng = [lat, lng];
 
       if (userMarker) {
         userMarker.setLatLng(userLatLng);
@@ -43,7 +42,7 @@ if (navigator.geolocation) {
         map.setView(userLatLng, 16);
       }
     },
-    error => {
+    function (error) {
       console.warn("Plats kunde inte hämtas:", error.message);
     },
     {
@@ -54,7 +53,7 @@ if (navigator.geolocation) {
   );
 }
 
-// Lägg till byggnadspolygoner
+// Byggnader
 fetch('data/byggnader_mollan.geojson')
   .then(response => response.json())
   .then(data => {
@@ -68,55 +67,15 @@ fetch('data/byggnader_mollan.geojson')
     }).addTo(map);
   });
 
-// Skapa nytt pane för att punkterna hamnar ovanför byggnader
-map.createPane('addressPane');
-map.getPane('addressPane').style.zIndex = 650;
-
-// Lägg till punktlagret från adresser.geojson med filter, popup och routing
-fetch('data/adresser.geojson')
-  .then(response => response.json())
-  .then(data => {
-    L.geoJSON(data, {
-      filter: function (feature) {
-        return feature.properties.oppen === "Ja";
-      },
-      pointToLayer: function (feature, latlng) {
-        return L.circleMarker(latlng, {
-          radius: 6,
-          fillColor: '#007bff',
-          color: '#fff',
-          weight: 1,
-          opacity: 1,
-          fillOpacity: 0.9,
-          pane: 'addressPane'
-        });
-      },
-      onEachFeature: function (feature, layer) {
-        const props = feature.properties;
-        const adress = props.Adress || 'Okänd adress';
-        const aktivitet = props.Aktivitet || 'Ingen aktivitet angiven';
-        const coords = feature.geometry.coordinates.slice().reverse();
-
-        const popupContent = `
-          <strong>Adress:</strong> ${adress}<br>
-          <strong>Aktivitet:</strong> ${aktivitet}<br>
-          <button class="route-btn" onclick='routeTo([${coords}])'>Visa rutt</button>
-        `;
-
-        layer.bindPopup(popupContent);
-      }
-    }).addTo(map);
-  });
-
-// Lägg till punkter med popup och ruttknapp
+// Gårdar (geojson_example)
 fetch('data/geojson_example.geojson')
   .then(response => response.json())
   .then(data => {
     L.geoJSON(data, {
-      onEachFeature: (feature, layer) => {
+      onEachFeature: function (feature, layer) {
         if (feature.properties) {
           let popupContent = '';
-          for (const key in feature.properties) {
+          for (let key in feature.properties) {
             popupContent += `<strong>${key}</strong>: ${feature.properties[key]}<br>`;
           }
 
@@ -128,7 +87,39 @@ fetch('data/geojson_example.geojson')
     }).addTo(map);
   });
 
-// Starta rutt från användare till punkt
+// Adresser med filtrering, popup och ikon
+const addressIcon = L.icon({
+  iconUrl: 'marker-icon-red.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
+  shadowSize: [41, 41]
+});
+
+fetch('data/adresser.geojson')
+  .then(response => response.json())
+  .then(data => {
+    const filtered = data.features.filter(f => f.properties.oppen === "Ja");
+
+    L.geoJSON({ type: "FeatureCollection", features: filtered }, {
+      pointToLayer: function (feature, latlng) {
+        return L.marker(latlng, { icon: addressIcon });
+      },
+      onEachFeature: function (feature, layer) {
+        const props = feature.properties;
+        const coords = feature.geometry.coordinates.slice().reverse(); // Fix ordning
+
+        const popupContent = `
+          <strong>Adress:</strong> ${props.Adress}<br>
+          <strong>Aktivitet:</strong> ${props.Aktivitet}<br>
+          <button class="route-btn" onclick='routeTo([${coords}])'>Visa rutt</button>
+        `;
+        layer.bindPopup(popupContent);
+      }
+    }).addTo(map);
+  });
+
 function routeTo(destinationLatLng) {
   if (!userLatLng) {
     alert("Din plats är inte tillgänglig än!");
@@ -157,7 +148,6 @@ function routeTo(destinationLatLng) {
   removeRouteBtn.style.display = 'block';
 }
 
-// Rensa rutt
 removeRouteBtn.addEventListener('click', () => {
   if (routingControl) {
     map.removeControl(routingControl);
