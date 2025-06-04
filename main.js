@@ -67,7 +67,7 @@ fetch('data/byggnader_mollan.geojson')
     }).addTo(map);
   });
 
-// Adresser
+// Ikon för adresser
 const addressIcon = L.icon({
   iconUrl: 'marker.png',
   iconSize: [40, 40],
@@ -77,25 +77,48 @@ const addressIcon = L.icon({
   shadowSize: [41, 41]
 });
 
+// Hantera både Point och MultiPoint
 fetch('data/adresser.geojson')
   .then(response => response.json())
   .then(data => {
     const filtered = data.features.filter(f => f.properties.oppen === "Ja");
 
-    L.geoJSON({ type: "FeatureCollection", features: filtered }, {
-      pointToLayer: (feature, latlng) => L.marker(latlng, { icon: addressIcon }),
-      onEachFeature: (feature, layer) => {
-        const props = feature.properties;
-        const coords = feature.geometry.coordinates[0];
-        const latLng = [coords[1], coords[0]];
+    filtered.forEach(feature => {
+      const props = feature.properties;
+
+      if (feature.geometry.type === "MultiPoint") {
+        feature.geometry.coordinates.forEach(coord => {
+          const latLng = [coord[1], coord[0]];
+
+          const marker = L.marker(latLng, { icon: addressIcon });
+
+          const popupContent = `
+            <strong>Adress:</strong> ${props.Adress}<br>
+            <strong>Aktivitet:</strong> ${props.Aktivitet}<br>
+            <button class="route-btn" onclick='routeTo([${latLng}])'>Visa rutt</button>
+          `;
+
+          marker.bindPopup(popupContent);
+          marker.addTo(map);
+        });
+      }
+
+      if (feature.geometry.type === "Point") {
+        const coord = feature.geometry.coordinates;
+        const latLng = [coord[1], coord[0]];
+
+        const marker = L.marker(latLng, { icon: addressIcon });
+
         const popupContent = `
           <strong>Adress:</strong> ${props.Adress}<br>
           <strong>Aktivitet:</strong> ${props.Aktivitet}<br>
           <button class="route-btn" onclick='routeTo([${latLng}])'>Visa rutt</button>
         `;
-        layer.bindPopup(popupContent);
+
+        marker.bindPopup(popupContent);
+        marker.addTo(map);
       }
-    }).addTo(map);
+    });
   });
 
 // Ruttplanering via OSRM (gångprofil)
