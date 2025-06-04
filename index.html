@@ -77,6 +77,12 @@
     .remove-route-btn:hover {
       background-color: #c03635;
     }
+
+    /* Fixar routingpanelen så den inte hamnar bakom headern */
+    .leaflet-routing-container {
+      margin-top: 70px;
+      z-index: 1001 !important;
+    }
   </style>
 </head>
 <body>
@@ -109,6 +115,7 @@
     let routingControl;
     const removeRouteBtn = document.getElementById('removeRouteBtn');
 
+    // Visa användarens plats
     if (navigator.geolocation) {
       navigator.geolocation.watchPosition(
         function (position) {
@@ -142,6 +149,7 @@
       );
     }
 
+    // Ladda GeoJSON
     fetch('data/geojson_example.geojson')
       .then(response => response.json())
       .then(data => {
@@ -161,6 +169,7 @@
         }).addTo(map);
       });
 
+    // Visa rutt till vald plats
     function routeTo(destinationLatLng) {
       if (!userLatLng) {
         alert("Din plats är inte tillgänglig än!");
@@ -176,7 +185,7 @@
           L.latLng(userLatLng),
           L.latLng(destinationLatLng)
         ],
-        show: false,
+        show: true,
         addWaypoints: false,
         routeWhileDragging: false,
         draggableWaypoints: false,
@@ -186,6 +195,7 @@
       removeRouteBtn.style.display = 'block';
     }
 
+    // Ta bort rutt
     removeRouteBtn.addEventListener('click', () => {
       if (routingControl) {
         map.removeControl(routingControl);
