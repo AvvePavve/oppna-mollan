@@ -123,7 +123,7 @@ function routeTo(destinationLatLng) {
       styles: [{ color: '#ea4644', weight: 5 }]
     },
     router: L.Routing.osrmv1({
-      serviceUrl: 'https://router.project-osrm.org',
+      serviceUrl: 'https://router.project-osrm.org/route/v1',
       profile: 'foot',
       language: 'sv',
       steps: false
