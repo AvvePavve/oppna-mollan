@@ -70,7 +70,7 @@ fetch('data/byggnader_mollan.geojson')
 // Adresser
 const addressIcon = L.icon({
   iconUrl: 'marker.png',
-  iconSize: [40, 40], // mindre och smalare ikon
+  iconSize: [40, 40],
   iconAnchor: [10, 30],
   popupAnchor: [1, -25],
   shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
@@ -98,7 +98,7 @@ fetch('data/adresser.geojson')
     }).addTo(map);
   });
 
-// Ruttplanering via GraphHopper (gångprofil)
+// Ruttplanering via OSRM (gångprofil)
 function routeTo(destinationLatLng) {
   if (!userLatLng) {
     alert("Din plats är inte tillgänglig än!");
@@ -114,6 +114,10 @@ function routeTo(destinationLatLng) {
       L.latLng(userLatLng),
       L.latLng(destinationLatLng)
     ],
+    router: L.Routing.osrmv1({
+      serviceUrl: 'https://router.project-osrm.org/route/v1',
+      profile: 'foot'
+    }),
     show: false,
     addWaypoints: false,
     draggableWaypoints: false,
@@ -121,14 +125,7 @@ function routeTo(destinationLatLng) {
     createMarker: () => null,
     lineOptions: {
       styles: [{ color: '#ea4644', weight: 5 }]
-    },
-    router: L.Routing.graphHopper('cd8a3c4a-2280-4e8b-8660-5ce6395a2294', {
-      vehicle: 'foot',
-      urlParameters: {
-        locale: 'sv',
-        instructions: false
-      }
-    })
+    }
   }).addTo(map);
 
   removeRouteBtn.style.display = 'block';
