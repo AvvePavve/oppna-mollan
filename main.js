@@ -90,8 +90,8 @@ fetch('data/geojson_example.geojson')
 // Adresser
 const addressIcon = L.icon({
   iconUrl: 'marker.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
+  iconSize: [40, 40],
+  iconAnchor: [20, 40],
   popupAnchor: [1, -34],
   shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
   shadowSize: [41, 41]
