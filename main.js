@@ -68,6 +68,46 @@ fetch('data/byggnader_mollan.geojson')
     }).addTo(map);
   });
 
+// Skapa nytt pane för att punkterna hamnar ovanför byggnader
+map.createPane('addressPane');
+map.getPane('addressPane').style.zIndex = 650;
+
+// Lägg till punktlagret från adresser.geojson med filter, popup och routing
+fetch('data/adresser.geojson')
+  .then(response => response.json())
+  .then(data => {
+    L.geoJSON(data, {
+      filter: function (feature) {
+        return feature.properties.oppen === "ja";
+      },
+      pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, {
+          radius: 6,
+          fillColor: '#007bff',
+          color: '#fff',
+          weight: 1,
+          opacity: 1,
+          fillOpacity: 0.9,
+          pane: 'addressPane'
+        });
+      },
+      onEachFeature: function (feature, layer) {
+        const props = feature.properties;
+        const adress = props.Adress || 'Okänd adress';
+        const aktivitet = props.Aktivitet || 'Ingen aktivitet angiven';
+        const coords = feature.geometry.coordinates.slice().reverse();
+
+        const popupContent = `
+          <strong>Adress:</strong> ${adress}<br>
+          <strong>Aktivitet:</strong> ${aktivitet}<br>
+          <button class="route-btn" onclick='routeTo([${coords}])'>Visa rutt</button>
+        `;
+
+        layer.bindPopup(popupContent);
+      }
+    }).addTo(map);
+  });
+
 // Lägg till punkter med popup och ruttknapp
 fetch('data/geojson_example.geojson')
   .then(response => response.json())
