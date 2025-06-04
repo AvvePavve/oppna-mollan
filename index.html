@@ -244,7 +244,29 @@
         }
       );
     }
-
+    
+    fetch('data/byggnader.geojson')
+      .then(response => response.json())
+      .then(data => {
+        L.geoJSON(data, {
+          style: {
+            color: '#444',
+            weight: 1,
+            fillColor: '#888',
+            fillOpacity: 0.3
+          },
+          onEachFeature: function (feature, layer) {
+            if (feature.properties) {
+              let popupContent = '';
+              for (let key in feature.properties) {
+                popupContent += `<strong>${key}</strong>: ${feature.properties[key]}<br>`;
+              }
+              layer.bindPopup(popupContent);
+            }
+          }
+        }).addTo(map);
+      });
+    
     fetch('data/geojson_example.geojson')
       .then(response => response.json())
       .then(data => {
