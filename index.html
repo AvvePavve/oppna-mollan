@@ -23,7 +23,13 @@
       height: 60px;
     }
 
-    header img {
+    .logo-link {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .logo-link img {
       height: 40px;
       margin-right: 1rem;
     }
@@ -37,12 +43,18 @@
       height: calc(100vh - 60px);
       width: 100%;
     }
+
+    .leaflet-interactive.leaflet-animating {
+      transition: transform 0.5s ease;
+    }
   </style>
 </head>
 <body>
 
   <header>
-    <img src="logo.png" alt="Logotyp">
+    <a class="logo-link" href="https://www.facebook.com/events/569497915741012?locale=sv_SE" rel="noopener">
+      <img src="logo.png" alt="Logotyp">
+    </a>
     <h1>Möllevången i Malmö</h1>
   </header>
 
@@ -52,10 +64,10 @@
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
   <script>
-    // Initiera karta
+    // Initiera kartan
     const map = L.map('map').setView([55.5928, 13.0060], 16);
 
-    // CartoDB Positron baskarta
+    // CartoDB Positron
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; OpenStreetMap &copy; CartoDB',
       subdomains: 'abcd',
@@ -79,27 +91,29 @@
         }).addTo(map);
       });
 
-    // Följ användarens plats med en punkt (circleMarker)
+    // Live-position med animerad punkt
     if (navigator.geolocation) {
       let userMarker;
 
       navigator.geolocation.watchPosition(
         function (position) {
-          const userLat = position.coords.latitude;
-          const userLng = position.coords.longitude;
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
 
           if (userMarker) {
-            userMarker.setLatLng([userLat, userLng]);
+            // Smooth move by re-setting latlng
+            userMarker.setLatLng([lat, lng]);
           } else {
-            userMarker = L.circleMarker([userLat, userLng], {
+            userMarker = L.circleMarker([lat, lng], {
               radius: 5,
               color: '#007bff',
               fillColor: '#007bff',
               fillOpacity: 1,
-              weight: 1
+              weight: 1,
+              className: 'leaflet-animating'
             }).addTo(map).bindPopup("Du är här!").openPopup();
 
-            map.setView([userLat, userLng], 16);
+            map.setView([lat, lng], 16);
           }
         },
         function (error) {
