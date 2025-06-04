@@ -66,9 +66,10 @@
       width: 100%;
     }
 
-    .remove-route-btn, .show-instructions-btn {
+    .remove-route-btn {
       position: absolute;
       bottom: 15px;
+      right: 15px;
       z-index: 1000;
       background-color: #ea4644;
       color: white;
@@ -77,25 +78,11 @@
       border-radius: 6px;
       cursor: pointer;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      display: none;
     }
 
-    .remove-route-btn:hover, .show-instructions-btn:hover {
+    .remove-route-btn:hover {
       background-color: #c03635;
-    }
-
-    .remove-route-btn {
-      right: 15px;
-      display: none;
-    }
-
-    .show-instructions-btn {
-      right: 145px;
-      display: none;
-    }
-
-    .leaflet-routing-container {
-      margin-top: 70px;
-      z-index: 1001 !important;
     }
 
     .info-overlay {
@@ -165,7 +152,6 @@
   <!-- Karta -->
   <div id="map"></div>
   <button id="removeRouteBtn" class="remove-route-btn">Ta bort rutt</button>
-  <button id="showInstructionsBtn" class="show-instructions-btn">Visa ruttinstruktioner</button>
 
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -188,7 +174,6 @@
     let userLatLng;
     let routingControl;
     const removeRouteBtn = document.getElementById('removeRouteBtn');
-    const showInstructionsBtn = document.getElementById('showInstructionsBtn');
 
     if (navigator.geolocation) {
       navigator.geolocation.watchPosition(
@@ -258,13 +243,15 @@
         ],
         show: false,
         addWaypoints: false,
-        routeWhileDragging: false,
         draggableWaypoints: false,
-        fitSelectedRoutes: true
+        routeWhileDragging: false,
+        createMarker: () => null,
+        lineOptions: {
+          styles: [{ color: '#ea4644', weight: 5 }]
+        }
       }).addTo(map);
 
       removeRouteBtn.style.display = 'block';
-      showInstructionsBtn.style.display = 'block';
     }
 
     removeRouteBtn.addEventListener('click', () => {
@@ -272,14 +259,6 @@
         map.removeControl(routingControl);
         routingControl = null;
         removeRouteBtn.style.display = 'none';
-        showInstructionsBtn.style.display = 'none';
-      }
-    });
-
-    showInstructionsBtn.addEventListener('click', () => {
-      if (routingControl) {
-        const container = document.querySelector('.leaflet-routing-container');
-        if (container) container.style.display = 'block';
       }
     });
   </script>
