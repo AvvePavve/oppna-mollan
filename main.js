@@ -17,6 +17,7 @@ map.getPane('userPane').style.zIndex = 1000;
 let userMarker;
 let userLatLng;
 let routingControl;
+let addressLayer = null;
 const removeRouteBtn = document.getElementById('removeRouteBtn');
 
 // Geolocation
@@ -79,51 +80,95 @@ fetch('data/geojson_example.geojson')
             popupContent += `<strong>${key}</strong>: ${feature.properties[key]}<br>`;
           }
 
-          const coords = feature.geometry.coordinates.slice().reverse();
-          popupContent += `<button class="route-btn" onclick='routeTo([${coords}])'>Visa rutt</button>`;
+          const coords = feature.geometry.coordinates;
+          const latLng = [coords[1], coords[0]]; // säkerställ [lat, lng]
+          popupContent += `<button class="route-btn" onclick='routeTo([${latLng}])'>Visa rutt</button>`;
           layer.bindPopup(popupContent);
         }
       }
     }).addTo(map);
   });
 
-// Adresser med filtrering, popup och ikon
+// Ikon
 const addressIcon = L.icon({
   iconUrl: 'marker.png',
-  iconSize: [25, 41],
+  iconSize: [30, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
   shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
   shadowSize: [41, 41]
 });
 
+// Globala GeoJSON-data för adresser
+let allAddressData = [];
+
+// Ladda in adresser en gång
 fetch('data/adresser.geojson')
   .then(response => response.json())
   .then(data => {
-    const filtered = data.features.filter(f => f.properties.oppen === "Ja");
-
-    L.geoJSON({ type: "FeatureCollection", features: filtered }, {
-      pointToLayer: function (feature, latlng) {
-        return L.marker(latlng, { icon: addressIcon });
-      },
-      onEachFeature: function (feature, layer) {
-        const props = feature.properties;
-        const coords = feature.geometry.coordinates.slice().reverse(); // Fix ordning
-
-        const popupContent = `
-          <strong>Adress:</strong> ${props.Adress}<br>
-          <strong>Aktivitet:</strong> ${props.Aktivitet}<br>
-          <button class="route-btn" onclick='routeTo([${coords}])'>Visa rutt</button>
-        `;
-        layer.bindPopup(popupContent);
-      }
-    }).addTo(map);
+    allAddressData = data.features.filter(f => f.properties.oppen === "Ja");
+    populateActivityFilter(allAddressData);
+    renderAddressLayer();
   });
 
+// Rendera filtrerat lager
+function renderAddressLayer() {
+  const selectedActivity = document.getElementById("activityFilter").value;
+
+  const filtered = selectedActivity === "alla"
+    ? allAddressData
+    : allAddressData.filter(f => f.properties.Aktivitet === selectedActivity);
+
+  if (addressLayer) {
+    map.removeLayer(addressLayer);
+  }
+
+  addressLayer = L.geoJSON({ type: "FeatureCollection", features: filtered }, {
+    pointToLayer: function (feature, latlng) {
+      return L.marker(latlng, { icon: addressIcon });
+    },
+    onEachFeature: function (feature, layer) {
+      const props = feature.properties;
+      const coords = feature.geometry.coordinates[0];
+      const latLng = [coords[1], coords[0]];
+
+      const popupContent = `
+        <strong>Adress:</strong> ${props.Adress}<br>
+        <strong>Aktivitet:</strong> ${props.Aktivitet}<br>
+        <button class="route-btn" onclick='routeTo([${latLng}])'>Visa rutt</button>
+      `;
+      layer.bindPopup(popupContent);
+    }
+  }).addTo(map);
+}
+
+// Populera dropdown med unika aktiviteter
+function populateActivityFilter(features) {
+  const select = document.getElementById("activityFilter");
+  const uniqueActivities = Array.from(new Set(features.map(f => f.properties.Aktivitet))).sort();
+
+  select.innerHTML = `<option value="alla">Alla aktiviteter</option>`;
+  uniqueActivities.forEach(activity => {
+    select.innerHTML += `<option value="${activity}">${activity}</option>`;
+  });
+
+  select.addEventListener("change", renderAddressLayer);
+}
+
+// Routing
 function routeTo(destinationLatLng) {
   if (!userLatLng) {
     alert("Din plats är inte tillgänglig än!");
     return;
+  }
+
+  // Säkerställ lat/lng
+  if (
+    Array.isArray(destinationLatLng) &&
+    destinationLatLng.length === 2 &&
+    destinationLatLng[0] > destinationLatLng[1]
+  ) {
+    destinationLatLng = [destinationLatLng[1], destinationLatLng[0]];
   }
 
   if (routingControl) {
