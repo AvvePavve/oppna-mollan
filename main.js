@@ -10,7 +10,7 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
   detectRetina: true
 }).addTo(map);
 
-// Användarens plats
+// Pane för användarens position
 map.createPane('userPane');
 map.getPane('userPane').style.zIndex = 1000;
 
@@ -70,7 +70,7 @@ fetch('data/byggnader_mollan.geojson')
 // Adresser
 const addressIcon = L.icon({
   iconUrl: 'marker.png',
-  iconSize: [20, 30],
+  iconSize: [40, 40], // mindre och smalare ikon
   iconAnchor: [10, 30],
   popupAnchor: [1, -25],
   shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
@@ -98,14 +98,12 @@ fetch('data/adresser.geojson')
     }).addTo(map);
   });
 
-// Ruttplanering med gång/cykel via OpenRouteService
+// Ruttplanering via GraphHopper (gångprofil)
 function routeTo(destinationLatLng) {
   if (!userLatLng) {
     alert("Din plats är inte tillgänglig än!");
     return;
   }
-
-  console.log("Routing från:", userLatLng, "till:", destinationLatLng);
 
   if (routingControl) {
     map.removeControl(routingControl);
@@ -124,8 +122,12 @@ function routeTo(destinationLatLng) {
     lineOptions: {
       styles: [{ color: '#ea4644', weight: 5 }]
     },
-    router: new L.Routing.OpenRouteService('5b3ce3597851110001cf62484916249796ab4c6a9c1f947e1859b8d8', {
-      profile: 'foot-walking', // Alternativ: 'cycling-regular'
+    router: new L.Routing.GraphHopper('cd8a3c4a-2280-4e8b-8660-5ce6395a2294', {
+      vehicle: 'foot',
+      urlParameters: {
+        locale: 'sv',
+        instructions: false
+      }
     })
   }).addTo(map);
 
