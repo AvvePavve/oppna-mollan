@@ -78,7 +78,7 @@ fetch('data/adresser.geojson')
   .then(data => {
     L.geoJSON(data, {
       filter: function (feature) {
-        return feature.properties.oppen === "ja";
+        return feature.properties.oppen === "Ja";
       },
       pointToLayer: function (feature, latlng) {
         return L.circleMarker(latlng, {
