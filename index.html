@@ -5,6 +5,13 @@
   <title>Min Webbkarta – Möllevången</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <!-- iOS Status Bar -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <!-- Android Chrome Status Bar -->
+  <meta name="theme-color" content="#ea4644" />
+
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap" rel="stylesheet" />
 
@@ -15,7 +22,9 @@
   <style>
     body {
       margin: 0;
+      padding: 0;
       font-family: sans-serif;
+      background-color: #ea4644;
     }
 
     header {
@@ -57,10 +66,9 @@
       width: 100%;
     }
 
-    .remove-route-btn {
+    .remove-route-btn, .show-instructions-btn {
       position: absolute;
       bottom: 15px;
-      right: 15px;
       z-index: 1000;
       background-color: #ea4644;
       color: white;
@@ -69,11 +77,20 @@
       border-radius: 6px;
       cursor: pointer;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .remove-route-btn:hover, .show-instructions-btn:hover {
+      background-color: #c03635;
+    }
+
+    .remove-route-btn {
+      right: 15px;
       display: none;
     }
 
-    .remove-route-btn:hover {
-      background-color: #c03635;
+    .show-instructions-btn {
+      right: 145px;
+      display: none;
     }
 
     .leaflet-routing-container {
@@ -81,7 +98,6 @@
       z-index: 1001 !important;
     }
 
-    /* Info overlay */
     .info-overlay {
       position: fixed;
       top: 0;
@@ -149,13 +165,13 @@
   <!-- Karta -->
   <div id="map"></div>
   <button id="removeRouteBtn" class="remove-route-btn">Ta bort rutt</button>
+  <button id="showInstructionsBtn" class="show-instructions-btn">Visa ruttinstruktioner</button>
 
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.min.js"></script>
 
   <script>
-    // Stäng inforutan
     function closeInfo() {
       document.getElementById("infoOverlay").style.display = "none";
     }
@@ -172,6 +188,7 @@
     let userLatLng;
     let routingControl;
     const removeRouteBtn = document.getElementById('removeRouteBtn');
+    const showInstructionsBtn = document.getElementById('showInstructionsBtn');
 
     if (navigator.geolocation) {
       navigator.geolocation.watchPosition(
@@ -247,6 +264,7 @@
       }).addTo(map);
 
       removeRouteBtn.style.display = 'block';
+      showInstructionsBtn.style.display = 'block';
     }
 
     removeRouteBtn.addEventListener('click', () => {
@@ -254,6 +272,14 @@
         map.removeControl(routingControl);
         routingControl = null;
         removeRouteBtn.style.display = 'none';
+        showInstructionsBtn.style.display = 'none';
+      }
+    });
+
+    showInstructionsBtn.addEventListener('click', () => {
+      if (routingControl) {
+        const container = document.querySelector('.leaflet-routing-container');
+        if (container) container.style.display = 'block';
       }
     });
   </script>
