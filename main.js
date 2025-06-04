@@ -10,7 +10,7 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
   detectRetina: true
 }).addTo(map);
 
-// Skapa separat pane för användarens position
+// Användarens plats
 map.createPane('userPane');
 map.getPane('userPane').style.zIndex = 1000;
 
@@ -19,7 +19,7 @@ let userLatLng;
 let routingControl;
 const removeRouteBtn = document.getElementById('removeRouteBtn');
 
-// Geolocation
+// Hämta användarens plats
 if (navigator.geolocation) {
   navigator.geolocation.watchPosition(
     function (position) {
@@ -67,20 +67,19 @@ fetch('data/byggnader_mollan.geojson')
     }).addTo(map);
   });
 
-// Gårdar (geojson_example)
+// Gårdar
 fetch('data/geojson_example.geojson')
   .then(response => response.json())
   .then(data => {
     L.geoJSON(data, {
       onEachFeature: function (feature, layer) {
         if (feature.properties) {
+          const coords = feature.geometry.coordinates;
+          const latLng = [coords[1], coords[0]]; // [lat, lng]
           let popupContent = '';
           for (let key in feature.properties) {
             popupContent += `<strong>${key}</strong>: ${feature.properties[key]}<br>`;
           }
-
-          const coords = feature.geometry.coordinates;
-          const latLng = [coords[1], coords[0]]; // säkerställ [lat, lng]
           popupContent += `<button class="route-btn" onclick='routeTo([${latLng}])'>Visa rutt</button>`;
           layer.bindPopup(popupContent);
         }
@@ -88,7 +87,7 @@ fetch('data/geojson_example.geojson')
     }).addTo(map);
   });
 
-// Adresser med filtrering, popup och ikon
+// Adresser
 const addressIcon = L.icon({
   iconUrl: 'marker.png',
   iconSize: [25, 41],
@@ -104,16 +103,11 @@ fetch('data/adresser.geojson')
     const filtered = data.features.filter(f => f.properties.oppen === "Ja");
 
     L.geoJSON({ type: "FeatureCollection", features: filtered }, {
-      pointToLayer: function (feature, latlng) {
-        return L.marker(latlng, { icon: addressIcon });
-      },
-      onEachFeature: function (feature, layer) {
+      pointToLayer: (feature, latlng) => L.marker(latlng, { icon: addressIcon }),
+      onEachFeature: (feature, layer) => {
         const props = feature.properties;
-
-        // Hämta första punkten från MultiPoint
-        let coords = feature.geometry.coordinates[0];
-        const latLng = [coords[1], coords[0]]; // alltid [lat, lng]
-
+        const coords = feature.geometry.coordinates[0];
+        const latLng = [coords[1], coords[0]];
         const popupContent = `
           <strong>Adress:</strong> ${props.Adress}<br>
           <strong>Aktivitet:</strong> ${props.Aktivitet}<br>
@@ -130,14 +124,7 @@ function routeTo(destinationLatLng) {
     return;
   }
 
-  // Säkerställ att vi har rätt ordning: [lat, lng]
-  if (
-    Array.isArray(destinationLatLng) &&
-    destinationLatLng.length === 2 &&
-    destinationLatLng[0] > destinationLatLng[1]
-  ) {
-    destinationLatLng = [destinationLatLng[1], destinationLatLng[0]];
-  }
+  console.log("Routing från:", userLatLng, "till:", destinationLatLng);
 
   if (routingControl) {
     map.removeControl(routingControl);
