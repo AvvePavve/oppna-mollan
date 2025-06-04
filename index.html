@@ -245,7 +245,7 @@
       );
     }
     
-    fetch('data/byggnader.geojson')
+    fetch('data/byggnader_mollan.geojson')
       .then(response => response.json())
       .then(data => {
         L.geoJSON(data, {
