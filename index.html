@@ -7,6 +7,7 @@
 
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
 
   <style>
     body {
@@ -44,8 +45,37 @@
       width: 100%;
     }
 
-    .leaflet-interactive.leaflet-animating {
-      transition: transform 0.5s ease;
+    button.route-btn {
+      margin-top: 5px;
+      padding: 5px 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button.route-btn:hover {
+      background-color: #0056b3;
+    }
+
+    .remove-route-btn {
+      position: absolute;
+      bottom: 15px;
+      right: 15px;
+      z-index: 1000;
+      background-color: #ea4644;
+      color: white;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      display: none;
+    }
+
+    .remove-route-btn:hover {
+      background-color: #c03635;
     }
   </style>
 </head>
@@ -59,52 +89,37 @@
   </header>
 
   <div id="map"></div>
+  <button id="removeRouteBtn" class="remove-route-btn">Ta bort rutt</button>
 
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.min.js"></script>
 
   <script>
-    // Initiera kartan
     const map = L.map('map').setView([55.5928, 13.0060], 16);
 
-    // CartoDB Positron
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; OpenStreetMap &copy; CartoDB',
       subdomains: 'abcd',
       detectRetina: true
     }).addTo(map);
 
-    // Ladda GeoJSON
-    fetch('data/geojson_example.geojson')
-      .then(response => response.json())
-      .then(data => {
-        L.geoJSON(data, {
-          onEachFeature: function (feature, layer) {
-            if (feature.properties) {
-              let popupContent = '';
-              for (let key in feature.properties) {
-                popupContent += `<strong>${key}</strong>: ${feature.properties[key]}<br>`;
-              }
-              layer.bindPopup(popupContent);
-            }
-          }
-        }).addTo(map);
-      });
+    let userMarker;
+    let userLatLng;
+    let routingControl;
+    const removeRouteBtn = document.getElementById('removeRouteBtn');
 
-    // Live-position med animerad punkt
     if (navigator.geolocation) {
-      let userMarker;
-
       navigator.geolocation.watchPosition(
         function (position) {
           const lat = position.coords.latitude;
           const lng = position.coords.longitude;
+          userLatLng = [lat, lng];
 
           if (userMarker) {
-            // Smooth move by re-setting latlng
-            userMarker.setLatLng([lat, lng]);
+            userMarker.setLatLng(userLatLng);
           } else {
-            userMarker = L.circleMarker([lat, lng], {
+            userMarker = L.circleMarker(userLatLng, {
               radius: 5,
               color: '#007bff',
               fillColor: '#007bff',
@@ -113,7 +128,7 @@
               className: 'leaflet-animating'
             }).addTo(map).bindPopup("Du är här!").openPopup();
 
-            map.setView([lat, lng], 16);
+            map.setView(userLatLng, 16);
           }
         },
         function (error) {
@@ -125,9 +140,59 @@
           timeout: 20000
         }
       );
-    } else {
-      console.warn("Geolokalisering stöds inte.");
     }
+
+    fetch('data/geojson_example.geojson')
+      .then(response => response.json())
+      .then(data => {
+        L.geoJSON(data, {
+          onEachFeature: function (feature, layer) {
+            if (feature.properties) {
+              let popupContent = '';
+              for (let key in feature.properties) {
+                popupContent += `<strong>${key}</strong>: ${feature.properties[key]}<br>`;
+              }
+
+              const coords = feature.geometry.coordinates.slice().reverse(); // [lat, lng]
+              popupContent += `<button class="route-btn" onclick='routeTo([${coords}])'>Visa rutt</button>`;
+              layer.bindPopup(popupContent);
+            }
+          }
+        }).addTo(map);
+      });
+
+    function routeTo(destinationLatLng) {
+      if (!userLatLng) {
+        alert("Din plats är inte tillgänglig än!");
+        return;
+      }
+
+      if (routingControl) {
+        map.removeControl(routingControl);
+      }
+
+      routingControl = L.Routing.control({
+        waypoints: [
+          L.latLng(userLatLng),
+          L.latLng(destinationLatLng)
+        ],
+        show: false,
+        addWaypoints: false,
+        routeWhileDragging: false,
+        draggableWaypoints: false,
+        fitSelectedRoutes: true
+      }).addTo(map);
+
+      removeRouteBtn.style.display = 'block';
+    }
+
+    removeRouteBtn.addEventListener('click', () => {
+      if (routingControl) {
+        map.removeControl(routingControl);
+        routingControl = null;
+        removeRouteBtn.style.display = 'none';
+      }
+    });
   </script>
 
 </body>
