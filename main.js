@@ -10,7 +10,6 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
   detectRetina: true
 }).addTo(map);
 
-// Pane för användarens position
 map.createPane('userPane');
 map.getPane('userPane').style.zIndex = 1000;
 
@@ -19,7 +18,6 @@ let userLatLng;
 let routingControl;
 const removeRouteBtn = document.getElementById('removeRouteBtn');
 
-// Hämta användarens plats
 if (navigator.geolocation) {
   navigator.geolocation.watchPosition(
     function (position) {
@@ -67,7 +65,6 @@ fetch('data/byggnader_mollan.geojson')
     }).addTo(map);
   });
 
-// Ikon för adresser
 const addressIcon = L.icon({
   iconUrl: 'marker.png',
   iconSize: [40, 40],
@@ -77,7 +74,6 @@ const addressIcon = L.icon({
   shadowSize: [41, 41]
 });
 
-// Hantera både Point och MultiPoint
 fetch('data/adresser.geojson')
   .then(response => response.json())
   .then(data => {
@@ -121,7 +117,6 @@ fetch('data/adresser.geojson')
     });
   });
 
-// Ruttplanering via OSRM (gångprofil)
 function routeTo(destinationLatLng) {
   if (!userLatLng) {
     alert("Din plats är inte tillgänglig än!");
