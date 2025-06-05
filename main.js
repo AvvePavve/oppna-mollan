@@ -71,7 +71,7 @@ const addressIcon = L.icon({
   popupAnchor: [1, -25],
   shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
   shadowSize: [41, 41],
-  shadowAnchor: [10, 30] // justerar skuggposition
+  shadowAnchor: [0, 40] // justerar skuggposition
 });
 
 fetch('data/adresser.geojson')
