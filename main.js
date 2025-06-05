@@ -74,6 +74,8 @@ const addressIcon = L.icon({
   shadowAnchor: [0, 38]
 });
 
+const aktivitetLayers = {}; 
+
 fetch('data/adresser.geojson')
   .then(response => response.json())
   .then(data => {
