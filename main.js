@@ -67,7 +67,7 @@ fetch('data/byggnader_mollan.geojson')
 const addressIcon = L.icon({
   iconUrl: 'marker.png',
   iconSize: [44, 44],
-  iconAnchor: [21, 35],         
+  iconAnchor: [23, 35],         
   popupAnchor: [0, -35],        
   shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
   shadowSize: [41, 41],
