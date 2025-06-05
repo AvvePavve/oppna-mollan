@@ -70,8 +70,8 @@ const addressIcon = L.icon({
   iconAnchor: [10, 30],
   popupAnchor: [1, -25],
   shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
-  shadowSize: [30, 30],
-  shadowAnchor: [5, 40] // justerar skuggposition
+  shadowSize: [35, 35],
+  shadowAnchor: [0, 38] // justerar skuggposition
 });
 
 fetch('data/adresser.geojson')
