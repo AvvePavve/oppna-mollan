@@ -67,11 +67,11 @@ fetch('data/byggnader_mollan.geojson')
 const addressIcon = L.icon({
   iconUrl: 'marker.png',
   iconSize: [40, 40],
-  iconAnchor: [10, 30],
-  popupAnchor: [1, -25],
+  iconAnchor: [20, 40],         
+  popupAnchor: [0, -40],        
   shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
-  shadowSize: [35, 35],
-  shadowAnchor: [0, 38]
+  shadowSize: [41, 41],
+  shadowAnchor: [13, 41]
 });
 
 const aktivitetLayers = {}; 
