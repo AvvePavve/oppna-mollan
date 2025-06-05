@@ -70,7 +70,7 @@ const addressIcon = L.icon({
   iconAnchor: [10, 30],
   popupAnchor: [1, -25],
   shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
-  shadowSize: [41, 41]
+  shadowSize: [41, 41],
   shadowAnchor: [13, 41] // justerar skuggposition
 });
 
