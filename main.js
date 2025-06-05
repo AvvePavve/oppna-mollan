@@ -35,7 +35,7 @@ if (navigator.geolocation) {
           fillOpacity: 1,
           weight: 1,
           pane: 'userPane'
-        }).addTo(map).bindPopup("Du är här!").openPopup();
+        }).addTo(map).bindPopup("Du är här!");
 
         map.setView(userLatLng, 16);
       }
@@ -112,7 +112,7 @@ fetch('data/adresser.geojson')
 
     Object.values(aktivitetLayers).forEach(layer => layer.addTo(map));
 
-    L.control.layers(null, aktivitetLayers, { collapsed: false }).addTo(map);
+    L.control.layers(null, aktivitetLayers, { collapsed: true }).addTo(map);
   });
 
 function routeTo(destinationLatLng) {
