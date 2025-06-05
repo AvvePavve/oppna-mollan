@@ -104,10 +104,13 @@ fetch('data/adresser.geojson')
         const latLng = [coord[1], coord[0]];
 
         const marker = L.marker(latLng, { icon: addressIcon });
+        
+        const aktivitet = props.Aktivitet ? props.Aktivitet : "Ingen aktivitet planerad";
+        const adress = props.Adress || "Okänd adress";
 
         const popupContent = `
-          <strong>Adress:</strong> ${props.Adress}<br>
-          <strong>Aktivitet:</strong> ${props.Aktivitet}<br>
+          <strong>Adress:</strong> ${adress}<br>
+          <strong>Aktivitet:</strong> ${aktivitet}<br>
           <button class="route-btn" onclick='routeTo([${latLng}])'>Visa rutt</button>
         `;
 
