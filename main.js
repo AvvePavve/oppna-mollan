@@ -71,7 +71,7 @@ const addressIcon = L.icon({
   popupAnchor: [1, -25],
   shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
   shadowSize: [35, 35],
-  shadowAnchor: [0, 38] // justerar skuggposition
+  shadowAnchor: [0, 38]
 });
 
 fetch('data/adresser.geojson')
@@ -81,35 +81,16 @@ fetch('data/adresser.geojson')
 
     filtered.forEach(feature => {
       const props = feature.properties;
+      const aktivitet = props.Aktivitet ? props.Aktivitet : "Ingen aktivitet planerad";
+      const adress = props.Adress || "Okänd adress";
 
-      if (feature.geometry.type === "MultiPoint") {
-        feature.geometry.coordinates.forEach(coord => {
-          const latLng = [coord[1], coord[0]];
+      const coordsList = feature.geometry.type === "MultiPoint"
+        ? feature.geometry.coordinates
+        : [feature.geometry.coordinates];
 
-          const marker = L.marker(latLng, { icon: addressIcon });
-
-          const aktivitet = props.Aktivitet ? props.Aktivitet : "Ingen aktivitet planerad";
-          const adress = props.Adress || "Okänd adress";
-
-          const popupContent = `
-            <strong>Adress:</strong> ${adress}<br>
-            <strong>Aktivitet:</strong> ${aktivitet}<br>
-            <button class="route-btn" onclick='routeTo([${latLng}])'>Visa rutt</button>
-          `;
-
-          marker.bindPopup(popupContent);
-          marker.addTo(map);
-        });
-      }
-
-      if (feature.geometry.type === "Point") {
-        const coord = feature.geometry.coordinates;
+      coordsList.forEach(coord => {
         const latLng = [coord[1], coord[0]];
-
         const marker = L.marker(latLng, { icon: addressIcon });
-        
-        const aktivitet = props.Aktivitet ? props.Aktivitet : "Ingen aktivitet planerad";
-        const adress = props.Adress || "Okänd adress";
 
         const popupContent = `
           <strong>Adress:</strong> ${adress}<br>
@@ -118,9 +99,18 @@ fetch('data/adresser.geojson')
         `;
 
         marker.bindPopup(popupContent);
-        marker.addTo(map);
-      }
+
+        if (!aktivitetLayers[aktivitet]) {
+          aktivitetLayers[aktivitet] = L.layerGroup();
+        }
+
+        aktivitetLayers[aktivitet].addLayer(marker);
+      });
     });
+
+    Object.values(aktivitetLayers).forEach(layer => layer.addTo(map));
+
+    L.control.layers(null, aktivitetLayers, { collapsed: false }).addTo(map);
   });
 
 function routeTo(destinationLatLng) {
