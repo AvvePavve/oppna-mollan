@@ -21,6 +21,7 @@ body {
   font-family: 'NexaBook', Arial, sans-serif;
   background-color: #e94543;
   color: white;
+  scroll-behavior: smooth;
 }
 
 header {
@@ -70,8 +71,9 @@ header h1 {
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   font-family: 'NexaBook', Arial, sans-serif;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  transition: background 0.3s, color 0.3s;
 }
 
 .btn:focus {
@@ -115,7 +117,8 @@ header h1 {
   }
 }
 
-.user-location-icon {
+.user-location-icon,
+.leaflet-marker-pane .leaflet-marker-icon.user-location {
   width: 18px;
   height: 18px;
   background-color: #3388ff;
@@ -128,11 +131,6 @@ header h1 {
   display: none !important;
 }
 
-.leaflet-popup-content .route-btn {
-  margin-top: 0.65rem;
-  display: inline-block;
-}
-
 .leaflet-popup-content {
   font-family: 'NexaBook', Arial, sans-serif;
   font-size: 1rem;
@@ -141,6 +139,11 @@ header h1 {
 
 .leaflet-popup-content strong {
   font-family: 'NexaBold', Arial, sans-serif;
+}
+
+.leaflet-popup-content .route-btn {
+  margin-top: 0.65rem;
+  display: inline-block;
 }
 
 #removeRouteBtn {
@@ -199,6 +202,7 @@ header h1 {
     background-color: #232323 !important;
     color: #f4f4f4 !important;
     border: 1px solid #e94543 !important;
+    border-radius: 6px !important;
     box-shadow: none !important;
   }
 
@@ -212,10 +216,6 @@ header h1 {
   .leaflet-control-layers-toggle:active {
     background-color: #444 !important;
     box-shadow: none !important;
-  }
-
-  .leaflet-popup-content {
-    font-family: 'NexaBook', Arial, sans-serif;
   }
 
   .leaflet-container a {
