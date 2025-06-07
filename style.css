@@ -130,16 +130,25 @@ header h1 {
 }
 
 @media (max-width: 480px) {
+  .info-overlay {
+    align-items: flex-start;
+    padding-top: 80px;
+    background: rgba(0, 0, 0, 0.4);
+  }
+
   .info-box {
     width: 90%;
     font-size: 0.95rem;
+    padding: 1.2rem;
+    border-radius: 8px;
   }
 
   .info-box h2 {
     font-size: 1.2rem;
   }
+
+  .info-box p {
+    font-size: 0.95rem;
+  }
 }
 
-.leaflet-routing-container {
-  display: none !important;
-}
