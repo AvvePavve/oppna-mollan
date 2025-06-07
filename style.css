@@ -33,14 +33,6 @@ header {
   letter-spacing: 0;
 }
 
-header h1 {
-  margin: 0;
-  font-size: 1.2rem;
-  text-transform: uppercase;
-  font-family: 'NexaBlack', Arial, sans-serif;
-  letter-spacing: 0;
-}
-
 .logo-link {
   display: flex;
   align-items: center;
