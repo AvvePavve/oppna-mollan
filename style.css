@@ -49,6 +49,7 @@ header h1 {
   font-size: 1.2rem;
   text-transform: uppercase;
   font-family: 'NexaBlack', Arial, sans-serif;
+  letter-spacing: 0;
 }
 
 @media (max-width: 600px) {
@@ -157,18 +158,41 @@ header h1 {
 
 .leaflet-control-zoom-in,
 .leaflet-control-zoom-out,
-.leaflet-control-layers {
+.leaflet-control-layers,
+.leaflet-control-layers-toggle,
+.leaflet-control-zoom a {
+  box-shadow: none !important;
+  border: none !important;
   background-color: #fff;
   color: #232323;
   border-radius: 6px;
-  border: none;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.18);
   transition: background 0.2s, color 0.2s;
 }
+
+.leaflet-control-zoom-in:active,
+.leaflet-control-zoom-out:active,
+.leaflet-control-layers:active,
+.leaflet-control-layers-toggle:active,
+.leaflet-control-zoom-in:focus,
+.leaflet-control-zoom-out:focus,
+.leaflet-control-layers:focus,
+.leaflet-control-layers-toggle:focus,
+.leaflet-control-zoom a:active,
+.leaflet-control-zoom a:focus {
+  background-color: #f7a7a6 !important;
+  color: #232323 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 .leaflet-control-zoom-in:hover,
 .leaflet-control-zoom-out:hover,
-.leaflet-control-layers:hover {
-  background-color: #f7a7a6;
+.leaflet-control-layers:hover,
+.leaflet-control-layers-toggle:hover,
+.leaflet-control-zoom a:hover,
+.leaflet-control-zoom a:focus {
+  background-color: #f7a7a6 !important;
+  color: #232323 !important;
 }
 
 .leaflet-control-zoom-in,
@@ -176,34 +200,9 @@ header h1 {
   font-size: 1.6em;
 }
 
-.leaflet-control-layers-toggle {
-  background-color: #fff !important;
-  border-radius: 6px !important;
-  transition: background 0.2s;
-}
-
-.leaflet-control-layers-toggle:hover {
-  background-color: #f7a7a6 !important;
-}
-
-.leaflet-control-zoom a {
-  background-color: #fff;
-  color: #232323;
-  border-radius: 6px;
-  border: none;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.18);
-  transition: background 0.2s, color 0.2s;
-}
-
-.leaflet-control-zoom a:hover,
-.leaflet-control-zoom a:focus {
-  background-color: #f7a7a6;
-  color: #232323;
-}
-
 .leaflet-control-zoom a.leaflet-disabled {
-  background-color: #e0e0e0;
-  color: #b0b0b0;
+  background-color: #e0e0e0 !important;
+  color: #b0b0b0 !important;
   opacity: 1;
   cursor: not-allowed;
 }
@@ -288,38 +287,34 @@ header h1 {
   }
   .leaflet-control-zoom-in,
   .leaflet-control-zoom-out,
-  .leaflet-control-layers {
-    background-color: #232323;
-    color: #fff;
-    border: none;
+  .leaflet-control-layers,
+  .leaflet-control-layers-toggle,
+  .leaflet-control-zoom a {
+    background-color: #232323 !important;
+    color: #fff !important;
+    border: none !important;
+    box-shadow: none !important;
   }
   .leaflet-control-zoom-in:hover,
   .leaflet-control-zoom-out:hover,
-  .leaflet-control-layers:hover {
-    background-color: #3a3a3a;
-    color: #fff;
-  }
-  .leaflet-control-layers-toggle {
-    background-color: #232323 !important;
-    color: #fff !important;
-  }
-  .leaflet-control-layers-toggle:hover {
+  .leaflet-control-layers:hover,
+  .leaflet-control-layers-toggle:hover,
+  .leaflet-control-zoom a:hover,
+  .leaflet-control-zoom a:focus,
+  .leaflet-control-zoom-in:active,
+  .leaflet-control-zoom-out:active,
+  .leaflet-control-layers:active,
+  .leaflet-control-layers-toggle:active,
+  .leaflet-control-zoom a:active,
+  .leaflet-control-zoom a:focus {
     background-color: #3a3a3a !important;
     color: #fff !important;
-  }
-  .leaflet-control-zoom a {
-    background-color: #232323;
-    color: #fff;
-    border: none;
-  }
-  .leaflet-control-zoom a:hover,
-  .leaflet-control-zoom a:focus {
-    background-color: #3a3a3a;
-    color: #fff;
+    outline: none !important;
+    box-shadow: none !important;
   }
   .leaflet-control-zoom a.leaflet-disabled {
-    background-color: #444;
-    color: #888;
+    background-color: #444 !important;
+    color: #888 !important;
     opacity: 1;
     cursor: not-allowed;
   }
