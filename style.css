@@ -1,18 +1,18 @@
 @font-face {
   font-family: 'NexaBlack';
-  src: url('main/fonts/FONTFABRIC - NEXABLACK.otf') format('opentype');
+  src: url('main/fonts/FONTFABRIC - NEXABLACK.OTF') format('opentype');
   font-weight: normal;
   font-style: normal;
 }
 @font-face {
   font-family: 'NexaBold';
-  src: url('main/fonts/FONTFABRIC - NEXABOLD.otf') format('opentype');
+  src: url('main/fonts/FONTFABRIC - NEXABOLD.OTF') format('opentype');
   font-weight: normal;
   font-style: normal;
 }
 @font-face {
   font-family: 'NexaBook';
-  src: url('main/fonts/FONTFABRIC - NEXABOOK.otf') format('opentype');
+  src: url('main/fonts/FONTFABRIC - NEXABOOK.OTF') format('opentype');
   font-weight: normal;
   font-style: normal;
 }
