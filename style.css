@@ -195,6 +195,15 @@ header h1 {
   display: none !important;
 }
 
+.user-location-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #3578e5;
+  border: 2.5px solid #fff;
+  box-shadow: 0 0 0 2px rgba(53,120,229,0.15);
+}
+
 @media (prefers-color-scheme: dark) {
   body {
     background-color: #181818;
@@ -260,5 +269,10 @@ header h1 {
   }
   .leaflet-popup-tip {
     background: #232323;
+  }
+  .user-location-icon {
+    border: 2.5px solid #fff;
+    background: #3578e5;
+    box-shadow: 0 0 0 2px rgba(53,120,229,0.25);
   }
 }
