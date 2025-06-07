@@ -1,3 +1,22 @@
+@font-face {
+  font-family: 'NexaBlack';
+  src: url('main/fonts/FONTFABRIC - NEXABLACK.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'NexaBold';
+  src: url('main/fonts/FONTFABRIC - NEXABOLD.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'NexaBook';
+  src: url('main/fonts/FONTFABRIC - NEXABOOK.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -5,17 +24,19 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Rubik', sans-serif;
-  background-color: #ea4644;
+  font-family: 'NexaBook', Arial, sans-serif;
+  background-color: #e94543;
 }
 
 header {
   display: flex;
   align-items: center;
-  background-color: #ea4644;
+  background-color: #e94543;
   color: white;
   padding: 0.5rem 1rem;
   height: 60px;
+  font-family: 'NexaBlack', Arial, sans-serif;
+  letter-spacing: 0.08em;
 }
 
 .logo-link {
@@ -33,6 +54,7 @@ header h1 {
   margin: 0;
   font-size: 1.2rem;
   text-transform: uppercase;
+  font-family: 'NexaBlack', Arial, sans-serif;
 }
 
 @media (max-width: 600px) {
@@ -51,7 +73,7 @@ header h1 {
 .btn {
   padding: 10px 16px;
   font-size: 1rem;
-  background: #ea4644;
+  background: #e94543;
   color: white;
   border: none;
   border-radius: 6px;
@@ -59,6 +81,7 @@ header h1 {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   transition: background 0.2s, box-shadow 0.2s;
   outline: none;
+  font-family: 'NexaBook', Arial, sans-serif;
 }
 
 .btn:focus {
@@ -68,9 +91,10 @@ header h1 {
 
 .route-btn {
   margin-top: 8px;
+  font-family: 'NexaBook', Arial, sans-serif;
 }
 .route-btn:hover {
-  background: #c03635;
+  background: #e94543;
 }
 
 .info-overlay {
@@ -96,12 +120,21 @@ header h1 {
   width: 400px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
   text-align: center;
+  font-family: 'NexaBook', Arial, sans-serif;
 }
 .info-box h2 {
   margin-top: 0;
+  font-family: 'NexaBold', Arial, sans-serif;
 }
 .info-box button {
   margin-top: 1rem;
+  font-family: 'NexaBook', Arial, sans-serif;
+}
+
+.info-box strong,
+.leaflet-popup-content strong,
+.popup-title {
+  font-family: 'NexaBold', Arial, sans-serif;
 }
 
 @media (max-width: 480px) {
@@ -186,6 +219,7 @@ header h1 {
   color: #232323;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.17);
+  font-family: 'NexaBook', Arial, sans-serif;
 }
 .leaflet-popup-tip {
   background: #fff;
@@ -211,7 +245,7 @@ header h1 {
   bottom: 24px;
   z-index: 1200;
   display: none;
-  background: #ea4644;
+  background: #e94543;
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -220,9 +254,10 @@ header h1 {
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   cursor: pointer;
   transition: background 0.2s;
+  font-family: 'NexaBook', Arial, sans-serif;
 }
 #removeRouteBtn:hover {
-  background: #c03635;
+  background: #e94543;
 }
 
 @media (max-width: 480px) {
@@ -240,19 +275,22 @@ header h1 {
     color: #f4f4f4;
   }
   header {
-    background-color: #ea4644;
+    background-color: #e94543;
     color: #fff;
+    font-family: 'NexaBlack', Arial, sans-serif;
   }
   .info-box {
     background: #232323;
     color: #f4f4f4;
+    font-family: 'NexaBook', Arial, sans-serif;
   }
-  .btn, .info-box button {
-    background: #c03635;
+  .btn, .info-box button, .route-btn, #removeRouteBtn {
+    background: #e94543;
     color: #fff;
+    font-family: 'NexaBook', Arial, sans-serif;
   }
-  .btn:hover, .info-box button:hover {
-    background: #ea4644;
+  .btn:hover, .info-box button:hover, .route-btn:hover, #removeRouteBtn:hover {
+    background: #e94543;
   }
   .leaflet-control-zoom-in,
   .leaflet-control-zoom-out,
@@ -296,6 +334,7 @@ header h1 {
     color: #f4f4f4;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    font-family: 'NexaBook', Arial, sans-serif;
   }
   .leaflet-popup-tip {
     background: #232323;
