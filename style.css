@@ -146,7 +146,7 @@ header h1 {
 #removeRouteBtn {
   position: fixed;
   bottom: 30px;
-  right: 30px;
+  right: 10px;
   z-index: 1001;
   padding: 10px 16px;
   font-size: 1rem;
@@ -197,14 +197,14 @@ header h1 {
   .leaflet-control-layers-expanded {
     background-color: #232323 !important;
     color: #f4f4f4 !important;
-    border-color: #444 !important;
+    border-color: #e94543 !important;
     box-shadow: none !important;
   }
 
   .leaflet-control-zoom a:hover,
   .leaflet-control-layers-toggle:hover {
     background-color: #333 !important;
-    border-color: #444 !important;
+    border-color: #e94543 !important;
   }
 
   .leaflet-control-zoom a:active {
