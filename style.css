@@ -151,9 +151,13 @@ header h1 {
 }
 
 @media (prefers-color-scheme: dark) {
-  body, header {
+  body {
     background-color: #181818;
     color: #f4f4f4;
+  }
+  header {
+    background-color: #ea4644;
+    color: #fff;
   }
   .info-box {
     background: #232323;
