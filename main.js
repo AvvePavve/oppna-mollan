@@ -2,13 +2,37 @@ function closeInfo() {
   document.getElementById("infoOverlay").style.display = "none";
 }
 
-const map = L.map('map').setView([55.5928, 13.0060], 16);
+const lightTiles = L.tileLayer(
+  'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+  {
+    attribution: '&copy; OpenStreetMap &copy; CartoDB',
+    subdomains: 'abcd',
+    detectRetina: true
+  }
+);
+const darkTiles = L.tileLayer(
+  'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+  {
+    attribution: '&copy; OpenStreetMap &copy; CartoDB',
+    subdomains: 'abcd',
+    detectRetina: true
+  }
+);
 
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-  attribution: '&copy; OpenStreetMap &copy; CartoDB',
-  subdomains: 'abcd',
-  detectRetina: true
-}).addTo(map);
+const map = L.map('map', {layers: []}).setView([55.5928, 13.0060], 16);
+
+function setBaseMap() {
+  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (isDark) {
+    if (map.hasLayer(lightTiles)) map.removeLayer(lightTiles);
+    if (!map.hasLayer(darkTiles)) darkTiles.addTo(map);
+  } else {
+    if (map.hasLayer(darkTiles)) map.removeLayer(darkTiles);
+    if (!map.hasLayer(lightTiles)) lightTiles.addTo(map);
+  }
+}
+setBaseMap();
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', setBaseMap);
 
 map.createPane('userPane');
 map.getPane('userPane').style.zIndex = 1000;
@@ -20,7 +44,7 @@ const removeRouteBtn = document.getElementById('removeRouteBtn');
 
 if (navigator.geolocation) {
   navigator.geolocation.watchPosition(
-    (position) => {
+    position => {
       const lat = position.coords.latitude;
       const lng = position.coords.longitude;
       userLatLng = [lat, lng];
@@ -40,30 +64,36 @@ if (navigator.geolocation) {
         map.setView(userLatLng, 16);
       }
     },
-    (error) => {
+    error => {
       console.warn("Plats kunde inte hämtas:", error.message);
     },
     {
       enableHighAccuracy: true,
-      maximumAge: 10000,
-      timeout: 20000
+      maximumAge: 20000,
+      timeout: 10000
     }
   );
 }
 
-fetch('data/byggnader_mollan.geojson')
-  .then(response => response.json())
-  .then(data => {
-    L.geoJSON(data, {
-      style: {
-        color: '#ea4644',
-        weight: 1,
-        fillColor: '#f7a7a6',
-        fillOpacity: 0.6
-      }
-    }).addTo(map);
-  })
-  .catch(err => console.error("Fel vid inläsning av byggnader:", err));
+async function fetchAndAddGeoJSON(url, options = {}, onEachFeature) {
+  try {
+    const response = await fetch(url, {cache: "force-cache"});
+    if (!response.ok) throw new Error(`HTTP-fel: ${response.status}`);
+    const data = await response.json();
+    L.geoJSON(data, {...options, onEachFeature}).addTo(map);
+  } catch (err) {
+    console.error(`Fel vid inläsning av ${url}:`, err);
+  }
+}
+
+fetchAndAddGeoJSON('data/byggnader_mollan.geojson', {
+  style: {
+    color: '#ea4644',
+    weight: 1,
+    fillColor: '#f7a7a6',
+    fillOpacity: 0.6
+  }
+});
 
 const addressIcon = L.icon({
   iconUrl: 'marker.png',
@@ -77,7 +107,7 @@ const addressIcon = L.icon({
 
 const aktivitetLayers = {};
 
-fetch('data/adresser.geojson')
+fetch('data/adresser.geojson', {cache: "force-cache"})
   .then(response => response.json())
   .then(data => {
     const filtered = data.features.filter(f => f.properties.oppen === "Ja");
