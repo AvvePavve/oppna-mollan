@@ -20,7 +20,7 @@ const removeRouteBtn = document.getElementById('removeRouteBtn');
 
 if (navigator.geolocation) {
   navigator.geolocation.watchPosition(
-    function (position) {
+    (position) => {
       const lat = position.coords.latitude;
       const lng = position.coords.longitude;
       userLatLng = [lat, lng];
@@ -40,7 +40,7 @@ if (navigator.geolocation) {
         map.setView(userLatLng, 16);
       }
     },
-    function (error) {
+    (error) => {
       console.warn("Plats kunde inte hämtas:", error.message);
     },
     {
@@ -62,19 +62,20 @@ fetch('data/byggnader_mollan.geojson')
         fillOpacity: 0.6
       }
     }).addTo(map);
-  });
+  })
+  .catch(err => console.error("Fel vid inläsning av byggnader:", err));
 
 const addressIcon = L.icon({
   iconUrl: 'marker.png',
   iconSize: [44, 44],
-  iconAnchor: [22, 35],         
-  popupAnchor: [0, -35],        
+  iconAnchor: [22, 35],
+  popupAnchor: [0, -35],
   shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
   shadowSize: [41, 41],
   shadowAnchor: [13, 41]
 });
 
-const aktivitetLayers = {}; 
+const aktivitetLayers = {};
 
 fetch('data/adresser.geojson')
   .then(response => response.json())
@@ -97,7 +98,7 @@ fetch('data/adresser.geojson')
         const popupContent = `
           <strong>Adress:</strong> ${adress}<br>
           <strong>Aktivitet:</strong> ${aktivitet}<br>
-          <button class="route-btn" onclick='routeTo([${latLng}])'>Visa rutt</button>
+          <button class="btn route-btn" data-lat="${latLng[0]}" data-lng="${latLng[1]}" aria-label="Visa rutt till denna adress">Visa rutt</button>
         `;
 
         marker.bindPopup(popupContent);
@@ -105,26 +106,31 @@ fetch('data/adresser.geojson')
         if (!aktivitetLayers[aktivitet]) {
           aktivitetLayers[aktivitet] = L.layerGroup();
         }
-
         aktivitetLayers[aktivitet].addLayer(marker);
       });
     });
 
     Object.values(aktivitetLayers).forEach(layer => layer.addTo(map));
-
     L.control.layers(null, aktivitetLayers, { collapsed: true }).addTo(map);
-  });
+  })
+  .catch(err => console.error("Fel vid inläsning av adresser:", err));
+
+document.addEventListener('click', function (e) {
+  if (e.target.classList.contains('route-btn')) {
+    const lat = parseFloat(e.target.getAttribute('data-lat'));
+    const lng = parseFloat(e.target.getAttribute('data-lng'));
+    routeTo([lat, lng]);
+  }
+});
 
 function routeTo(destinationLatLng) {
   if (!userLatLng) {
     alert("Din plats är inte tillgänglig än!");
     return;
   }
-
   if (routingControl) {
     map.removeControl(routingControl);
   }
-
   routingControl = L.Routing.control({
     waypoints: [
       L.latLng(userLatLng),
