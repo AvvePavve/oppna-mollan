@@ -132,13 +132,12 @@ header h1 {
 @media (max-width: 480px) {
   .info-overlay {
     align-items: center;
-    padding: 0 1rem;
-    background: rgba(0, 0, 0, 0.6);
   }
 
   .info-box {
-    width: 100%;
+    width: 90%;
     max-width: 340px;
+    margin: 0 auto;
     font-size: 0.95rem;
     padding: 1.5rem;
     border-radius: 10px;
@@ -153,4 +152,3 @@ header h1 {
     font-size: 0.95rem;
   }
 }
-
