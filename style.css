@@ -65,28 +65,9 @@ header h1 {
   outline-offset: 2px;
 }
 
-.remove-route-btn {
-  position: absolute;
-  bottom: 15px;
-  right: 15px;
-  z-index: 1000;
-  display: none;
-}
-.remove-route-btn:hover {
-  background-color: #c03635;
-}
-
-@media (max-width: 600px) {
-  .remove-route-btn {
-    padding: 10px;
-    font-size: 0.9rem;
-    bottom: 20px;
-    right: 20px;
-  }
-}
-
 .route-btn {
   margin-top: 8px;
+  display: none;
 }
 .route-btn:hover {
   background: #c03635;
@@ -144,8 +125,6 @@ header h1 {
   }
 }
 
-.remove-route-btn,
-.route-btn,
 .info-box button {
 }
 
@@ -195,6 +174,28 @@ header h1 {
   color: #232323;
 }
 
+.leaflet-control-zoom a.leaflet-disabled {
+  background-color: #e0e0e0;
+  color: #b0b0b0;
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+.leaflet-popup-content-wrapper {
+  background-color: #fff;
+  color: #232323;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.17);
+}
+.leaflet-popup-tip {
+  background: #fff;
+}
+
+.leaflet-routing-container,
+.leaflet-routing-collapse-btn {
+  display: none !important;
+}
+
 @media (prefers-color-scheme: dark) {
   body {
     background-color: #181818;
@@ -208,11 +209,11 @@ header h1 {
     background: #232323;
     color: #f4f4f4;
   }
-  .btn, .remove-route-btn, .route-btn, .info-box button {
+  .btn, .info-box button {
     background: #c03635;
     color: #fff;
   }
-  .btn:hover, .remove-route-btn:hover, .route-btn:hover, .info-box button:hover {
+  .btn:hover, .info-box button:hover {
     background: #ea4644;
   }
   .leaflet-control-zoom-in,
@@ -245,5 +246,20 @@ header h1 {
   .leaflet-control-zoom a:focus {
     background-color: #3a3a3a;
     color: #fff;
+  }
+  .leaflet-control-zoom a.leaflet-disabled {
+    background-color: #444;
+    color: #888;
+    opacity: 1;
+    cursor: not-allowed;
+  }
+  .leaflet-popup-content-wrapper {
+    background-color: #232323;
+    color: #f4f4f4;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  }
+  .leaflet-popup-tip {
+    background: #232323;
   }
 }
