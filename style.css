@@ -30,7 +30,15 @@ header {
   padding: 0.5rem 1rem;
   height: 60px;
   font-family: 'NexaBlack', Arial, sans-serif;
-  letter-spacing: 0.08em;
+  letter-spacing: 0;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  font-family: 'NexaBlack', Arial, sans-serif;
+  letter-spacing: 0;
 }
 
 .logo-link {
