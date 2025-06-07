@@ -1,20 +1,14 @@
 @font-face {
-  font-family: 'NexaBlack';
-  src: url('main/fonts/FONTFABRIC-NEXABLACK.OTF') format('opentype');
-  font-weight: normal;
-  font-style: normal;
+  font-family: 'NexaBook';
+  src: url('fonts/nexabook.otf') format('opentype');
 }
 @font-face {
   font-family: 'NexaBold';
-  src: url('main/fonts/FONTFABRIC-NEXABOLD.OTF') format('opentype');
-  font-weight: normal;
-  font-style: normal;
+  src: url('fonts/nexabold.otf') format('opentype');
 }
 @font-face {
-  font-family: 'NexaBook';
-  src: url('main/fonts/FONTFABRIC-NEXABOOK.OTF') format('opentype');
-  font-weight: normal;
-  font-style: normal;
+  font-family: 'NexaBlack';
+  src: url('fonts/nexablack.otf') format('opentype');
 }
 
 *, *::before, *::after {
