@@ -19,7 +19,9 @@ const darkTiles = L.tileLayer(
   }
 );
 
-const map = L.map('map', {layers: []}).setView([55.5928, 13.0060], 16);
+const defaultCenter = [55.591988278009765, 13.011586184559851];
+const defaultZoom = 16;
+const map = L.map('map', {layers: []}).setView(defaultCenter, defaultZoom);
 
 function setBaseMap() {
   const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -42,6 +44,13 @@ let userLatLng;
 let routingControl;
 const removeRouteBtn = document.getElementById('removeRouteBtn');
 
+const userIcon = L.divIcon({
+  className: 'user-location-icon',
+  iconSize: [18, 18],
+  iconAnchor: [9, 9],
+  popupAnchor: [0, -9],
+});
+
 if (navigator.geolocation) {
   navigator.geolocation.watchPosition(
     position => {
@@ -52,12 +61,8 @@ if (navigator.geolocation) {
       if (userMarker) {
         userMarker.setLatLng(userLatLng);
       } else {
-        userMarker = L.circleMarker(userLatLng, {
-          radius: 5,
-          color: '#007bff',
-          fillColor: '#007bff',
-          fillOpacity: 1,
-          weight: 1,
+        userMarker = L.marker(userLatLng, {
+          icon: userIcon,
           pane: 'userPane'
         }).addTo(map).bindPopup("Du är här!");
 
