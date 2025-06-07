@@ -147,7 +147,37 @@ header h1 {
 .remove-route-btn,
 .route-btn,
 .info-box button {
-  composes: btn;
+}
+
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out,
+.leaflet-control-layers {
+  background-color: #fff;
+  color: #232323;
+  border-radius: 6px;
+  border: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+  transition: background 0.2s, color 0.2s;
+}
+.leaflet-control-zoom-in:hover,
+.leaflet-control-zoom-out:hover,
+.leaflet-control-layers:hover {
+  background-color: #f7a7a6;
+}
+
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+  font-size: 1.6em;
+}
+
+.leaflet-control-layers-toggle {
+  background-color: #fff !important;
+  border-radius: 6px !important;
+  transition: background 0.2s;
+}
+
+.leaflet-control-layers-toggle:hover {
+  background-color: #f7a7a6 !important;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -169,5 +199,26 @@ header h1 {
   }
   .btn:hover, .remove-route-btn:hover, .route-btn:hover, .info-box button:hover {
     background: #ea4644;
+  }
+  .leaflet-control-zoom-in,
+  .leaflet-control-zoom-out,
+  .leaflet-control-layers {
+    background-color: #232323;
+    color: #fff;
+    border: none;
+  }
+  .leaflet-control-zoom-in:hover,
+  .leaflet-control-zoom-out:hover,
+  .leaflet-control-layers:hover {
+    background-color: #3a3a3a;
+    color: #fff;
+  }
+  .leaflet-control-layers-toggle {
+    background-color: #232323 !important;
+    color: #fff !important;
+  }
+  .leaflet-control-layers-toggle:hover {
+    background-color: #3a3a3a !important;
+    color: #fff !important;
   }
 }
