@@ -192,22 +192,45 @@ header h1 {
   border: none !important;
   box-shadow: none !important;
 }
-.leaflet-control-zoom a,
 .leaflet-control-layers-toggle {
   background-color: #fff !important;
-  background-image: url('https://unpkg.com/leaflet@1.9.4/dist/images/layers.png') !important;
-  background-repeat: no-repeat !important;
-  background-position: center !important;
-  background-size: 70% !important;
   border: 1.5px solid #bbb !important;
   border-radius: 5px !important;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
   padding: 0.2em 0.6em !important;
   margin: 0 !important;
   outline: none !important;
   -webkit-tap-highlight-color: transparent !important;
   touch-action: manipulation;
   box-sizing: border-box;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: 70% !important; /* Behåll ikonen */
+}
+
+/* Hover/fokus/active – både ljus och mörk */
+.leaflet-control-layers-toggle:hover,
+.leaflet-control-layers-toggle:focus,
+.leaflet-control-layers-toggle:active {
+  background: #f7f7f7 !important;
+  border-color: #e94543 !important;
+}
+
+/* DARK MODE */
+@media (prefers-color-scheme: dark) {
+  .leaflet-control-layers-toggle {
+    background-color: #232323 !important;
+    border: 1.5px solid #444 !important;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+    background-size: 70% !important;
+  }
+
+  .leaflet-control-layers-toggle:hover,
+  .leaflet-control-layers-toggle:focus,
+  .leaflet-control-layers-toggle:active {
+    background: #333 !important;
+    border-color: #e94543 !important;
+  }
 }
 .leaflet-control-zoom a:hover,
 .leaflet-control-zoom a:focus,
