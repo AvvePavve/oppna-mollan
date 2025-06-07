@@ -115,6 +115,22 @@ header h1 {
   }
 }
 
+/* Visa användarens markör */
+.leaflet-marker-pane .leaflet-marker-icon.user-location {
+  width: 18px;
+  height: 18px;
+  background-color: #3388ff;
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Dölj ruttinformationsknappen */
+.leaflet-routing-container .leaflet-routing-alt,
+.leaflet-routing-container .leaflet-routing-collapse-btn {
+  display: none !important;
+}
+
 /* DARK MODE */
 @media (prefers-color-scheme: dark) {
   body {
@@ -145,11 +161,17 @@ header h1 {
     background-color: #232323 !important;
     color: #f4f4f4 !important;
     border-color: #444 !important;
+    box-shadow: none !important;
   }
 
   .leaflet-control-zoom a:hover,
   .leaflet-control-layers-toggle:hover {
     background-color: #333 !important;
     border-color: #e94543 !important;
+  }
+
+  .leaflet-control-zoom a:active {
+    background-color: #444 !important;
+    box-shadow: none !important;
   }
 }
