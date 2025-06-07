@@ -62,7 +62,6 @@ header h1 {
   position: relative;
 }
 
-/* Generell knappstil */
 .btn {
   padding: 10px 16px;
   font-size: 1rem;
@@ -80,7 +79,6 @@ header h1 {
   outline-offset: 2px;
 }
 
-/* Info-overlay */
 .info-overlay {
   position: fixed;
   inset: 0;
@@ -117,7 +115,6 @@ header h1 {
   }
 }
 
-/* Användarmarkör */
 .user-location-icon {
   width: 18px;
   height: 18px;
@@ -127,13 +124,11 @@ header h1 {
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
 }
 
-/* Dölj ruttinformationsruta och kollapsknapp */
 .leaflet-routing-container .leaflet-routing-alt,
 .leaflet-routing-container .leaflet-routing-collapse-btn {
   display: none !important;
 }
 
-/* Popup-typsnitt */
 .leaflet-popup-content {
   font-family: 'NexaBook', Arial, sans-serif;
   font-size: 1rem;
@@ -144,9 +139,8 @@ header h1 {
   font-family: 'NexaBold', Arial, sans-serif;
 }
 
-/* Ta bort rutt-knapp positionering och utseende */
 #removeRouteBtn {
-  position: absolute;
+  position: fixed;
   bottom: 20px;
   right: 10px;
   z-index: 1001;
@@ -162,7 +156,6 @@ header h1 {
   display: none;
 }
 
-/* Responsivt justerat i mobil */
 @media (max-width: 480px) {
   #removeRouteBtn {
     right: 6px;
@@ -172,7 +165,6 @@ header h1 {
   }
 }
 
-/* DARK MODE */
 @media (prefers-color-scheme: dark) {
   body {
     background-color: #181818;
@@ -208,7 +200,7 @@ header h1 {
   .leaflet-control-zoom a:hover,
   .leaflet-control-layers-toggle:hover {
     background-color: #333 !important;
-    border-color: #e94543 !important;
+    border-color: #444 !important;
   }
 
   .leaflet-control-zoom a:active {
