@@ -185,19 +185,20 @@ header h1 {
     color: #f4f4f4;
   }
 
-  .btn, #removeRouteBtn {
+  .btn {
     background: #e94543;
     color: #fff;
   }
 
   .leaflet-control-zoom a,
   .leaflet-control-layers-toggle,
+  .leaflet-control-layers-expanded,
   .leaflet-popup-content-wrapper,
   .leaflet-popup-tip,
-  .leaflet-control-layers-expanded {
+  .leaflet-routing-container {
     background-color: #232323 !important;
     color: #f4f4f4 !important;
-    border-color: #e94543 !important;
+    border: 1px solid #e94543 !important;
     box-shadow: none !important;
   }
 
@@ -207,8 +208,17 @@ header h1 {
     border-color: #e94543 !important;
   }
 
-  .leaflet-control-zoom a:active {
+  .leaflet-control-zoom a:active,
+  .leaflet-control-layers-toggle:active {
     background-color: #444 !important;
     box-shadow: none !important;
+  }
+
+  .leaflet-popup-content {
+    font-family: 'NexaBook', Arial, sans-serif;
+  }
+
+  .leaflet-container a {
+    color: #e94543;
   }
 }
