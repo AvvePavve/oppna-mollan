@@ -225,6 +225,15 @@ header h1 {
   background: #c03635;
 }
 
+@media (max-width: 480px) {
+  #removeRouteBtn {
+    right: 12px;
+    bottom: 12px;
+    padding: 10px 14px;
+    font-size: 0.97rem;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   body {
     background-color: #181818;
