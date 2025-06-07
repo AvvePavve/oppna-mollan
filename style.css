@@ -194,22 +194,20 @@ header h1 {
 }
 .leaflet-control-zoom a,
 .leaflet-control-layers-toggle {
-  background: var(--bg-color) !important;
-  color: var(--text-color) !important;
+  background-color: #fff !important;
+  background-image: url('https://unpkg.com/leaflet@1.9.4/dist/images/layers.png') !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: 70% !important;
   border: 1.5px solid #bbb !important;
   border-radius: 5px !important;
   box-shadow: 0 1px 3px rgba(0,0,0,0.12);
   padding: 0.2em 0.6em !important;
   margin: 0 !important;
-  font-size: 1.6em;
-  line-height: 1.2 !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  touch-action: manipulation;
-  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  outline: none !important;
   -webkit-tap-highlight-color: transparent !important;
+  touch-action: manipulation;
+  box-sizing: border-box;
 }
 .leaflet-control-zoom a:hover,
 .leaflet-control-zoom a:focus,
