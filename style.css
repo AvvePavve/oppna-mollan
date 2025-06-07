@@ -62,6 +62,7 @@ header h1 {
   position: relative;
 }
 
+/* Generell knappstil */
 .btn {
   padding: 10px 16px;
   font-size: 1rem;
@@ -79,6 +80,7 @@ header h1 {
   outline-offset: 2px;
 }
 
+/* Info-overlay */
 .info-overlay {
   position: fixed;
   inset: 0;
@@ -115,8 +117,8 @@ header h1 {
   }
 }
 
-/* Visa användarens markör */
-.leaflet-marker-pane .leaflet-marker-icon.user-location {
+/* Användarmarkör */
+.user-location-icon {
   width: 18px;
   height: 18px;
   background-color: #3388ff;
@@ -125,10 +127,49 @@ header h1 {
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
 }
 
-/* Dölj ruttinformationsknappen */
+/* Dölj ruttinformationsruta och kollapsknapp */
 .leaflet-routing-container .leaflet-routing-alt,
 .leaflet-routing-container .leaflet-routing-collapse-btn {
   display: none !important;
+}
+
+/* Popup-typsnitt */
+.leaflet-popup-content {
+  font-family: 'NexaBook', Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.leaflet-popup-content strong {
+  font-family: 'NexaBold', Arial, sans-serif;
+}
+
+/* Ta bort rutt-knapp positionering och utseende */
+#removeRouteBtn {
+  position: absolute;
+  bottom: 20px;
+  right: 10px;
+  z-index: 1001;
+  padding: 10px 16px;
+  font-size: 1rem;
+  background: #e94543;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'NexaBook', Arial, sans-serif;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  display: none;
+}
+
+/* Responsivt justerat i mobil */
+@media (max-width: 480px) {
+  #removeRouteBtn {
+    right: 6px;
+    bottom: 12px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
 }
 
 /* DARK MODE */
@@ -148,7 +189,7 @@ header h1 {
     color: #f4f4f4;
   }
 
-  .btn {
+  .btn, #removeRouteBtn {
     background: #e94543;
     color: #fff;
   }
