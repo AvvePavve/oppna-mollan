@@ -45,6 +45,7 @@ header h1 {
   height: calc(100vh - 60px);
   width: 100%;
   z-index: 0;
+  position: relative;
 }
 
 .btn {
@@ -202,6 +203,26 @@ header h1 {
   background: #3578e5;
   border: 2.5px solid #fff;
   box-shadow: 0 0 0 2px rgba(53,120,229,0.15);
+}
+
+#removeRouteBtn {
+  position: absolute;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1200;
+  display: none;
+  background: #ea4644;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 20px;
+  font-size: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+#removeRouteBtn:hover {
+  background: #c03635;
 }
 
 @media (prefers-color-scheme: dark) {
