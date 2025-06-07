@@ -124,9 +124,13 @@ header h1 {
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
 }
 
-.leaflet-routing-container .leaflet-routing-alt,
-.leaflet-routing-container .leaflet-routing-collapse-btn {
+.leaflet-routing-container {
   display: none !important;
+}
+
+.leaflet-popup-content .route-btn {
+  margin-top: 0.75rem;
+  display: inline-block;
 }
 
 .leaflet-popup-content {
