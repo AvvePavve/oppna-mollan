@@ -129,7 +129,7 @@ header h1 {
 }
 
 .leaflet-popup-content .route-btn {
-  margin-top: 0.75rem;
+  margin-top: 0.65rem;
   display: inline-block;
 }
 
@@ -145,8 +145,8 @@ header h1 {
 
 #removeRouteBtn {
   position: fixed;
-  bottom: 20px;
-  right: 10px;
+  bottom: 30px;
+  right: 30px;
   z-index: 1001;
   padding: 10px 16px;
   font-size: 1rem;
