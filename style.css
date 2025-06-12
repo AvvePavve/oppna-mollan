@@ -19,7 +19,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'NexaBook', Arial, sans-serif;
-  background-color: #e94543;
+  background-color: #f47c31;
   color: white;
   scroll-behavior: smooth;
 }
@@ -27,7 +27,7 @@ body {
 header {
   display: flex;
   align-items: center;
-  background-color: #e94543;
+  background-color: #f47c31;
   color: white;
   padding: 0.5rem 1rem;
   height: 60px;
@@ -66,7 +66,7 @@ header h1 {
 .btn {
   padding: 10px 16px;
   font-size: 1rem;
-  background: #e94543;
+  background: #f47c31;
   color: white;
   border: none;
   border-radius: 6px;
@@ -121,7 +121,7 @@ header h1 {
 .leaflet-marker-pane .leaflet-marker-icon.user-location {
   width: 18px;
   height: 18px;
-  background-color: #3388ff;
+  background-color: #404456;
   border-radius: 50%;
   border: 2px solid white;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
@@ -153,7 +153,7 @@ header h1 {
   z-index: 1001;
   padding: 10px 16px;
   font-size: 1rem;
-  background: #e94543;
+  background: #f47c31;
   color: white;
   border: none;
   border-radius: 6px;
@@ -179,7 +179,7 @@ header h1 {
   }
 
   header {
-    background-color: #e94543;
+    background-color: #f47c31;
     color: #fff;
   }
 
@@ -189,7 +189,7 @@ header h1 {
   }
 
   .btn {
-    background: #e94543;
+    background: #f47c31;
     color: #fff;
   }
 
