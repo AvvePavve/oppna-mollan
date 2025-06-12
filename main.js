@@ -103,7 +103,7 @@ function cloneGeoJSON(geojson) {
 
 // Funktion som lägger till "väggar" med 3D-effekt
 function addBuildingSidesFromLayer(layerGroup) {
-  const wallColor = '#c55';
+  const wallColor = '#faf4b7';
 
   layerGroup.eachLayer(layer => {
     const geom = layer.feature && layer.feature.geometry;
@@ -157,9 +157,9 @@ fetch('data/byggnader_mollan.geojson', { cache: "force-cache" })
 
     const takLayer = L.geoJSON(offsetData, {
       style: {
-        color: '#ea4644',
+        color: '#f47c31',
         weight: 1,
-        fillColor: '#f7a7a6',
+        fillColor: '#f47c31',
         fillOpacity: 1
       }
     });
@@ -250,7 +250,7 @@ function routeTo(destinationLatLng) {
     routeWhileDragging: false,
     createMarker: () => null,
     lineOptions: {
-      styles: [{ color: '#ea4644', weight: 5 }]
+      styles: [{ color: '#67aae2', weight: 5 }]
     },
     router: L.Routing.osrmv1({
       serviceUrl: 'https://routing.openstreetmap.de/routed-foot/route/v1',
