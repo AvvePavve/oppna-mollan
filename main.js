@@ -21,7 +21,7 @@ const darkTiles = L.tileLayer(
 
 const defaultCenter = [55.591988278009765, 13.011586184559851];
 const defaultZoom = 16;
-const map = L.map('map', { layers: [] }).setView(defaultCenter, defaultZoom);
+const map = L.map('map', {layers: []}).setView(defaultCenter, defaultZoom);
 
 function setBaseMap() {
   const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -65,7 +65,6 @@ if (navigator.geolocation) {
           icon: userIcon,
           pane: 'userPane'
         }).addTo(map).bindPopup("Du är här!");
-
         map.setView(userLatLng, 16);
       }
     },
@@ -80,16 +79,66 @@ if (navigator.geolocation) {
   );
 }
 
-async function fetchAndAddGeoJSON(url, options = {}, onEachFeature) {
-  try {
-    const response = await fetch(url, { cache: "force-cache" });
-    if (!response.ok) throw new Error(`HTTP-fel: ${response.status}`);
-    const data = await response.json();
-    L.geoJSON(data, { ...options, onEachFeature }).addTo(map);
-  } catch (err) {
-    console.error(`Fel vid inläsning av ${url}:`, err);
-  }
+function addBuildingSidesFromLayer(layerGroup, options = {}) {
+  const wallColor = options.wallColor || '#c55';
+  const offsetLng = options.offsetLng || 0.0002;
+  const offsetLat = options.offsetLat || -0.0002;
+
+  layerGroup.eachLayer(layer => {
+    if (layer.feature.geometry.type === "Polygon") {
+      const coords = layer.feature.geometry.coordinates[0];
+
+      for (let i = 0; i < coords.length - 1; i++) {
+        const p1 = coords[i];
+        const p2 = coords[i + 1];
+        const p1_offset = [p1[0] + offsetLng, p1[1] + offsetLat];
+        const p2_offset = [p2[0] + offsetLng, p2[1] + offsetLat];
+
+        const wallCoords = [[p1, p2, p2_offset, p1_offset, p1]];
+
+        const wallFeature = {
+          type: "Feature",
+          geometry: {
+            type: "Polygon",
+            coordinates: wallCoords
+          }
+        };
+
+        L.geoJSON(wallFeature, {
+          style: {
+            color: options.wallColor,
+            weight: 0.5,
+            fillColor: options.wallColor,
+            fillOpacity: 1.0
+          }
+        }).addTo(map);
+      }
+    }
+  });
 }
+
+// === Byggnader med 3D-effekt ===
+fetch('data/byggnader_mollan.geojson', { cache: "force-cache" })
+  .then(response => response.json())
+  .then(data => {
+    const byggnaderLayer = L.geoJSON(data, {
+      style: {
+        color: '#ea4644',
+        weight: 1,
+        fillColor: '#fbd4d4', // Taket, ljusare
+        fillOpacity: 1.0
+      }
+    });
+
+    // Rita först väggarna, sen byggnaderna (taket överst)
+    addBuildingSidesFromLayer(byggnaderLayer, {
+      wallColor: '#993333',  // Väggar, mörkare
+      offsetLng: -0.00012,   // Mot sydväst
+      offsetLat: -0.00012
+    });
+
+    byggnaderLayer.addTo(map);
+  });
 
 const addressIcon = L.icon({
   iconUrl: 'marker.png',
@@ -103,7 +152,7 @@ const addressIcon = L.icon({
 
 const aktivitetLayers = {};
 
-fetch('data/adresser.geojson', { cache: "force-cache" })
+fetch('data/adresser.geojson', {cache: "force-cache"})
   .then(response => response.json())
   .then(data => {
     const filtered = data.features.filter(f => f.properties.oppen === "Ja");
@@ -188,69 +237,3 @@ removeRouteBtn.addEventListener('click', () => {
     removeRouteBtn.style.display = 'none';
   }
 });
-
-function addBuildingSidesFromLayer(layerGroup, options = {}) {
-  const wallColor = options.wallColor || '#c55';
-  const offsetLng = options.offsetLng || 0.0003;
-  const offsetLat = options.offsetLat || -0.0003;
-
-  layerGroup.eachLayer(layer => {
-    if (layer.feature.geometry.type === "Polygon") {
-      const coords = layer.feature.geometry.coordinates[0];
-
-      for (let i = 0; i < coords.length - 1; i++) {
-        const p1 = coords[i];     // [lng, lat]
-        const p2 = coords[i + 1];
-
-        const p1_offset = [p1[0] + offsetLng, p1[1] + offsetLat];
-        const p2_offset = [p2[0] + offsetLng, p2[1] + offsetLat];
-
-        const wallCoords = [[
-          [p1[0], p1[1]],
-          [p2[0], p2[1]],
-          [p2_offset[0], p2_offset[1]],
-          [p1_offset[0], p1_offset[1]],
-          [p1[0], p1[1]]
-        ]];
-
-        const wallFeature = {
-          type: "Feature",
-          geometry: {
-            type: "Polygon",
-            coordinates: wallCoords
-          }
-        };
-
-        L.geoJSON(wallFeature, {
-          style: {
-            color: wallColor,
-            weight: 0.5,
-            fillColor: wallColor,
-            fillOpacity: 1.0
-          },
-          interactive: false
-        }).addTo(map);
-      }
-    }
-  });
-}
-
-// === Byggnader med 3D-effekt ===
-fetch('data/byggnader_mollan.geojson', { cache: "force-cache" })
-  .then(response => response.json())
-  .then(data => {
-    const byggnaderLayer = L.geoJSON(data, {
-      style: {
-        color: '#ea4644',
-        weight: 1,
-        fillColor: '#f7a7a6',
-        fillOpacity: 1.0
-      }
-    }).addTo(map);
-
-    addBuildingSidesFromLayer(byggnaderLayer, {
-      wallColor: '#b03d3c',
-      offsetLng: -0.0001,
-      offsetLat: -0.00007
-    });
-  });
