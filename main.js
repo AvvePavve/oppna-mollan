@@ -51,6 +51,7 @@ const userIcon = L.divIcon({
   popupAnchor: [0, -9],
 });
 
+// Geolocation
 if (navigator.geolocation) {
   navigator.geolocation.watchPosition(
     position => {
@@ -80,20 +81,40 @@ if (navigator.geolocation) {
   );
 }
 
-function addBuildingSidesFromLayer(layerGroup, options = {}) {
-  const wallColor = options.wallColor || '#c55';
-  const offsetLng = options.offsetLng || 0.00002;
-  const offsetLat = options.offsetLat || -0.00007;
+// ===== 3D-effekt för byggnader =====
+
+// Samlad offset för tak och väggar
+const buildingOffset = {
+  lng: -0.00002,
+  lat: 0.00007
+};
+
+// Robust kloning av GeoJSON-objekt
+function cloneGeoJSON(geojson) {
+  return {
+    ...geojson,
+    features: geojson.features.map(f => ({
+      ...f,
+      geometry: JSON.parse(JSON.stringify(f.geometry)),
+      properties: { ...f.properties }
+    }))
+  };
+}
+
+// Funktion som lägger till "väggar" med 3D-effekt
+function addBuildingSidesFromLayer(layerGroup) {
+  const wallColor = '#c55';
 
   layerGroup.eachLayer(layer => {
-    if (layer.feature.geometry.type === "Polygon") {
-      const coords = layer.feature.geometry.coordinates[0];
+    const geom = layer.feature && layer.feature.geometry;
+    if (geom && geom.type === "Polygon") {
+      const coords = geom.coordinates[0];
 
       for (let i = 0; i < coords.length - 1; i++) {
         const base1 = coords[i];
         const base2 = coords[i + 1];
-        const top1 = [base1[0] + offsetLng, base1[1] + offsetLat];
-        const top2 = [base2[0] + offsetLng, base2[1] + offsetLat];
+        const top1 = [base1[0] + buildingOffset.lng, base1[1] + buildingOffset.lat];
+        const top2 = [base2[0] + buildingOffset.lng, base2[1] + buildingOffset.lat];
 
         const wallCoords = [[
           base1, base2, top2, top1, base1
@@ -120,20 +141,16 @@ function addBuildingSidesFromLayer(layerGroup, options = {}) {
   });
 }
 
-// === Byggnader med 3D-effekt ===
 fetch('data/byggnader_mollan.geojson', { cache: "force-cache" })
   .then(response => response.json())
   .then(data => {
-    const offsetLng = -0.00002;
-    const offsetLat = 0.00007;
-
-    const offsetData = JSON.parse(JSON.stringify(data)); // klona
+    const offsetData = cloneGeoJSON(data);
 
     offsetData.features.forEach(feature => {
       if (feature.geometry.type === "Polygon") {
         feature.geometry.coordinates[0] = feature.geometry.coordinates[0].map(coord => [
-          coord[0] + offsetLng,
-          coord[1] + offsetLat
+          coord[0] + buildingOffset.lng,
+          coord[1] + buildingOffset.lat
         ]);
       }
     });
@@ -149,12 +166,12 @@ fetch('data/byggnader_mollan.geojson', { cache: "force-cache" })
 
     const originalLayer = L.geoJSON(data); // bottenposition för väggarna
 
-    addBuildingSidesFromLayer(originalLayer, { offsetLng, offsetLat });
+    addBuildingSidesFromLayer(originalLayer);
     takLayer.addTo(map);
   })
   .catch(err => console.error("Fel vid inläsning av byggnader:", err));
 
-// === Adressmarkörer ===
+// ===== Adressmarkörer =====
 const addressIcon = L.icon({
   iconUrl: 'marker.png',
   iconSize: [44, 44],
@@ -205,7 +222,7 @@ fetch('data/adresser.geojson', { cache: "force-cache" })
   })
   .catch(err => console.error("Fel vid inläsning av adresser:", err));
 
-// === Routing-knappar ===
+// ===== Routing-knappar =====
 document.addEventListener('click', function (e) {
   if (e.target.classList.contains('route-btn')) {
     const lat = parseFloat(e.target.getAttribute('data-lat'));
@@ -250,6 +267,7 @@ removeRouteBtn.addEventListener('click', () => {
   if (routingControl) {
     map.removeControl(routingControl);
     routingControl = null;
+    
     removeRouteBtn.style.display = 'none';
   }
 });
