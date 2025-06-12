@@ -1,4 +1,3 @@
-// === Funktioner ===
 function closeInfo() {
   document.getElementById("infoOverlay").style.display = "none";
 }
@@ -81,37 +80,10 @@ if (navigator.geolocation) {
   );
 }
 
-// === Byggnader med 3D-effekt + takskugga ===
-fetch('data/byggnader_mollan.geojson', { cache: "force-cache" })
-  .then(response => response.json())
-  .then(data => {
-    const byggnaderLayer = L.geoJSON(data, {
-      style: {
-        color: '#ea4644',
-        weight: 1,
-        fillColor: '#fbd4d4',
-        fillOpacity: 1.0
-      }
-    });
-
-    addBuildingSidesFromLayer(byggnaderLayer, {
-      wallColor: '#993333',
-      offsetLng: -0.00008,
-      offsetLat: -0.00008
-    });
-
-    byggnaderLayer.addTo(map);
-
-    addBuildingShadowsFromLayer(byggnaderLayer, {
-      shadowColor: '#000',
-      shadowOpacity: 0.15
-    });
-  });
-
 function addBuildingSidesFromLayer(layerGroup, options = {}) {
   const wallColor = options.wallColor || '#c55';
-  const offsetLng = options.offsetLng || 0.0002;
-  const offsetLat = options.offsetLat || -0.0002;
+  const offsetLng = options.offsetLng || 0.00015; // mindre öst
+  const offsetLat = options.offsetLat || -0.00015; // mindre syd
 
   layerGroup.eachLayer(layer => {
     if (layer.feature.geometry.type === "Polygon") {
@@ -138,7 +110,7 @@ function addBuildingSidesFromLayer(layerGroup, options = {}) {
             color: wallColor,
             weight: 0.5,
             fillColor: wallColor,
-            fillOpacity: 1.0
+            fillOpacity: 0.5
           }
         }).addTo(map);
       }
@@ -146,22 +118,25 @@ function addBuildingSidesFromLayer(layerGroup, options = {}) {
   });
 }
 
-function addBuildingShadowsFromLayer(layerGroup, options = {}) {
-  const shadowColor = options.shadowColor || '#000';
-  const shadowOpacity = options.shadowOpacity || 0.2;
-
-  layerGroup.eachLayer(layer => {
-    const shadowLayer = L.geoJSON(layer.toGeoJSON(), {
+// === Byggnader med 3D-effekt ===
+fetch('data/byggnader_mollan.geojson', { cache: "force-cache" })
+  .then(response => response.json())
+  .then(data => {
+    const byggnaderLayer = L.geoJSON(data, {
       style: {
-        color: shadowColor,
-        weight: 0,
-        fillColor: shadowColor,
-        fillOpacity: shadowOpacity
+        color: '#ea4644',
+        weight: 1,
+        fillColor: '#f7a7a6',
+        fillOpacity: 0.6
       }
-    }).addTo(map);
-  });
-}
+    });
 
+    addBuildingSidesFromLayer(byggnaderLayer); // Rita väggar först
+    byggnaderLayer.addTo(map); // Rita tak sist
+  })
+  .catch(err => console.error("Fel vid inläsning av byggnader:", err));
+
+// === Adressmarkörer ===
 const addressIcon = L.icon({
   iconUrl: 'marker.png',
   iconSize: [44, 44],
@@ -212,6 +187,7 @@ fetch('data/adresser.geojson', { cache: "force-cache" })
   })
   .catch(err => console.error("Fel vid inläsning av adresser:", err));
 
+// === Routing-knappar ===
 document.addEventListener('click', function (e) {
   if (e.target.classList.contains('route-btn')) {
     const lat = parseFloat(e.target.getAttribute('data-lat'));
