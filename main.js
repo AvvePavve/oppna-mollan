@@ -1,4 +1,3 @@
-// === Kartinitiering ===
 function closeInfo() {
   document.getElementById("infoOverlay").style.display = "none";
 }
@@ -22,7 +21,7 @@ const darkTiles = L.tileLayer(
 
 const defaultCenter = [55.591988278009765, 13.011586184559851];
 const defaultZoom = 16;
-const map = L.map('map', { layers: [] }).setView(defaultCenter, defaultZoom);
+const map = L.map('map', {layers: []}).setView(defaultCenter, defaultZoom);
 
 function setBaseMap() {
   const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -40,7 +39,6 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', set
 map.createPane('userPane');
 map.getPane('userPane').style.zIndex = 1000;
 
-// === Användarposition ===
 let userMarker;
 let userLatLng;
 let routingControl;
@@ -82,30 +80,22 @@ if (navigator.geolocation) {
   );
 }
 
-// === Extrudera byggnadsväggar ===
 function addBuildingSidesFromLayer(layerGroup, options = {}) {
   const wallColor = options.wallColor || '#c55';
-  const baseOffset = options.offsetPerLevel || 0.00002;
-  const defaultLevels = options.defaultLevels || 3;
+  const baseHeight = options.baseHeight || 0.000005;
 
   layerGroup.eachLayer(layer => {
-    const feature = layer.feature;
-    if (!feature || feature.geometry.type !== "Polygon" && feature.geometry.type !== "MultiPolygon") return;
+    if (layer.feature.geometry.type === "Polygon") {
+      const coords = layer.feature.geometry.coordinates[0];
+      const props = layer.feature.properties;
+      const levels = parseInt(props["building:levels"] || 1);
+      const offset = levels * baseHeight;
 
-    const levels = parseInt(feature.properties["building:levels"]) || defaultLevels;
-    const offsetLng = -baseOffset * levels;
-    const offsetLat = -baseOffset * levels;
-
-    const polygons = feature.geometry.type === "Polygon" ? [feature.geometry.coordinates] : feature.geometry.coordinates;
-
-    polygons.forEach(polygon => {
-      const outer = polygon[0];
-
-      for (let i = 0; i < outer.length - 1; i++) {
-        const p1 = outer[i];
-        const p2 = outer[i + 1];
-        const p1_offset = [p1[0] + offsetLng, p1[1] + offsetLat];
-        const p2_offset = [p2[0] + offsetLng, p2[1] + offsetLat];
+      for (let i = 0; i < coords.length - 1; i++) {
+        const p1 = coords[i];
+        const p2 = coords[i + 1];
+        const p1_offset = [p1[0] - offset, p1[1] - offset];
+        const p2_offset = [p2[0] - offset, p2[1] - offset];
 
         const wallCoords = [[p1, p2, p2_offset, p1_offset, p1]];
 
@@ -126,31 +116,32 @@ function addBuildingSidesFromLayer(layerGroup, options = {}) {
           }
         }).addTo(map);
       }
-    });
+    }
   });
 }
 
-// === Lägg till OSM-byggnader med 3D-effekt ===
 fetch('data/export.geojson', { cache: "force-cache" })
   .then(response => response.json())
   .then(data => {
-    const byggnaderLayer = L.geoJSON(data, {
-      style: {
+    const osmLayer = L.geoJSON(data, {
+      style: feature => ({
         color: '#ea4644',
         weight: 1,
         fillColor: '#f7a7a6',
         fillOpacity: 1.0
-      }
-    }).addTo(map);
-
-    addBuildingSidesFromLayer(byggnaderLayer, {
-      wallColor: '#b03d3c',
-      offsetPerLevel: 0.000015, // Mjuk extrusion
-      defaultLevels: 3
+      })
     });
+
+    // Rita väggar först
+    addBuildingSidesFromLayer(osmLayer, {
+      wallColor: '#b03d3c',
+      baseHeight: 0.000005 // ganska låg extrudering per våning
+    });
+
+    // Rita tak sist (ovanpå väggarna)
+    osmLayer.addTo(map);
   });
 
-// === Adressmarkörer ===
 const addressIcon = L.icon({
   iconUrl: 'marker.png',
   iconSize: [44, 44],
@@ -163,14 +154,14 @@ const addressIcon = L.icon({
 
 const aktivitetLayers = {};
 
-fetch('data/adresser.geojson', { cache: "force-cache" })
+fetch('data/adresser.geojson', {cache: "force-cache"})
   .then(response => response.json())
   .then(data => {
     const filtered = data.features.filter(f => f.properties.oppen === "Ja");
 
     filtered.forEach(feature => {
       const props = feature.properties;
-      const aktivitet = props.Aktivitet || "Ingen aktivitet planerad";
+      const aktivitet = props.Aktivitet ? props.Aktivitet : "Ingen aktivitet planerad";
       const adress = props.Adress || "Okänd adress";
 
       const coordsList = feature.geometry.type === "MultiPoint"
@@ -198,9 +189,9 @@ fetch('data/adresser.geojson', { cache: "force-cache" })
 
     Object.values(aktivitetLayers).forEach(layer => layer.addTo(map));
     L.control.layers(null, aktivitetLayers, { collapsed: true }).addTo(map);
-  });
+  })
+  .catch(err => console.error("Fel vid inläsning av adresser:", err));
 
-// === Routingfunktion ===
 document.addEventListener('click', function (e) {
   if (e.target.classList.contains('route-btn')) {
     const lat = parseFloat(e.target.getAttribute('data-lat'));
