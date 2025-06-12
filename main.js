@@ -80,66 +80,17 @@ if (navigator.geolocation) {
   );
 }
 
-function addBuildingSidesFromLayer(layerGroup, options = {}) {
-  const wallColor = options.wallColor || '#c55';
-  const offsetLng = options.offsetLng || 0.0003;
-  const offsetLat = options.offsetLat || -0.0003;
-
-  layerGroup.eachLayer(layer => {
-    if (layer.feature.geometry.type === "Polygon") {
-      const coords = layer.feature.geometry.coordinates[0];
-
-      for (let i = 0; i < coords.length - 1; i++) {
-        const p1 = coords[i];
-        const p2 = coords[i + 1];
-        const p1_offset = [p1[0] + offsetLng, p1[1] + offsetLat];
-        const p2_offset = [p2[0] + offsetLng, p2[1] + offsetLat];
-
-        const wallCoords = [[p1, p2, p2_offset, p1_offset, p1]];
-
-        const wallFeature = {
-          type: "Feature",
-          geometry: {
-            type: "Polygon",
-            coordinates: wallCoords
-          }
-        };
-
-        L.geoJSON(wallFeature, {
-          style: {
-            color: wallColor,
-            weight: 0.5,
-            fillColor: wallColor,
-            fillOpacity: 0.5
-          }
-        }).addTo(map);
-      }
-    }
-  });
+async function fetchAndAddGeoJSON(url, options = {}, onEachFeature) {
+  try {
+    const response = await fetch(url, { cache: "force-cache" });
+    if (!response.ok) throw new Error(`HTTP-fel: ${response.status}`);
+    const data = await response.json();
+    L.geoJSON(data, { ...options, onEachFeature }).addTo(map);
+  } catch (err) {
+    console.error(`Fel vid inläsning av ${url}:`, err);
+  }
 }
 
-// === Byggnader med 3D-effekt ===
-fetch('data/byggnader_mollan.geojson', { cache: "force-cache" })
-  .then(response => response.json())
-  .then(data => {
-    const byggnaderLayer = L.geoJSON(data, {
-      style: {
-        color: '#ea4644',
-        weight: 1,
-        fillColor: '#f7a7a6',
-        fillOpacity: 1.0 // Ingen transparens
-      }
-    }).addTo(map);
-
-    // Mindre extrusion, riktning mot sydväst
-    addBuildingSidesFromLayer(byggnaderLayer, {
-      wallColor: '#b03d3c',
-      offsetLng: -0.00012,  // Vänster
-      offsetLat: -0.00012   // Nedåt
-    });
-  })
-
-// === Adressmarkörer ===
 const addressIcon = L.icon({
   iconUrl: 'marker.png',
   iconSize: [44, 44],
@@ -190,7 +141,6 @@ fetch('data/adresser.geojson', { cache: "force-cache" })
   })
   .catch(err => console.error("Fel vid inläsning av adresser:", err));
 
-// === Routing-knappar ===
 document.addEventListener('click', function (e) {
   if (e.target.classList.contains('route-btn')) {
     const lat = parseFloat(e.target.getAttribute('data-lat'));
@@ -238,3 +188,69 @@ removeRouteBtn.addEventListener('click', () => {
     removeRouteBtn.style.display = 'none';
   }
 });
+
+function addBuildingSidesFromLayer(layerGroup, options = {}) {
+  const wallColor = options.wallColor || '#c55';
+  const offsetLng = options.offsetLng || 0.0003;
+  const offsetLat = options.offsetLat || -0.0003;
+
+  layerGroup.eachLayer(layer => {
+    if (layer.feature.geometry.type === "Polygon") {
+      const coords = layer.feature.geometry.coordinates[0];
+
+      for (let i = 0; i < coords.length - 1; i++) {
+        const p1 = coords[i];     // [lng, lat]
+        const p2 = coords[i + 1];
+
+        const p1_offset = [p1[0] + offsetLng, p1[1] + offsetLat];
+        const p2_offset = [p2[0] + offsetLng, p2[1] + offsetLat];
+
+        const wallCoords = [[
+          [p1[0], p1[1]],
+          [p2[0], p2[1]],
+          [p2_offset[0], p2_offset[1]],
+          [p1_offset[0], p1_offset[1]],
+          [p1[0], p1[1]]
+        ]];
+
+        const wallFeature = {
+          type: "Feature",
+          geometry: {
+            type: "Polygon",
+            coordinates: wallCoords
+          }
+        };
+
+        L.geoJSON(wallFeature, {
+          style: {
+            color: wallColor,
+            weight: 0.5,
+            fillColor: wallColor,
+            fillOpacity: 1.0
+          },
+          interactive: false
+        }).addTo(map);
+      }
+    }
+  });
+}
+
+// === Byggnader med 3D-effekt ===
+fetch('data/byggnader_mollan.geojson', { cache: "force-cache" })
+  .then(response => response.json())
+  .then(data => {
+    const byggnaderLayer = L.geoJSON(data, {
+      style: {
+        color: '#ea4644',
+        weight: 1,
+        fillColor: '#f7a7a6',
+        fillOpacity: 1.0
+      }
+    }).addTo(map);
+
+    addBuildingSidesFromLayer(byggnaderLayer, {
+      wallColor: '#b03d3c',
+      offsetLng: -0.0001,
+      offsetLat: -0.00007
+    });
+  });
