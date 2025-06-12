@@ -90,12 +90,14 @@ function addBuildingSidesFromLayer(layerGroup, options = {}) {
       const coords = layer.feature.geometry.coordinates[0];
 
       for (let i = 0; i < coords.length - 1; i++) {
-        const p1 = coords[i];
-        const p2 = coords[i + 1];
-        const p1_offset = [p1[0] + offsetLng, p1[1] + offsetLat];
-        const p2_offset = [p2[0] + offsetLng, p2[1] + offsetLat];
+        const base1 = coords[i];
+        const base2 = coords[i + 1];
+        const top1 = [base1[0] + offsetLng, base1[1] + offsetLat];
+        const top2 = [base2[0] + offsetLng, base2[1] + offsetLat];
 
-        const wallCoords = [[p1, p2, p2_offset, p1_offset, p1]];
+        const wallCoords = [[
+          base1, base2, top2, top1, base1
+        ]];
 
         const wallFeature = {
           type: "Feature",
@@ -125,7 +127,9 @@ fetch('data/byggnader_mollan.geojson', { cache: "force-cache" })
     const offsetLng = -0.00005;
     const offsetLat = 0.00010;
 
-    data.features.forEach(feature => {
+    const offsetData = JSON.parse(JSON.stringify(data)); // klona
+
+    offsetData.features.forEach(feature => {
       if (feature.geometry.type === "Polygon") {
         feature.geometry.coordinates[0] = feature.geometry.coordinates[0].map(coord => [
           coord[0] + offsetLng,
@@ -134,7 +138,7 @@ fetch('data/byggnader_mollan.geojson', { cache: "force-cache" })
       }
     });
 
-    const byggnaderLayer = L.geoJSON(data, {
+    const takLayer = L.geoJSON(offsetData, {
       style: {
         color: '#ea4644',
         weight: 1,
@@ -143,8 +147,10 @@ fetch('data/byggnader_mollan.geojson', { cache: "force-cache" })
       }
     });
 
-    addBuildingSidesFromLayer(byggnaderLayer, { offsetLng, offsetLat });
-    byggnaderLayer.addTo(map);
+    const originalLayer = L.geoJSON(data); // bottenposition för väggarna
+
+    addBuildingSidesFromLayer(originalLayer, { offsetLng, offsetLat });
+    takLayer.addTo(map);
   })
   .catch(err => console.error("Fel vid inläsning av byggnader:", err));
 
