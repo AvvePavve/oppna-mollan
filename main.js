@@ -1,3 +1,4 @@
+// === Funktioner ===
 function closeInfo() {
   document.getElementById("infoOverlay").style.display = "none";
 }
@@ -21,7 +22,7 @@ const darkTiles = L.tileLayer(
 
 const defaultCenter = [55.591988278009765, 13.011586184559851];
 const defaultZoom = 16;
-const map = L.map('map', {layers: []}).setView(defaultCenter, defaultZoom);
+const map = L.map('map', { layers: [] }).setView(defaultCenter, defaultZoom);
 
 function setBaseMap() {
   const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -65,6 +66,7 @@ if (navigator.geolocation) {
           icon: userIcon,
           pane: 'userPane'
         }).addTo(map).bindPopup("Du är här!");
+
         map.setView(userLatLng, 16);
       }
     },
@@ -78,6 +80,33 @@ if (navigator.geolocation) {
     }
   );
 }
+
+// === Byggnader med 3D-effekt + takskugga ===
+fetch('data/byggnader_mollan.geojson', { cache: "force-cache" })
+  .then(response => response.json())
+  .then(data => {
+    const byggnaderLayer = L.geoJSON(data, {
+      style: {
+        color: '#ea4644',
+        weight: 1,
+        fillColor: '#fbd4d4',
+        fillOpacity: 1.0
+      }
+    });
+
+    addBuildingSidesFromLayer(byggnaderLayer, {
+      wallColor: '#993333',
+      offsetLng: -0.00008,
+      offsetLat: -0.00008
+    });
+
+    byggnaderLayer.addTo(map);
+
+    addBuildingShadowsFromLayer(byggnaderLayer, {
+      shadowColor: '#000',
+      shadowOpacity: 0.15
+    });
+  });
 
 function addBuildingSidesFromLayer(layerGroup, options = {}) {
   const wallColor = options.wallColor || '#c55';
@@ -106,9 +135,9 @@ function addBuildingSidesFromLayer(layerGroup, options = {}) {
 
         L.geoJSON(wallFeature, {
           style: {
-            color: options.wallColor,
+            color: wallColor,
             weight: 0.5,
-            fillColor: options.wallColor,
+            fillColor: wallColor,
             fillOpacity: 1.0
           }
         }).addTo(map);
@@ -117,28 +146,21 @@ function addBuildingSidesFromLayer(layerGroup, options = {}) {
   });
 }
 
-// === Byggnader med 3D-effekt ===
-fetch('data/byggnader_mollan.geojson', { cache: "force-cache" })
-  .then(response => response.json())
-  .then(data => {
-    const byggnaderLayer = L.geoJSON(data, {
+function addBuildingShadowsFromLayer(layerGroup, options = {}) {
+  const shadowColor = options.shadowColor || '#000';
+  const shadowOpacity = options.shadowOpacity || 0.2;
+
+  layerGroup.eachLayer(layer => {
+    const shadowLayer = L.geoJSON(layer.toGeoJSON(), {
       style: {
-        color: '#ea4644',
-        weight: 1,
-        fillColor: '#fbd4d4', // Taket, ljusare
-        fillOpacity: 1.0
+        color: shadowColor,
+        weight: 0,
+        fillColor: shadowColor,
+        fillOpacity: shadowOpacity
       }
-    });
-
-    // Rita först väggarna, sen byggnaderna (taket överst)
-    addBuildingSidesFromLayer(byggnaderLayer, {
-      wallColor: '#993333',  // Väggar, mörkare
-      offsetLng: -0.00012,   // Mot sydväst
-      offsetLat: -0.00012
-    });
-
-    byggnaderLayer.addTo(map);
+    }).addTo(map);
   });
+}
 
 const addressIcon = L.icon({
   iconUrl: 'marker.png',
@@ -152,7 +174,7 @@ const addressIcon = L.icon({
 
 const aktivitetLayers = {};
 
-fetch('data/adresser.geojson', {cache: "force-cache"})
+fetch('data/adresser.geojson', { cache: "force-cache" })
   .then(response => response.json())
   .then(data => {
     const filtered = data.features.filter(f => f.properties.oppen === "Ja");
