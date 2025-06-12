@@ -82,7 +82,7 @@ if (navigator.geolocation) {
 
 function addBuildingSidesFromLayer(layerGroup, options = {}) {
   const wallColor = options.wallColor || '#c55';
-  const offsetLng = options.offsetLng || 0.00015; // mindre öst
+  const offsetLng = options.offsetLng || 0.00005; // mindre öst
   const offsetLat = options.offsetLat || -0.00015; // mindre syd
 
   layerGroup.eachLayer(layer => {
