@@ -1,3 +1,4 @@
+// === Funktioner ===
 function closeInfo() {
   document.getElementById("infoOverlay").style.display = "none";
 }
@@ -21,7 +22,7 @@ const darkTiles = L.tileLayer(
 
 const defaultCenter = [55.591988278009765, 13.011586184559851];
 const defaultZoom = 16;
-const map = L.map('map', {layers: []}).setView(defaultCenter, defaultZoom);
+const map = L.map('map', { layers: [] }).setView(defaultCenter, defaultZoom);
 
 function setBaseMap() {
   const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -80,22 +81,47 @@ if (navigator.geolocation) {
   );
 }
 
+// === Byggnader med 3D-effekt + takskugga ===
+fetch('data/byggnader_mollan.geojson', { cache: "force-cache" })
+  .then(response => response.json())
+  .then(data => {
+    const byggnaderLayer = L.geoJSON(data, {
+      style: {
+        color: '#ea4644',
+        weight: 1,
+        fillColor: '#fbd4d4',
+        fillOpacity: 1.0
+      }
+    });
+
+    addBuildingSidesFromLayer(byggnaderLayer, {
+      wallColor: '#993333',
+      offsetLng: -0.00008,
+      offsetLat: -0.00008
+    });
+
+    byggnaderLayer.addTo(map);
+
+    addBuildingShadowsFromLayer(byggnaderLayer, {
+      shadowColor: '#000',
+      shadowOpacity: 0.15
+    });
+  });
+
 function addBuildingSidesFromLayer(layerGroup, options = {}) {
   const wallColor = options.wallColor || '#c55';
-  const baseHeight = options.baseHeight || 0.000005;
+  const offsetLng = options.offsetLng || 0.0002;
+  const offsetLat = options.offsetLat || -0.0002;
 
   layerGroup.eachLayer(layer => {
     if (layer.feature.geometry.type === "Polygon") {
       const coords = layer.feature.geometry.coordinates[0];
-      const props = layer.feature.properties;
-      const levels = parseInt(props["building:levels"] || 1);
-      const offset = levels * baseHeight;
 
       for (let i = 0; i < coords.length - 1; i++) {
         const p1 = coords[i];
         const p2 = coords[i + 1];
-        const p1_offset = [p1[0] - offset, p1[1] - offset];
-        const p2_offset = [p2[0] - offset, p2[1] - offset];
+        const p1_offset = [p1[0] + offsetLng, p1[1] + offsetLat];
+        const p2_offset = [p2[0] + offsetLng, p2[1] + offsetLat];
 
         const wallCoords = [[p1, p2, p2_offset, p1_offset, p1]];
 
@@ -120,27 +146,21 @@ function addBuildingSidesFromLayer(layerGroup, options = {}) {
   });
 }
 
-fetch('data/export.geojson', { cache: "force-cache" })
-  .then(response => response.json())
-  .then(data => {
-    const osmLayer = L.geoJSON(data, {
-      style: feature => ({
-        color: '#ea4644',
-        weight: 1,
-        fillColor: '#f7a7a6',
-        fillOpacity: 1.0
-      })
-    });
+function addBuildingShadowsFromLayer(layerGroup, options = {}) {
+  const shadowColor = options.shadowColor || '#000';
+  const shadowOpacity = options.shadowOpacity || 0.2;
 
-    // Rita väggar först
-    addBuildingSidesFromLayer(osmLayer, {
-      wallColor: '#b03d3c',
-      baseHeight: 0.000005 // ganska låg extrudering per våning
-    });
-
-    // Rita tak sist (ovanpå väggarna)
-    osmLayer.addTo(map);
+  layerGroup.eachLayer(layer => {
+    const shadowLayer = L.geoJSON(layer.toGeoJSON(), {
+      style: {
+        color: shadowColor,
+        weight: 0,
+        fillColor: shadowColor,
+        fillOpacity: shadowOpacity
+      }
+    }).addTo(map);
   });
+}
 
 const addressIcon = L.icon({
   iconUrl: 'marker.png',
@@ -154,7 +174,7 @@ const addressIcon = L.icon({
 
 const aktivitetLayers = {};
 
-fetch('data/adresser.geojson', {cache: "force-cache"})
+fetch('data/adresser.geojson', { cache: "force-cache" })
   .then(response => response.json())
   .then(data => {
     const filtered = data.features.filter(f => f.properties.oppen === "Ja");
