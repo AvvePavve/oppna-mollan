@@ -1,4 +1,4 @@
-// === Funktioner ===
+// === Kartinitiering ===
 function closeInfo() {
   document.getElementById("infoOverlay").style.display = "none";
 }
@@ -40,6 +40,7 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', set
 map.createPane('userPane');
 map.getPane('userPane').style.zIndex = 1000;
 
+// === Användarposition ===
 let userMarker;
 let userLatLng;
 let routingControl;
@@ -81,45 +82,28 @@ if (navigator.geolocation) {
   );
 }
 
-// === Byggnader med 3D-effekt + takskugga ===
-fetch('data/byggnader_mollan.geojson', { cache: "force-cache" })
-  .then(response => response.json())
-  .then(data => {
-    const byggnaderLayer = L.geoJSON(data, {
-      style: {
-        color: '#ea4644',
-        weight: 1,
-        fillColor: '#fbd4d4',
-        fillOpacity: 1.0
-      }
-    });
-
-    addBuildingSidesFromLayer(byggnaderLayer, {
-      wallColor: '#993333',
-      offsetLng: -0.00008,
-      offsetLat: -0.00008
-    });
-
-    byggnaderLayer.addTo(map);
-
-    addBuildingShadowsFromLayer(byggnaderLayer, {
-      shadowColor: '#000',
-      shadowOpacity: 0.15
-    });
-  });
-
+// === Extrudera byggnadsväggar ===
 function addBuildingSidesFromLayer(layerGroup, options = {}) {
   const wallColor = options.wallColor || '#c55';
-  const offsetLng = options.offsetLng || 0.0002;
-  const offsetLat = options.offsetLat || -0.0002;
+  const baseOffset = options.offsetPerLevel || 0.00002;
+  const defaultLevels = options.defaultLevels || 3;
 
   layerGroup.eachLayer(layer => {
-    if (layer.feature.geometry.type === "Polygon") {
-      const coords = layer.feature.geometry.coordinates[0];
+    const feature = layer.feature;
+    if (!feature || feature.geometry.type !== "Polygon" && feature.geometry.type !== "MultiPolygon") return;
 
-      for (let i = 0; i < coords.length - 1; i++) {
-        const p1 = coords[i];
-        const p2 = coords[i + 1];
+    const levels = parseInt(feature.properties["building:levels"]) || defaultLevels;
+    const offsetLng = -baseOffset * levels;
+    const offsetLat = -baseOffset * levels;
+
+    const polygons = feature.geometry.type === "Polygon" ? [feature.geometry.coordinates] : feature.geometry.coordinates;
+
+    polygons.forEach(polygon => {
+      const outer = polygon[0];
+
+      for (let i = 0; i < outer.length - 1; i++) {
+        const p1 = outer[i];
+        const p2 = outer[i + 1];
         const p1_offset = [p1[0] + offsetLng, p1[1] + offsetLat];
         const p2_offset = [p2[0] + offsetLng, p2[1] + offsetLat];
 
@@ -142,26 +126,31 @@ function addBuildingSidesFromLayer(layerGroup, options = {}) {
           }
         }).addTo(map);
       }
-    }
+    });
   });
 }
 
-function addBuildingShadowsFromLayer(layerGroup, options = {}) {
-  const shadowColor = options.shadowColor || '#000';
-  const shadowOpacity = options.shadowOpacity || 0.2;
-
-  layerGroup.eachLayer(layer => {
-    const shadowLayer = L.geoJSON(layer.toGeoJSON(), {
+// === Lägg till OSM-byggnader med 3D-effekt ===
+fetch('data/export.geojson', { cache: "force-cache" })
+  .then(response => response.json())
+  .then(data => {
+    const byggnaderLayer = L.geoJSON(data, {
       style: {
-        color: shadowColor,
-        weight: 0,
-        fillColor: shadowColor,
-        fillOpacity: shadowOpacity
+        color: '#ea4644',
+        weight: 1,
+        fillColor: '#f7a7a6',
+        fillOpacity: 1.0
       }
     }).addTo(map);
-  });
-}
 
+    addBuildingSidesFromLayer(byggnaderLayer, {
+      wallColor: '#b03d3c',
+      offsetPerLevel: 0.000015, // Mjuk extrusion
+      defaultLevels: 3
+    });
+  });
+
+// === Adressmarkörer ===
 const addressIcon = L.icon({
   iconUrl: 'marker.png',
   iconSize: [44, 44],
@@ -181,7 +170,7 @@ fetch('data/adresser.geojson', { cache: "force-cache" })
 
     filtered.forEach(feature => {
       const props = feature.properties;
-      const aktivitet = props.Aktivitet ? props.Aktivitet : "Ingen aktivitet planerad";
+      const aktivitet = props.Aktivitet || "Ingen aktivitet planerad";
       const adress = props.Adress || "Okänd adress";
 
       const coordsList = feature.geometry.type === "MultiPoint"
@@ -209,9 +198,9 @@ fetch('data/adresser.geojson', { cache: "force-cache" })
 
     Object.values(aktivitetLayers).forEach(layer => layer.addTo(map));
     L.control.layers(null, aktivitetLayers, { collapsed: true }).addTo(map);
-  })
-  .catch(err => console.error("Fel vid inläsning av adresser:", err));
+  });
 
+// === Routingfunktion ===
 document.addEventListener('click', function (e) {
   if (e.target.classList.contains('route-btn')) {
     const lat = parseFloat(e.target.getAttribute('data-lat'));
