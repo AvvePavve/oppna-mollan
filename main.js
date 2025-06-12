@@ -122,8 +122,8 @@ function addBuildingSidesFromLayer(layerGroup, options = {}) {
 fetch('data/byggnader_mollan.geojson', { cache: "force-cache" })
   .then(response => response.json())
   .then(data => {
-    const offsetLng = 0.00005;
-    const offsetLat = -0.00010;
+    const offsetLng = -0.00005;
+    const offsetLat = 0.00010;
 
     data.features.forEach(feature => {
       if (feature.geometry.type === "Polygon") {
