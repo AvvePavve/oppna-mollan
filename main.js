@@ -127,13 +127,17 @@ fetch('data/byggnader_mollan.geojson', { cache: "force-cache" })
         color: '#ea4644',
         weight: 1,
         fillColor: '#f7a7a6',
-        fillOpacity: 0.6
+        fillOpacity: 1.0 // Ingen transparens
       }
     }).addTo(map);
 
-    addBuildingSidesFromLayer(byggnaderLayer); // Lägg till fejkade väggar
+    // Mindre extrusion, riktning mot sydväst
+    addBuildingSidesFromLayer(byggnaderLayer, {
+      wallColor: '#b03d3c',
+      offsetLng: -0.00012,  // Vänster
+      offsetLat: -0.00012   // Nedåt
+    });
   })
-  .catch(err => console.error("Fel vid inläsning av byggnader:", err));
 
 // === Adressmarkörer ===
 const addressIcon = L.icon({
