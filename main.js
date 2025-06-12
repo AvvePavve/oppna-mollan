@@ -82,8 +82,8 @@ if (navigator.geolocation) {
 
 function addBuildingSidesFromLayer(layerGroup, options = {}) {
   const wallColor = options.wallColor || '#c55';
-  const offsetLng = options.offsetLng || 0.00005; // mindre öst
-  const offsetLat = options.offsetLat || -0.00010; // mindre syd
+  const offsetLng = options.offsetLng || 0.00005;
+  const offsetLat = options.offsetLat || -0.00010;
 
   layerGroup.eachLayer(layer => {
     if (layer.feature.geometry.type === "Polygon") {
@@ -122,6 +122,18 @@ function addBuildingSidesFromLayer(layerGroup, options = {}) {
 fetch('data/byggnader_mollan.geojson', { cache: "force-cache" })
   .then(response => response.json())
   .then(data => {
+    const offsetLng = 0.00005;
+    const offsetLat = -0.00010;
+
+    data.features.forEach(feature => {
+      if (feature.geometry.type === "Polygon") {
+        feature.geometry.coordinates[0] = feature.geometry.coordinates[0].map(coord => [
+          coord[0] + offsetLng,
+          coord[1] + offsetLat
+        ]);
+      }
+    });
+
     const byggnaderLayer = L.geoJSON(data, {
       style: {
         color: '#ea4644',
@@ -131,8 +143,8 @@ fetch('data/byggnader_mollan.geojson', { cache: "force-cache" })
       }
     });
 
-    addBuildingSidesFromLayer(byggnaderLayer); // Rita väggar först
-    byggnaderLayer.addTo(map); // Rita tak sist
+    addBuildingSidesFromLayer(byggnaderLayer, { offsetLng, offsetLat });
+    byggnaderLayer.addTo(map);
   })
   .catch(err => console.error("Fel vid inläsning av byggnader:", err));
 
