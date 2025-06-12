@@ -82,8 +82,8 @@ if (navigator.geolocation) {
 
 function addBuildingSidesFromLayer(layerGroup, options = {}) {
   const wallColor = options.wallColor || '#c55';
-  const offsetLng = options.offsetLng || 0.00005;
-  const offsetLat = options.offsetLat || -0.00010;
+  const offsetLng = options.offsetLng || 0.00002;
+  const offsetLat = options.offsetLat || -0.00007;
 
   layerGroup.eachLayer(layer => {
     if (layer.feature.geometry.type === "Polygon") {
@@ -124,8 +124,8 @@ function addBuildingSidesFromLayer(layerGroup, options = {}) {
 fetch('data/byggnader_mollan.geojson', { cache: "force-cache" })
   .then(response => response.json())
   .then(data => {
-    const offsetLng = -0.00005;
-    const offsetLat = 0.00010;
+    const offsetLng = -0.00002;
+    const offsetLat = 0.00007;
 
     const offsetData = JSON.parse(JSON.stringify(data)); // klona
 
