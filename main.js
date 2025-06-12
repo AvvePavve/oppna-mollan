@@ -83,7 +83,7 @@ if (navigator.geolocation) {
 function addBuildingSidesFromLayer(layerGroup, options = {}) {
   const wallColor = options.wallColor || '#c55';
   const offsetLng = options.offsetLng || 0.00005; // mindre öst
-  const offsetLat = options.offsetLat || -0.00015; // mindre syd
+  const offsetLat = options.offsetLat || -0.00010; // mindre syd
 
   layerGroup.eachLayer(layer => {
     if (layer.feature.geometry.type === "Polygon") {
@@ -110,7 +110,7 @@ function addBuildingSidesFromLayer(layerGroup, options = {}) {
             color: wallColor,
             weight: 0.5,
             fillColor: wallColor,
-            fillOpacity: 0.5
+            fillOpacity: 1
           }
         }).addTo(map);
       }
@@ -127,7 +127,7 @@ fetch('data/byggnader_mollan.geojson', { cache: "force-cache" })
         color: '#ea4644',
         weight: 1,
         fillColor: '#f7a7a6',
-        fillOpacity: 0.6
+        fillOpacity: 1
       }
     });
 
