@@ -88,7 +88,9 @@ const addressIcon = L.icon({
 });
 
 const aktivitetLayersLive = {};
-const SHEET_URL = 'https://opensheet.elk.sh/2PACX-1vTbRqpzMobBXVrOMLz2rC5pdp6TudoJ-tSo7UdEQdKwVlsxj4XS-kNT16-m9UmEKxpEpT7hMd_IxOS0/Formulärsvar 1';
+const SHEET_URL = decodeURIComponent(
+  'https://opensheet.elk.sh/2PACX-1vTbRqpzMobBXVrOMLz2rC5pdp6TudoJ-tSo7UdEQdKwVlsxj4XS-kNT16-m9UmEKxpEpT7hMd_IxOS0/Formulärsvar 1'
+);
 
 function normaliseraAdress(adress) {
   return adress
