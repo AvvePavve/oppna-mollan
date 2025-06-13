@@ -162,7 +162,7 @@ function normaliseraAdress(adress) {
   return ren
     .toLowerCase()
     .replace(/[^a-z0-9åäö\s]/gi, '')
-    .replace(/\d{3}\s?\d{2}/g, '')
+    .replace(/\d{3}\s?\d{2}/g, '') // ta bort ev. postnummer
     .replace(/malmö/g, '')
     .replace(/\s+/g, ' ')
     .trim();
