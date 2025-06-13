@@ -193,6 +193,13 @@ async function uppdateraAktiviteterFrånGoogleFormulär() {
       }
     });
 
+    const inkommandeAdresser = formSvar.map(f => f.adress);
+    const matchadeAdresser = geoJson.features.map(f => normaliseraAdress(f.properties.Adress || ""));
+    const omatchade = inkommandeAdresser.filter(a => !matchadeAdresser.includes(a));
+    if (omatchade.length > 0) {
+      console.warn("Formulärsvar utan matchande adress i GeoJSON:", omatchade);
+    }
+
     const filtered = geoJson.features.filter(f => f.properties.oppen === "Ja");
     for (const layer of Object.values(aktivitetLayersLive)) {
       layer.clearLayers();
