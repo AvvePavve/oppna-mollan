@@ -24,12 +24,40 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () 
 });
 
 map.addControl(new maplibregl.NavigationControl());
+map.addControl(
+  new maplibregl.AttributionControl({
+    compact: true,
+    customAttribution:
+      '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  })
+);
+
+class ActivityControl {
+  onAdd(map) {
+    this._map = map;
+    this._container = document.createElement('div');
+    this._container.className = 'maplibregl-ctrl maplibregl-ctrl-group activity-control';
+    activitySelect = document.createElement('select');
+    activitySelect.id = 'activityFilter';
+    activitySelect.addEventListener('change', filterMarkers);
+    this._container.appendChild(activitySelect);
+    return this._container;
+  }
+
+  onRemove() {
+    this._container.remove();
+    this._map = undefined;
+  }
+}
+
+map.addControl(new ActivityControl(), 'top-left');
 
 let userMarker;
 let userLngLat;
 const removeRouteBtn = document.getElementById('removeRouteBtn');
 const addressMarkers = [];
 const activitySet = new Set();
+let activitySelect;
 
 if (navigator.geolocation) {
   navigator.geolocation.watchPosition(
@@ -88,7 +116,7 @@ function loadBuildings() {
           type: 'fill-extrusion',
           source: 'buildings',
           paint: {
-            'fill-extrusion-color': '#faf4b7',
+            'fill-extrusion-color': '#f47c31',
             'fill-extrusion-height': 5,
             'fill-extrusion-opacity': 1
           }
@@ -188,14 +216,9 @@ removeRouteBtn.addEventListener('click', () => {
   removeRouteBtn.style.display = 'none';
 });
 
-const activitySelect = document.getElementById('activityFilter');
-if (activitySelect) {
-  activitySelect.addEventListener('change', filterMarkers);
-}
-
 function populateActivityOptions() {
   if (!activitySelect) return;
-  const current = activitySelect.value;
+  const current = activitySelect.value || 'Alla';
   activitySelect.innerHTML = '<option value="Alla">Alla aktiviteter</option>';
   Array.from(activitySet).sort().forEach(act => {
     const opt = document.createElement('option');
@@ -203,7 +226,7 @@ function populateActivityOptions() {
     opt.textContent = act;
     activitySelect.appendChild(opt);
   });
-  activitySelect.value = current || 'Alla';
+  activitySelect.value = current;
 }
 
 function filterMarkers() {
