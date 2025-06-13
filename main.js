@@ -37,7 +37,10 @@ if (navigator.geolocation) {
       if (userMarker) {
         userMarker.setLngLat(lngLat);
       } else {
-        userMarker = new maplibregl.Marker({ color: '#000' })
+        const userEl = document.createElement('div');
+        userEl.className = 'user-location-icon';
+        userMarker = new maplibregl.Marker({ element: userEl, anchor: 'center' })
+
           .setLngLat(lngLat)
           .setPopup(new maplibregl.Popup().setText('Du är här!'))
           .addTo(map);
@@ -65,6 +68,15 @@ function loadBuildings() {
     .then(r => r.json())
     .then(data => {
       map.addSource('buildings', { type: 'geojson', data });
+
+      let labelLayerId;
+      for (const layer of map.getStyle().layers) {
+        if (layer.type === 'symbol' && layer.layout && layer.layout['text-field']) {
+          labelLayerId = layer.id;
+          break;
+        }
+      }
+
       map.addLayer(
         {
           id: 'buildings-extrusion',
@@ -76,7 +88,7 @@ function loadBuildings() {
             'fill-extrusion-opacity': 1
           }
         },
-        'road-label'
+        labelLayerId
       );
     })
     .catch(err => console.error('Fel vid inläsning av byggnader:', err));
@@ -105,9 +117,12 @@ function loadAddresses() {
             <button class="btn route-btn" data-lat="${lngLat[1]}" data-lng="${lngLat[0]}" aria-label="Visa rutt till denna adress">Visa rutt</button>
           `;
 
-          new maplibregl.Marker({ color: '#3fb1ce' })
+          const el = document.createElement('img');
+          el.src = 'blue-marker.png';
+          el.className = 'address-marker';
+          new maplibregl.Marker({ element: el, anchor: 'bottom' })
             .setLngLat(lngLat)
-            .setPopup(new maplibregl.Popup().setHTML(popupContent))
+            .setPopup(new maplibregl.Popup({ offset: 25 }).setHTML(popupContent))
             .addTo(map);
         });
       });
