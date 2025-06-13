@@ -87,10 +87,74 @@ const addressIcon = L.icon({
   shadowAnchor: [12, 35]
 });
 
+// ===== 3D-byggnader =====
+const buildingOffset = { lng: -0.00002, lat: 0.00007 };
+function cloneGeoJSON(geojson) {
+  return {
+    ...geojson,
+    features: geojson.features.map(f => ({
+      ...f,
+      geometry: JSON.parse(JSON.stringify(f.geometry)),
+      properties: { ...f.properties }
+    }))
+  };
+}
+function addBuildingSidesFromLayer(layerGroup) {
+  const wallColor = '#faf4b7';
+  layerGroup.eachLayer(layer => {
+    const geom = layer.feature && layer.feature.geometry;
+    if (geom && geom.type === "Polygon") {
+      const coords = geom.coordinates[0];
+      for (let i = 0; i < coords.length - 1; i++) {
+        const base1 = coords[i];
+        const base2 = coords[i + 1];
+        const top1 = [base1[0] + buildingOffset.lng, base1[1] + buildingOffset.lat];
+        const top2 = [base2[0] + buildingOffset.lng, base2[1] + buildingOffset.lat];
+        const wallCoords = [[base1, base2, top2, top1, base1]];
+        const wallFeature = {
+          type: "Feature",
+          geometry: { type: "Polygon", coordinates: wallCoords }
+        };
+        L.geoJSON(wallFeature, {
+          style: {
+            color: wallColor,
+            weight: 0.5,
+            fillColor: wallColor,
+            fillOpacity: 1
+          }
+        }).addTo(map);
+      }
+    }
+  });
+}
+fetch('data/byggnader_mollan.geojson', { cache: "force-cache" })
+  .then(response => response.json())
+  .then(data => {
+    const offsetData = cloneGeoJSON(data);
+    offsetData.features.forEach(feature => {
+      if (feature.geometry.type === "Polygon") {
+        feature.geometry.coordinates[0] = feature.geometry.coordinates[0].map(coord => [
+          coord[0] + buildingOffset.lng,
+          coord[1] + buildingOffset.lat
+        ]);
+      }
+    });
+    const takLayer = L.geoJSON(offsetData, {
+      style: {
+        color: '#f47c31',
+        weight: 1,
+        fillColor: '#f47c31',
+        fillOpacity: 1
+      }
+    });
+    const originalLayer = L.geoJSON(data);
+    addBuildingSidesFromLayer(originalLayer);
+    takLayer.addTo(map);
+  })
+  .catch(err => console.error("Fel vid inläsning av byggnader:", err));
+
 const aktivitetLayersLive = {};
-const SHEET_URL = decodeURIComponent(
-  'https://opensheet.elk.sh/2PACX-1vTbRqpzMobBXVrOMLz2rC5pdp6TudoJ-tSo7UdEQdKwVlsxj4XS-kNT16-m9UmEKxpEpT7hMd_IxOS0/Formulärsvar 1'
-);
+const SHEET_URL = 'https://opensheet.elk.sh/1t5ILyafrrFJNiO2V0QrqbZyFNgTdXcY7SujnOOQHbfI/Formulärsvar 1';
 
 function normaliseraAdress(adress) {
   return adress
@@ -107,6 +171,7 @@ async function uppdateraAktiviteterFrånGoogleFormulär() {
   try {
     const response = await fetch(SHEET_URL);
     const formData = await response.json();
+    if (!Array.isArray(formData)) throw new Error("Datan från formuläret kunde inte tolkas som en lista.");
 
     const formSvar = formData.map(row => ({
       adress: normaliseraAdress(row["📍 Gatuadress till din innergård"] || ""),
@@ -121,7 +186,6 @@ async function uppdateraAktiviteterFrånGoogleFormulär() {
       const match = formSvar.find(entry =>
         geoAdress.includes(entry.adress) || entry.adress.includes(geoAdress)
       );
-
       if (match) {
         feature.properties.Aktivitet = match.aktivitet;
         feature.properties.oppen = "Ja";
@@ -129,7 +193,6 @@ async function uppdateraAktiviteterFrånGoogleFormulär() {
     });
 
     const filtered = geoJson.features.filter(f => f.properties.oppen === "Ja");
-
     for (const layer of Object.values(aktivitetLayersLive)) {
       layer.clearLayers();
     }
@@ -143,15 +206,12 @@ async function uppdateraAktiviteterFrånGoogleFormulär() {
       coords.forEach(coord => {
         const latLng = [coord[1], coord[0]];
         const marker = L.marker(latLng, { icon: addressIcon });
-
         const popup = `
           <strong>Adress:</strong> ${feature.properties.Adress}<br>
           <strong>Aktivitet:</strong> ${aktivitet}<br>
           <button class="btn route-btn" data-lat="${latLng[0]}" data-lng="${latLng[1]}">Visa rutt</button>
         `;
-
         marker.bindPopup(popup);
-
         if (!aktivitetLayersLive[aktivitet]) {
           aktivitetLayersLive[aktivitet] = L.layerGroup();
         }
@@ -185,18 +245,13 @@ function routeTo(destinationLatLng) {
     map.removeControl(routingControl);
   }
   routingControl = L.Routing.control({
-    waypoints: [
-      L.latLng(userLatLng),
-      L.latLng(destinationLatLng)
-    ],
+    waypoints: [L.latLng(userLatLng), L.latLng(destinationLatLng)],
     show: false,
     addWaypoints: false,
     draggableWaypoints: false,
     routeWhileDragging: false,
     createMarker: () => null,
-    lineOptions: {
-      styles: [{ color: '#67aae2', weight: 5 }]
-    },
+    lineOptions: { styles: [{ color: '#67aae2', weight: 5 }] },
     router: L.Routing.osrmv1({
       serviceUrl: 'https://routing.openstreetmap.de/routed-foot/route/v1',
       profile: 'foot',
