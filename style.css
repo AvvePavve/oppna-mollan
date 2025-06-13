@@ -28,6 +28,7 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding-right: 2rem;
   background-color: #f47c31;
   color: white;
   padding: 1rem 1rem 1rem 1rem;
@@ -258,10 +259,12 @@ header h1 {
 
 }
 
+
 .maplibregl-popup-content-wrapper,
 .maplibregl-popup-tip {
   transition: background-color 0.3s, border-color 0.3s;
 }
+
 
 @media (prefers-color-scheme: dark) {
   .maplibregl-popup-content-wrapper {
@@ -285,6 +288,7 @@ header h1 {
   }
 }
 
+
 @media (prefers-color-scheme: dark) {
   .maplibregl-popup-tip,
   .maplibregl-popup-tip::after {
@@ -305,5 +309,13 @@ header h1 {
 
   .maplibregl-popup-anchor-right .maplibregl-popup-tip {
     border-left-color: #232323 !important;
+  }
+}
+
+
+@media (prefers-color-scheme: dark) {
+  .maplibregl-ctrl-zoom-in::before,
+  .maplibregl-ctrl-zoom-out::before {
+    color: #f4f4f4 !important;
   }
 }
