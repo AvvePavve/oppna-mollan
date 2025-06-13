@@ -27,6 +27,7 @@ body {
 header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   background-color: #f47c31;
   color: white;
   padding: 1rem 1rem 1rem 0;
@@ -136,6 +137,7 @@ header h1 {
   font-family: 'NexaBook', Arial, sans-serif;
   font-size: 1rem;
   line-height: 1.4;
+  color: #333;
 }
 
 .maplibregl-popup-content-wrapper,
@@ -158,6 +160,16 @@ header h1 {
 .address-marker {
   width: 24px;
   height: 24px;
+}
+
+#activityFilter {
+  margin-left: auto;
+  padding: 6px 8px;
+  font-family: 'NexaBook', Arial, sans-serif;
+  font-size: 1rem;
+  border-radius: 4px;
+  background: #fff;
+  color: #333;
 }
 
 #removeRouteBtn {
@@ -207,6 +219,11 @@ header h1 {
     color: #fff;
   }
 
+  #activityFilter {
+    background: #232323;
+    color: #f4f4f4;
+  }
+
   .leaflet-control-zoom a,
   .leaflet-control-layers-toggle,
   .leaflet-control-layers-expanded,
@@ -228,3 +245,5 @@ header h1 {
   .leaflet-control-layers-toggle:active {
     background-color: #444 !important;
   }
+
+}

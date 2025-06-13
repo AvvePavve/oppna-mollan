@@ -28,6 +28,8 @@ map.addControl(new maplibregl.NavigationControl());
 let userMarker;
 let userLngLat;
 const removeRouteBtn = document.getElementById('removeRouteBtn');
+const addressMarkers = [];
+const activitySet = new Set();
 
 if (navigator.geolocation) {
   navigator.geolocation.watchPosition(
@@ -59,8 +61,11 @@ if (navigator.geolocation) {
 }
 
 map.on('load', () => {
-  loadBuildings();
   loadAddresses();
+});
+
+map.on('style.load', () => {
+  loadBuildings();
 });
 
 function loadBuildings() {
@@ -83,7 +88,7 @@ function loadBuildings() {
           type: 'fill-extrusion',
           source: 'buildings',
           paint: {
-            'fill-extrusion-color': '#f47c31',
+            'fill-extrusion-color': '#faf4b7',
             'fill-extrusion-height': 5,
             'fill-extrusion-opacity': 1
           }
@@ -98,6 +103,10 @@ function loadAddresses() {
   fetch('data/adresser.geojson', { cache: 'force-cache' })
     .then(r => r.json())
     .then(data => {
+      addressMarkers.forEach(obj => obj.marker.remove());
+      addressMarkers.length = 0;
+      activitySet.clear();
+
       const filtered = data.features.filter(f => f.properties.oppen === 'Ja');
 
       filtered.forEach(feature => {
@@ -120,12 +129,17 @@ function loadAddresses() {
           const el = document.createElement('img');
           el.src = 'blue-marker.png';
           el.className = 'address-marker';
-          new maplibregl.Marker({ element: el, anchor: 'bottom' })
+          const marker = new maplibregl.Marker({ element: el, anchor: 'bottom' })
             .setLngLat(lngLat)
             .setPopup(new maplibregl.Popup({ offset: 25 }).setHTML(popupContent))
             .addTo(map);
+          addressMarkers.push({ marker, aktivitet });
+          activitySet.add(aktivitet);
         });
       });
+
+      populateActivityOptions();
+      filterMarkers();
     })
     .catch(err => console.error('Fel vid inläsning av adresser:', err));
 }
@@ -173,3 +187,30 @@ removeRouteBtn.addEventListener('click', () => {
   }
   removeRouteBtn.style.display = 'none';
 });
+
+const activitySelect = document.getElementById('activityFilter');
+if (activitySelect) {
+  activitySelect.addEventListener('change', filterMarkers);
+}
+
+function populateActivityOptions() {
+  if (!activitySelect) return;
+  const current = activitySelect.value;
+  activitySelect.innerHTML = '<option value="Alla">Alla aktiviteter</option>';
+  Array.from(activitySet).sort().forEach(act => {
+    const opt = document.createElement('option');
+    opt.value = act;
+    opt.textContent = act;
+    activitySelect.appendChild(opt);
+  });
+  activitySelect.value = current || 'Alla';
+}
+
+function filterMarkers() {
+  if (!activitySelect) return;
+  const val = activitySelect.value;
+  addressMarkers.forEach(obj => {
+    const show = val === 'Alla' || obj.aktivitet === val;
+    obj.marker.getElement().style.display = show ? '' : 'none';
+  });
+}
