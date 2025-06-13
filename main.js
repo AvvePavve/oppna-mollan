@@ -189,7 +189,10 @@ async function uppdateraAktiviteterFrånGoogleFormulär() {
       if (match) {
         feature.properties.Aktivitet = match.aktivitet;
         feature.properties.oppen = "Ja";
+      } else {
+        feature.properties.oppen = "Nej";
       }
+    });
     });
 
     const filtered = geoJson.features.filter(f => f.properties.oppen === "Ja");
