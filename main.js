@@ -19,7 +19,8 @@ let map = new maplibregl.Map({
 });
 
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-  map.setStyle(getBaseStyle());
+  // disable diffing to avoid "setSprite" console warnings when switching styles
+  map.setStyle(getBaseStyle(), { diff: false });
 });
 
 map.addControl(new maplibregl.NavigationControl());
@@ -40,7 +41,6 @@ if (navigator.geolocation) {
         const userEl = document.createElement('div');
         userEl.className = 'user-location-icon';
         userMarker = new maplibregl.Marker({ element: userEl, anchor: 'center' })
-
           .setLngLat(lngLat)
           .setPopup(new maplibregl.Popup().setText('Du är här!'))
           .addTo(map);
