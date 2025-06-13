@@ -2,22 +2,19 @@ function closeInfo() {
   document.getElementById("infoOverlay").style.display = "none";
 }
 
-const lightTiles = L.tileLayer(
-  'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-  {
-    attribution: '&copy; OpenStreetMap &copy; CartoDB',
-    subdomains: 'abcd',
-    detectRetina: true
-  }
-);
-const darkTiles = L.tileLayer(
-  'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-  {
-    attribution: '&copy; OpenStreetMap &copy; CartoDB',
-    subdomains: 'abcd',
-    detectRetina: true
-  }
-);
+const lightTiles = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.{ext}?api_key=9a2de762-ebe1-42e7-bcd2-0260d8917ae6', {
+	minZoom: 0,
+	maxZoom: 20,
+	attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+	ext: 'png'
+});
+
+const darkTiles = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.{ext}?api_key=9a2de762-ebe1-42e7-bcd2-0260d8917ae6', {
+	minZoom: 0,
+	maxZoom: 20,
+	attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+	ext: 'png'
+});
 
 const defaultCenter = [55.591988278009765, 13.011586184559851];
 const defaultZoom = 16;
