@@ -44,7 +44,7 @@ header {
 .logo-link img {
   height: 60px;
   padding: 0;
-  margin-left: 2rem;
+  margin-left: auto;
 }
 
 header h1 {
@@ -282,5 +282,28 @@ header h1 {
   .maplibregl-ctrl-zoom-out {
     background-color: #3a3a3a !important;
     color: #f4f4f4 !important;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .maplibregl-popup-tip,
+  .maplibregl-popup-tip::after {
+    border-color: transparent;
+  }
+
+  .maplibregl-popup-anchor-top .maplibregl-popup-tip {
+    border-bottom-color: #232323 !important;
+  }
+
+  .maplibregl-popup-anchor-bottom .maplibregl-popup-tip {
+    border-top-color: #232323 !important;
+  }
+
+  .maplibregl-popup-anchor-left .maplibregl-popup-tip {
+    border-right-color: #232323 !important;
+  }
+
+  .maplibregl-popup-anchor-right .maplibregl-popup-tip {
+    border-left-color: #232323 !important;
   }
 }
