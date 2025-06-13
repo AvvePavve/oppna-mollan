@@ -27,6 +27,7 @@ body {
 header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   background-color: #f47c31;
   color: white;
   padding: 1rem 1rem 1rem 0;
@@ -76,6 +77,20 @@ header h1 {
   transition: background 0.3s, color 0.3s;
 }
 
+.maplibregl-ctrl-group button {
+  background-color: #fff;
+  color: #333;
+  border: none;
+}
+
+.maplibregl-ctrl-group button:hover {
+  background-color: #f0f0f0;
+}
+
+.maplibregl-ctrl-group button:active {
+  background-color: #e1e1e1;
+}
+
 .btn:focus {
   outline: 2px solid #333;
   outline-offset: 2px;
@@ -117,8 +132,7 @@ header h1 {
   }
 }
 
-.user-location-icon,
-.leaflet-marker-pane .leaflet-marker-icon.user-location {
+.user-location-icon {
   width: 18px;
   height: 18px;
   background-color: #6278b3;
@@ -127,23 +141,44 @@ header h1 {
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
 }
 
-.leaflet-routing-container {
-  display: none !important;
-}
-
-.leaflet-popup-content {
+.maplibregl-popup-content {
   font-family: 'NexaBook', Arial, sans-serif;
   font-size: 1rem;
   line-height: 1.4;
+  color: #333;
 }
 
-.leaflet-popup-content strong {
+.maplibregl-popup-content-wrapper {
+  background-color: #fff;
+  color: #333;
+}
+
+.maplibregl-popup-tip {
+  border-top-color: #fff;
+}
+
+.maplibregl-popup-content strong {
   font-family: 'NexaBold', Arial, sans-serif;
 }
 
-.leaflet-popup-content .route-btn {
+.maplibregl-popup-content .route-btn {
   margin-top: 0.65rem;
   display: inline-block;
+}
+
+.address-marker {
+  width: 24px;
+  height: 24px;
+}
+
+.activity-control select {
+  padding: 6px 8px;
+  font-family: 'NexaBook', Arial, sans-serif;
+  font-size: 1rem;
+  border-radius: 4px;
+  background: #fff;
+  color: #333;
+  border: none;
 }
 
 #removeRouteBtn {
@@ -193,22 +228,28 @@ header h1 {
     color: #fff;
   }
 
-  .leaflet-control-zoom a,
-  .leaflet-control-layers-toggle,
-  .leaflet-control-layers-expanded,
-  .leaflet-popup-content-wrapper,
-  .leaflet-popup-tip,
-  .leaflet-routing-container {
-    background-color: #232323 !important;
-    color: #f4f4f4 !important;
+  .activity-control select {
+    background: #232323;
+    color: #f4f4f4;
   }
 
-  .leaflet-control-zoom a:hover,
-  .leaflet-control-layers-toggle:hover {
-    background-color: #333 !important;
+  .maplibregl-ctrl-group button,
+  .maplibregl-popup-content-wrapper,
+  .maplibregl-popup-tip {
+    background-color: #232323;
+    color: #f4f4f4;
   }
 
-  .leaflet-control-zoom a:active,
-  .leaflet-control-layers-toggle:active {
-    background-color: #444 !important;
+  .maplibregl-popup-tip {
+    border-top-color: #232323;
   }
+
+  .maplibregl-ctrl-group button:hover {
+    background-color: #333;
+  }
+
+  .maplibregl-ctrl-group button:active {
+    background-color: #444;
+  }
+
+}
