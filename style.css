@@ -44,7 +44,7 @@ header {
 .logo-link img {
   height: 60px;
   padding: 0;
-  margin-left: 1rem;
+  margin-left: 2rem;
 }
 
 header h1 {
@@ -261,4 +261,26 @@ header h1 {
 .maplibregl-popup-content-wrapper,
 .maplibregl-popup-tip {
   transition: background-color 0.3s, border-color 0.3s;
+}
+
+@media (prefers-color-scheme: dark) {
+  .maplibregl-popup-content-wrapper {
+    background-color: #232323 !important;
+    color: #f4f4f4;
+  }
+
+  .maplibregl-popup-tip {
+    border-top-color: #232323 !important;
+  }
+
+  .maplibregl-popup-content {
+    background-color: #232323 !important;
+    color: #f4f4f4;
+  }
+
+  .maplibregl-ctrl-zoom-in,
+  .maplibregl-ctrl-zoom-out {
+    background-color: #3a3a3a !important;
+    color: #f4f4f4 !important;
+  }
 }
