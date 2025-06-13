@@ -190,6 +190,7 @@ async function uppdateraAktiviteterFrånGoogleFormulär() {
         feature.properties.oppen = "Ja";
       } else {
         feature.properties.oppen = "Nej";
+        delete feature.properties.Aktivitet;
       }
     });
 
