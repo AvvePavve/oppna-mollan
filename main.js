@@ -183,9 +183,8 @@ async function uppdateraAktiviteterFrånGoogleFormulär() {
 
     geoJson.features.forEach(feature => {
       const geoAdress = normaliseraAdress(feature.properties.Adress || "");
-      const match = formSvar.find(entry =>
-        geoAdress.includes(entry.adress) || entry.adress.includes(geoAdress)
-      );
+      const match = formSvar.find(entry => geoAdress === entry.adress);
+
       if (match) {
         feature.properties.Aktivitet = match.aktivitet;
         feature.properties.oppen = "Ja";
