@@ -40,6 +40,7 @@ if (navigator.geolocation) {
         const userEl = document.createElement('div');
         userEl.className = 'user-location-icon';
         userMarker = new maplibregl.Marker({ element: userEl, anchor: 'center' })
+
           .setLngLat(lngLat)
           .setPopup(new maplibregl.Popup().setText('Du är här!'))
           .addTo(map);
