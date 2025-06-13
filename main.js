@@ -32,6 +32,8 @@ map.addControl(
   })
 );
 
+let activitySelect;
+
 class ActivityControl {
   onAdd(map) {
     this._map = map;
@@ -57,7 +59,6 @@ let userLngLat;
 const removeRouteBtn = document.getElementById('removeRouteBtn');
 const addressMarkers = [];
 const activitySet = new Set();
-let activitySelect;
 
 if (navigator.geolocation) {
   navigator.geolocation.watchPosition(
