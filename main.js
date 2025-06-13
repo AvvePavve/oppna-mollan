@@ -171,12 +171,12 @@ fetch('data/byggnader_mollan.geojson', { cache: "force-cache" })
 // ===== Adressmarkörer =====
 const addressIcon = L.icon({
   iconUrl: 'blue-marker.png',
-  iconSize: [22, 22],
-  iconAnchor: [11, 23],
-  popupAnchor: [0, -35],
+  iconSize: [24, 24],
+  iconAnchor: [12, 23],
+  popupAnchor: [0, -30],
   shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
-  shadowSize: [41, 41],
-  shadowAnchor: [13, 41]
+  shadowSize: [35, 35],
+  shadowAnchor: [12, 35]
 });
 
 const aktivitetLayers = {};
