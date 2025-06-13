@@ -178,6 +178,12 @@ header h1 {
 
   .maplibregl-popup-tip {
     border-top-color: #232323;
+    background: none;
+  }
+
+  .maplibregl-popup-tip path {
+    fill: #232323;
+    stroke: none;
   }
   
 }
