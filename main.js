@@ -87,7 +87,6 @@ const addressIcon = L.icon({
   shadowAnchor: [12, 35]
 });
 
-// ===== 3D-byggnader =====
 const buildingOffset = { lng: -0.00002, lat: 0.00007 };
 function cloneGeoJSON(geojson) {
   return {
@@ -184,6 +183,7 @@ async function uppdateraAktiviteterFrånGoogleFormulär() {
       const geoAdress = normaliseraAdress(feature.properties.Adress || "");
       const match = formSvar.find(entry => geoAdress === entry.adress);
       if (match) {
+        console.log("MATCH:", geoAdress, "<=>", match.adress);
         feature.properties.Aktivitet = match.aktivitet;
         feature.properties.oppen = "Ja";
       } else {
@@ -199,11 +199,11 @@ async function uppdateraAktiviteterFrånGoogleFormulär() {
       console.warn("Formulärsvar utan matchande adress i GeoJSON:", omatchade);
     }
 
-    const filtered = geoJson.features.filter(f => f.properties.oppen === "Ja");
     for (const layer of Object.values(aktivitetLayersLive)) {
       layer.clearLayers();
     }
 
+    const filtered = geoJson.features.filter(f => f.properties.oppen === "Ja");
     filtered.forEach(feature => {
       const aktivitet = feature.properties.Aktivitet;
       const coords = feature.geometry.type === "MultiPoint"
@@ -226,7 +226,14 @@ async function uppdateraAktiviteterFrånGoogleFormulär() {
       });
     });
 
-    Object.values(aktivitetLayersLive).forEach(layer => layer.addTo(map));
+    const overlayMaps = {};
+    for (const [aktivitet, layer] of Object.entries(aktivitetLayersLive)) {
+      overlayMaps[aktivitet] = layer;
+      layer.addTo(map);
+    }
+
+    L.control.layers(null, overlayMaps, { collapsed: false, position: 'topright' }).addTo(map);
+
   } catch (err) {
     console.error("Fel vid formulärintegration:", err);
   }
