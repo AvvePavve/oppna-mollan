@@ -131,19 +131,27 @@ header h1 {
   display: none !important;
 }
 
-.leaflet-popup-content {
+.leaflet-popup-content,
+.maplibregl-popup-content {
   font-family: 'NexaBook', Arial, sans-serif;
   font-size: 1rem;
   line-height: 1.4;
 }
 
-.leaflet-popup-content strong {
+.leaflet-popup-content strong,
+.maplibregl-popup-content strong {
   font-family: 'NexaBold', Arial, sans-serif;
 }
 
-.leaflet-popup-content .route-btn {
+.leaflet-popup-content .route-btn,
+.maplibregl-popup-content .route-btn {
   margin-top: 0.65rem;
   display: inline-block;
+}
+
+.address-marker {
+  width: 24px;
+  height: 24px;
 }
 
 #removeRouteBtn {
@@ -198,7 +206,9 @@ header h1 {
   .leaflet-control-layers-expanded,
   .leaflet-popup-content-wrapper,
   .leaflet-popup-tip,
-  .leaflet-routing-container {
+  .leaflet-routing-container,
+  .maplibregl-popup-content,
+  .maplibregl-popup-tip {
     background-color: #232323 !important;
     color: #f4f4f4 !important;
   }
