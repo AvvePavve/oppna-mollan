@@ -3,17 +3,17 @@ function closeInfo() {
 }
 
 const lightTiles = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.{ext}?api_key=9a2de762-ebe1-42e7-bcd2-0260d8917ae6', {
-	minZoom: 0,
-	maxZoom: 20,
-	attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-	ext: 'png'
+  minZoom: 0,
+  maxZoom: 20,
+  attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  ext: 'png'
 });
 
 const darkTiles = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.{ext}?api_key=9a2de762-ebe1-42e7-bcd2-0260d8917ae6', {
-	minZoom: 0,
-	maxZoom: 20,
-	attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-	ext: 'png'
+  minZoom: 0,
+  maxZoom: 20,
+  attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  ext: 'png'
 });
 
 const defaultCenter = [55.591988278009765, 13.011586184559851];
@@ -48,7 +48,6 @@ const userIcon = L.divIcon({
   popupAnchor: [0, -9],
 });
 
-// Geolocation
 if (navigator.geolocation) {
   navigator.geolocation.watchPosition(
     position => {
@@ -78,97 +77,6 @@ if (navigator.geolocation) {
   );
 }
 
-// ===== 3D-effekt för byggnader =====
-
-// Samlad offset för tak och väggar
-const buildingOffset = {
-  lng: -0.00002,
-  lat: 0.00007
-};
-
-// Skapar en djupkopierad version av ett GeoJSON-objekt
-function cloneGeoJSON(geojson) {
-  return {
-    ...geojson,
-    features: geojson.features.map(f => ({
-      ...f,
-      geometry: JSON.parse(JSON.stringify(f.geometry)),
-      properties: { ...f.properties }
-    }))
-  };
-}
-
-// Funktion som lägger till "väggar" med 3D-effekt
-function addBuildingSidesFromLayer(layerGroup) {
-  const wallColor = '#faf4b7';
-
-  layerGroup.eachLayer(layer => {
-    const geom = layer.feature && layer.feature.geometry;
-    if (geom && geom.type === "Polygon") {
-      const coords = geom.coordinates[0];
-
-      for (let i = 0; i < coords.length - 1; i++) {
-        const base1 = coords[i];
-        const base2 = coords[i + 1];
-        const top1 = [base1[0] + buildingOffset.lng, base1[1] + buildingOffset.lat];
-        const top2 = [base2[0] + buildingOffset.lng, base2[1] + buildingOffset.lat];
-
-        const wallCoords = [[
-          base1, base2, top2, top1, base1
-        ]];
-
-        const wallFeature = {
-          type: "Feature",
-          geometry: {
-            type: "Polygon",
-            coordinates: wallCoords
-          }
-        };
-
-        L.geoJSON(wallFeature, {
-          style: {
-            color: wallColor,
-            weight: 0.5,
-            fillColor: wallColor,
-            fillOpacity: 1
-          }
-        }).addTo(map);
-      }
-    }
-  });
-}
-
-fetch('data/byggnader_mollan.geojson', { cache: "force-cache" })
-  .then(response => response.json())
-  .then(data => {
-    const offsetData = cloneGeoJSON(data);
-
-    offsetData.features.forEach(feature => {
-      if (feature.geometry.type === "Polygon") {
-        feature.geometry.coordinates[0] = feature.geometry.coordinates[0].map(coord => [
-          coord[0] + buildingOffset.lng,
-          coord[1] + buildingOffset.lat
-        ]);
-      }
-    });
-
-    const takLayer = L.geoJSON(offsetData, {
-      style: {
-        color: '#f47c31',
-        weight: 1,
-        fillColor: '#f47c31',
-        fillOpacity: 1
-      }
-    });
-
-    const originalLayer = L.geoJSON(data); // bottenposition för väggarna
-
-    addBuildingSidesFromLayer(originalLayer);
-    takLayer.addTo(map);
-  })
-  .catch(err => console.error("Fel vid inläsning av byggnader:", err));
-
-// ===== Adressmarkörer =====
 const addressIcon = L.icon({
   iconUrl: 'blue-marker.png',
   iconSize: [24, 24],
@@ -179,47 +87,85 @@ const addressIcon = L.icon({
   shadowAnchor: [12, 35]
 });
 
-const aktivitetLayers = {};
+const aktivitetLayersLive = {};
+const SHEET_URL = 'https://opensheet.elk.sh/2PACX-1vTbRqpzMobBXVrOMLz2rC5pdp6TudoJ-tSo7UdEQdKwVlsxj4XS-kNT16-m9UmEKxpEpT7hMd_IxOS0/Formulärsvar 1';
 
-fetch('data/adresser.geojson', { cache: "force-cache" })
-  .then(response => response.json())
-  .then(data => {
-    const filtered = data.features.filter(f => f.properties.oppen === "Ja");
+function normaliseraAdress(adress) {
+  return adress
+    .toLowerCase()
+    .replace(/[^a-z0-9åäö\s]/gi, '')
+    .replace(/\d{3}\s?\d{2}/g, '')
+    .replace(/brf\s?[a-z\s-]*/gi, '')
+    .replace(/malmö/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+async function uppdateraAktiviteterFrånGoogleFormulär() {
+  try {
+    const response = await fetch(SHEET_URL);
+    const formData = await response.json();
+
+    const formSvar = formData.map(row => ({
+      adress: normaliseraAdress(row["📍 Gatuadress till din innergård"] || ""),
+      aktivitet: row["🕺 Vad kommer hända på innergården?"] || "Ingen aktivitet angiven"
+    }));
+
+    const geoRes = await fetch('data/adresser.geojson');
+    const geoJson = await geoRes.json();
+
+    geoJson.features.forEach(feature => {
+      const geoAdress = normaliseraAdress(feature.properties.Adress || "");
+      const match = formSvar.find(entry =>
+        geoAdress.includes(entry.adress) || entry.adress.includes(geoAdress)
+      );
+
+      if (match) {
+        feature.properties.Aktivitet = match.aktivitet;
+        feature.properties.oppen = "Ja";
+      }
+    });
+
+    const filtered = geoJson.features.filter(f => f.properties.oppen === "Ja");
+
+    for (const layer of Object.values(aktivitetLayersLive)) {
+      layer.clearLayers();
+    }
 
     filtered.forEach(feature => {
-      const props = feature.properties;
-      const aktivitet = props.Aktivitet ? props.Aktivitet : "Ingen aktivitet planerad";
-      const adress = props.Adress || "Okänd adress";
-
-      const coordsList = feature.geometry.type === "MultiPoint"
+      const aktivitet = feature.properties.Aktivitet;
+      const coords = feature.geometry.type === "MultiPoint"
         ? feature.geometry.coordinates
         : [feature.geometry.coordinates];
 
-      coordsList.forEach(coord => {
+      coords.forEach(coord => {
         const latLng = [coord[1], coord[0]];
         const marker = L.marker(latLng, { icon: addressIcon });
 
-        const popupContent = `
-          <strong>Adress:</strong> ${adress}<br>
+        const popup = `
+          <strong>Adress:</strong> ${feature.properties.Adress}<br>
           <strong>Aktivitet:</strong> ${aktivitet}<br>
-          <button class="btn route-btn" data-lat="${latLng[0]}" data-lng="${latLng[1]}" aria-label="Visa rutt till denna adress">Visa rutt</button>
+          <button class="btn route-btn" data-lat="${latLng[0]}" data-lng="${latLng[1]}">Visa rutt</button>
         `;
 
-        marker.bindPopup(popupContent);
+        marker.bindPopup(popup);
 
-        if (!aktivitetLayers[aktivitet]) {
-          aktivitetLayers[aktivitet] = L.layerGroup();
+        if (!aktivitetLayersLive[aktivitet]) {
+          aktivitetLayersLive[aktivitet] = L.layerGroup();
         }
-        aktivitetLayers[aktivitet].addLayer(marker);
+        aktivitetLayersLive[aktivitet].addLayer(marker);
       });
     });
 
-    Object.values(aktivitetLayers).forEach(layer => layer.addTo(map));
-    L.control.layers(null, aktivitetLayers, { collapsed: true }).addTo(map);
-  })
-  .catch(err => console.error("Fel vid inläsning av adresser:", err));
+    Object.values(aktivitetLayersLive).forEach(layer => layer.addTo(map));
+  } catch (err) {
+    console.error("Fel vid formulärintegration:", err);
+  }
+}
 
-// ===== Routing-knappar =====
+uppdateraAktiviteterFrånGoogleFormulär();
+setInterval(uppdateraAktiviteterFrånGoogleFormulär, 120000);
+
 document.addEventListener('click', function (e) {
   if (e.target.classList.contains('route-btn')) {
     const lat = parseFloat(e.target.getAttribute('data-lat'));
@@ -264,7 +210,6 @@ removeRouteBtn.addEventListener('click', () => {
   if (routingControl) {
     map.removeControl(routingControl);
     routingControl = null;
-    
     removeRouteBtn.style.display = 'none';
   }
 });
