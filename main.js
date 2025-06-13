@@ -157,12 +157,10 @@ const aktivitetLayersLive = {};
 const SHEET_URL = 'https://opensheet.elk.sh/1t5ILyafrrFJNiO2V0QrqbZyFNgTdXcY7SujnOOQHbfI/Formulärsvar 1';
 
 function normaliseraAdress(adress) {
-  const match = adress.match(/[a-zåäö]+(?:gatan|vägen|torget)\s?\d+[a-d]?/i);
-  const ren = match ? match[0] : adress;
-  return ren
+  return adress
     .toLowerCase()
     .replace(/[^a-z0-9åäö\s]/gi, '')
-    .replace(/\d{3}\s?\d{2}/g, '') // ta bort ev. postnummer
+    .replace(/\d{3}\s?\d{2}/g, '')
     .replace(/malmö/g, '')
     .replace(/\s+/g, ' ')
     .trim();
