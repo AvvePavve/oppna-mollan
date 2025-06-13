@@ -232,7 +232,7 @@ async function uppdateraAktiviteterFrånGoogleFormulär() {
       layer.addTo(map);
     }
 
-    L.control.layers(null, overlayMaps, { collapsed: false, position: 'topright' }).addTo(map);
+    L.control.layers(null, overlayMaps, { collapsed: true, position: 'topright' }).addTo(map);
 
   } catch (err) {
     console.error("Fel vid formulärintegration:", err);
