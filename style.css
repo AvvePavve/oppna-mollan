@@ -43,7 +43,7 @@ header {
 
 .logo-link img {
   height: 60px;
-  margin-right: 1rem;
+  margin-left: 1rem;
 }
 
 header h1 {
@@ -234,9 +234,12 @@ header h1 {
   }
 
   .maplibregl-ctrl-group button,
-  .maplibregl-popup-content-wrapper,
-  .maplibregl-popup-tip {
+  .maplibregl-popup-content-wrapper {
     background-color: #232323;
+    color: #f4f4f4;
+  }
+
+  .maplibregl-popup-content {
     color: #f4f4f4;
   }
 
