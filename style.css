@@ -176,15 +176,4 @@ header h1 {
     background-color: #232323;
     color: #f4f4f4;
   }
-
-  .maplibregl-popup-anchor-top .maplibregl-popup-tip { border-bottom-color: #232323 !important; }
-  .maplibregl-popup-anchor-bottom .maplibregl-popup-tip { border-top-color: #232323 !important; }
-  .maplibregl-popup-anchor-left .maplibregl-popup-tip { border-right-color: #232323 !important; }
-  .maplibregl-popup-anchor-right .maplibregl-popup-tip { border-left-color: #232323 !important; }
-
-  .maplibregl-ctrl-zoom-in,
-  .maplibregl-ctrl-zoom-out {
-    background-color: #3a3a3a !important;
-    color: #f4f4f4 !important;
-  }
 }
