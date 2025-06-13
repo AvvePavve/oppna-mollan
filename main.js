@@ -86,7 +86,7 @@ const buildingOffset = {
   lat: 0.00007
 };
 
-// Robust kloning av GeoJSON-objekt
+// Skapar en djupkopierad version av ett GeoJSON-objekt
 function cloneGeoJSON(geojson) {
   return {
     ...geojson,
