@@ -43,7 +43,8 @@ header {
 
 .logo-link img {
   height: 60px;
-  padding: 1rem;
+  padding: 0;
+  margin-left: 1rem;
 }
 
 header h1 {
@@ -255,4 +256,9 @@ header h1 {
     background-color: #444;
   }
 
+}
+
+.maplibregl-popup-content-wrapper,
+.maplibregl-popup-tip {
+  transition: background-color 0.3s, border-color 0.3s;
 }
