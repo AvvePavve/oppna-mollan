@@ -1,3 +1,5 @@
+// Förenklad och optimerad main.js för Öppna Möllan 2025
+
 function closeInfo() {
   document.getElementById("infoOverlay").style.display = "none";
 }
@@ -11,7 +13,7 @@ function getBaseStyle() {
   return `https://tiles.stadiamaps.com/styles/${styleName}.json?api_key=9a2de762-ebe1-42e7-bcd2-0260d8917ae6`;
 }
 
-let map = new maplibregl.Map({
+const map = new maplibregl.Map({
   container: 'map',
   style: getBaseStyle(),
   center: defaultCenter,
@@ -19,149 +21,126 @@ let map = new maplibregl.Map({
 });
 
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-  // disable diffing to avoid "setSprite" console warnings when switching styles
   map.setStyle(getBaseStyle(), { diff: false });
 });
 
 map.addControl(new maplibregl.NavigationControl());
-map.addControl(
-  new maplibregl.AttributionControl({
-    compact: true,
-    customAttribution:
-      '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  })
-);
+map.addControl(new maplibregl.AttributionControl({
+  compact: true,
+  customAttribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}));
 
 let activitySelect;
 
 class ActivityControl {
   onAdd(map) {
     this._map = map;
-    this._container = document.createElement('div');
-    this._container.className = 'maplibregl-ctrl maplibregl-ctrl-group activity-control';
+    const container = document.createElement('div');
+    container.className = 'maplibregl-ctrl maplibregl-ctrl-group activity-control';
+
     activitySelect = document.createElement('select');
     activitySelect.id = 'activityFilter';
     activitySelect.addEventListener('change', filterMarkers);
-    this._container.appendChild(activitySelect);
-    return this._container;
+    container.appendChild(activitySelect);
+
+    return container;
   }
 
   onRemove() {
-    this._container.remove();
     this._map = undefined;
   }
 }
 
 map.addControl(new ActivityControl(), 'top-left');
 
-let userMarker;
-let userLngLat;
+let userMarker, userLngLat;
 const removeRouteBtn = document.getElementById('removeRouteBtn');
 const addressMarkers = [];
 const activitySet = new Set();
 
 if (navigator.geolocation) {
-  navigator.geolocation.watchPosition(
-    position => {
-      const lngLat = [position.coords.longitude, position.coords.latitude];
-      userLngLat = lngLat;
+  navigator.geolocation.watchPosition(pos => {
+    const lngLat = [pos.coords.longitude, pos.coords.latitude];
+    userLngLat = lngLat;
 
-      if (userMarker) {
-        userMarker.setLngLat(lngLat);
-      } else {
-        const userEl = document.createElement('div');
-        userEl.className = 'user-location-icon';
-        userMarker = new maplibregl.Marker({ element: userEl, anchor: 'center' })
-          .setLngLat(lngLat)
-          .setPopup(new maplibregl.Popup().setText('Du är här!'))
-          .addTo(map);
-        map.setCenter(lngLat);
-      }
-    },
-    error => {
-      console.warn('Plats kunde inte hämtas:', error.message);
-    },
-    {
-      enableHighAccuracy: true,
-      maximumAge: 20000,
-      timeout: 10000
+    if (!userMarker) {
+      const el = document.createElement('div');
+      el.className = 'user-location-icon';
+      userMarker = new maplibregl.Marker({ element: el, anchor: 'center' })
+        .setLngLat(lngLat)
+        .setPopup(new maplibregl.Popup().setText('Du är här!'))
+        .addTo(map);
+      map.setCenter(lngLat);
+    } else {
+      userMarker.setLngLat(lngLat);
     }
-  );
+  }, err => console.warn('Platsfel:', err.message), {
+    enableHighAccuracy: true,
+    maximumAge: 20000,
+    timeout: 10000
+  });
 }
 
-map.on('load', () => {
-  loadAddresses();
-});
-
-map.on('style.load', () => {
-  loadBuildings();
-});
+map.on('load', () => loadAddresses());
+map.on('style.load', () => loadBuildings());
 
 function loadBuildings() {
   fetch('data/byggnader_mollan.geojson', { cache: 'force-cache' })
-    .then(r => r.json())
+    .then(res => res.json())
     .then(data => {
       map.addSource('buildings', { type: 'geojson', data });
 
-      let labelLayerId;
-      for (const layer of map.getStyle().layers) {
-        if (layer.type === 'symbol' && layer.layout && layer.layout['text-field']) {
-          labelLayerId = layer.id;
-          break;
-        }
-      }
+      const labelLayer = map.getStyle().layers.find(l => l.type === 'symbol' && l.layout?.['text-field']);
 
-      map.addLayer(
-        {
-          id: 'buildings-extrusion',
-          type: 'fill-extrusion',
-          source: 'buildings',
-          paint: {
-            'fill-extrusion-color': '#f47c31',
-            'fill-extrusion-height': 5,
-            'fill-extrusion-opacity': 1
-          }
-        },
-        labelLayerId
-      );
+      map.addLayer({
+        id: 'buildings-extrusion',
+        type: 'fill-extrusion',
+        source: 'buildings',
+        paint: {
+          'fill-extrusion-color': '#f47c31',
+          'fill-extrusion-height': 5,
+          'fill-extrusion-opacity': 1
+        }
+      }, labelLayer?.id);
     })
-    .catch(err => console.error('Fel vid inläsning av byggnader:', err));
+    .catch(err => console.error('Byggnadsfel:', err));
+}
+
+function createPopupHTML(adress, aktivitet, lngLat) {
+  return `
+    <strong>Adress:</strong> ${adress}<br>
+    <strong>Aktivitet:</strong> ${aktivitet}<br>
+    <button class="btn route-btn" data-lat="${lngLat[1]}" data-lng="${lngLat[0]}">Visa rutt</button>
+  `;
 }
 
 function loadAddresses() {
   fetch('data/adresser.geojson', { cache: 'force-cache' })
-    .then(r => r.json())
+    .then(res => res.json())
     .then(data => {
       addressMarkers.forEach(obj => obj.marker.remove());
       addressMarkers.length = 0;
       activitySet.clear();
 
-      const filtered = data.features.filter(f => f.properties.oppen === 'Ja');
+      const öppna = data.features.filter(f => f.properties.oppen === 'Ja');
 
-      filtered.forEach(feature => {
-        const props = feature.properties;
-        const aktivitet = props.Aktivitet ? props.Aktivitet : 'Ingen aktivitet planerad';
+      öppna.forEach(f => {
+        const props = f.properties;
+        const aktivitet = props.Aktivitet || 'Ingen aktivitet planerad';
         const adress = props.Adress || 'Okänd adress';
-        const coordsList =
-          feature.geometry.type === 'MultiPoint'
-            ? feature.geometry.coordinates
-            : [feature.geometry.coordinates];
+        const coordsList = f.geometry.type === 'MultiPoint' ? f.geometry.coordinates : [f.geometry.coordinates];
 
         coordsList.forEach(coord => {
           const lngLat = [coord[0], coord[1]];
-          const popupContent = `
-            <strong>Adress:</strong> ${adress}<br>
-            <strong>Aktivitet:</strong> ${aktivitet}<br>
-            <button class="btn route-btn" data-lat="${lngLat[1]}" data-lng="${lngLat[0]}" aria-label="Visa rutt till denna adress">Visa rutt</button>
-          `;
-
           const el = document.createElement('img');
           el.src = 'blue-marker.png';
           el.className = 'address-marker';
+
           const marker = new maplibregl.Marker({ element: el, anchor: 'bottom' })
             .setLngLat(lngLat)
-            .setPopup(new maplibregl.Popup({ offset: 25 }).setHTML(popupContent))
+            .setPopup(new maplibregl.Popup({ offset: 25 }).setHTML(createPopupHTML(adress, aktivitet, lngLat)))
             .addTo(map);
+
           addressMarkers.push({ marker, aktivitet });
           activitySet.add(aktivitet);
         });
@@ -170,25 +149,24 @@ function loadAddresses() {
       populateActivityOptions();
       filterMarkers();
     })
-    .catch(err => console.error('Fel vid inläsning av adresser:', err));
+    .catch(err => console.error('Adressfel:', err));
 }
 
 document.addEventListener('click', e => {
   if (e.target.classList.contains('route-btn')) {
-    const lat = parseFloat(e.target.getAttribute('data-lat'));
-    const lng = parseFloat(e.target.getAttribute('data-lng'));
+    const lat = parseFloat(e.target.dataset.lat);
+    const lng = parseFloat(e.target.dataset.lng);
     routeTo([lng, lat]);
   }
 });
 
 function routeTo(destLngLat) {
-  if (!userLngLat) {
-    alert('Din plats är inte tillgänglig än!');
-    return;
-  }
+  if (!userLngLat) return alert('Din plats är inte tillgänglig än!');
+
   const url = `https://routing.openstreetmap.de/routed-foot/route/v1/foot/${userLngLat[0]},${userLngLat[1]};${destLngLat[0]},${destLngLat[1]}?overview=full&geometries=geojson&steps=false`;
+
   fetch(url)
-    .then(r => r.json())
+    .then(res => res.json())
     .then(data => {
       const geom = data.routes[0].geometry;
 
@@ -196,6 +174,7 @@ function routeTo(destLngLat) {
         map.removeLayer('route');
         map.removeSource('route');
       }
+
       map.addSource('route', { type: 'geojson', data: { type: 'Feature', geometry: geom } });
       map.addLayer({
         id: 'route',
@@ -204,9 +183,10 @@ function routeTo(destLngLat) {
         layout: { 'line-cap': 'round', 'line-join': 'round' },
         paint: { 'line-color': '#67aae2', 'line-width': 5 }
       });
+
       removeRouteBtn.style.display = 'block';
     })
-    .catch(err => console.error('Fel vid rutt:', err));
+    .catch(err => console.error('Ruttfel:', err));
 }
 
 removeRouteBtn.addEventListener('click', () => {
