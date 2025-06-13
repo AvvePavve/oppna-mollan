@@ -177,7 +177,7 @@ header h1 {
   }
 
   .maplibregl-popup-tip {
-  border-top-color: #232323;
+    border-top-color: #232323;
   }
   
 }
