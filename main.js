@@ -157,11 +157,12 @@ const aktivitetLayersLive = {};
 const SHEET_URL = 'https://opensheet.elk.sh/1t5ILyafrrFJNiO2V0QrqbZyFNgTdXcY7SujnOOQHbfI/Formulärsvar 1';
 
 function normaliseraAdress(adress) {
-  return adress
+  const match = adress.match(/[a-zåäö]+(?:gatan|vägen|torget)\s?\d+[a-d]?/i);
+  const ren = match ? match[0] : adress;
+  return ren
     .toLowerCase()
     .replace(/[^a-z0-9åäö\s]/gi, '')
     .replace(/\d{3}\s?\d{2}/g, '')
-    .replace(/brf\s?[a-z\s-]*/gi, '')
     .replace(/malmö/g, '')
     .replace(/\s+/g, ' ')
     .trim();
@@ -184,14 +185,12 @@ async function uppdateraAktiviteterFrånGoogleFormulär() {
     geoJson.features.forEach(feature => {
       const geoAdress = normaliseraAdress(feature.properties.Adress || "");
       const match = formSvar.find(entry => geoAdress === entry.adress);
-
       if (match) {
         feature.properties.Aktivitet = match.aktivitet;
         feature.properties.oppen = "Ja";
       } else {
         feature.properties.oppen = "Nej";
       }
-    });
     });
 
     const filtered = geoJson.features.filter(f => f.properties.oppen === "Ja");
