@@ -33,7 +33,7 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 2rem;
+  padding: 1rem 1rem;
   background-color: #f47c31;
   color: white;
   height: 60px;
@@ -170,7 +170,6 @@ header h1 {
   .info-box,
   .maplibregl-popup-content,
   .maplibregl-popup-content-wrapper,
-  .maplibregl-popup-tip,
   .maplibregl-ctrl-group button,
   .activity-control select {
     background-color: #232323;
