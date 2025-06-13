@@ -1,19 +1,14 @@
-/* Förenklad och optimerad style.css för Öppna Möllan 2025 */
-
 @font-face {
   font-family: 'NexaBook';
   src: url('fonts/nexabook.otf') format('opentype');
-  font-display: swap;
 }
 @font-face {
   font-family: 'NexaBold';
   src: url('fonts/nexabold.otf') format('opentype');
-  font-display: swap;
 }
 @font-face {
   font-family: 'NexaBlack';
   src: url('fonts/nexablack.otf') format('opentype');
-  font-display: swap;
 }
 
 *, *::before, *::after {
@@ -32,10 +27,9 @@ body {
 header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 1rem 2rem;
   background-color: #f47c31;
   color: white;
+  padding: 1rem 1rem 1rem 0;
   height: 60px;
   font-family: 'NexaBlack', Arial, sans-serif;
 }
@@ -45,9 +39,12 @@ header {
   align-items: center;
   text-decoration: none;
 }
+
 .logo-link img {
   height: 60px;
+  margin-right: 1rem;
 }
+
 header h1 {
   margin: 0;
   font-size: 1.2rem;
@@ -63,9 +60,10 @@ header h1 {
 #map {
   height: calc(100vh - 60px);
   width: 100%;
+  position: relative;
 }
 
-.btn, #removeRouteBtn {
+.btn {
   padding: 10px 16px;
   font-size: 1rem;
   background: #f47c31;
@@ -78,31 +76,9 @@ header h1 {
   transition: background 0.3s, color 0.3s;
 }
 
-.btn:focus, #removeRouteBtn:focus {
+.btn:focus {
   outline: 2px solid #333;
   outline-offset: 2px;
-}
-
-#removeRouteBtn {
-  position: fixed;
-  bottom: 30px;
-  right: 10px;
-  z-index: 1001;
-  display: none;
-}
-
-@media (max-width: 480px) {
-  #removeRouteBtn {
-    bottom: 12px;
-    padding: 8px 12px;
-    font-size: 0.9rem;
-  }
-  .info-box {
-    width: 90%;
-    max-width: 340px;
-    font-size: 0.95rem;
-    padding: 1.5rem;
-  }
 }
 
 .info-overlay {
@@ -126,12 +102,23 @@ header h1 {
   text-align: center;
   font-family: 'NexaBook', Arial, sans-serif;
 }
+
 .info-box h2 {
   margin-top: 0;
   font-family: 'NexaBold', Arial, sans-serif;
 }
 
-.user-location-icon {
+@media (max-width: 480px) {
+  .info-box {
+    width: 90%;
+    max-width: 340px;
+    font-size: 0.95rem;
+    padding: 1.5rem;
+  }
+}
+
+.user-location-icon,
+.leaflet-marker-pane .leaflet-marker-icon.user-location {
   width: 18px;
   height: 18px;
   background-color: #6278b3;
@@ -140,45 +127,88 @@ header h1 {
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
 }
 
-.address-marker {
-  width: 24px;
-  height: 24px;
+.leaflet-routing-container {
+  display: none !important;
 }
 
-.activity-control select {
-  padding: 6px 8px;
-  font-family: 'NexaBook', Arial, sans-serif;
-  font-size: 1rem;
-  border-radius: 4px;
-  background: #fff;
-  color: #333;
-  border: none;
-}
-
-.maplibregl-popup-content {
+.leaflet-popup-content {
   font-family: 'NexaBook', Arial, sans-serif;
   font-size: 1rem;
   line-height: 1.4;
-  color: #333;
 }
-.maplibregl-popup-content strong {
+
+.leaflet-popup-content strong {
   font-family: 'NexaBold', Arial, sans-serif;
 }
 
+.leaflet-popup-content .route-btn {
+  margin-top: 0.65rem;
+  display: inline-block;
+}
+
+#removeRouteBtn {
+  position: fixed;
+  bottom: 30px;
+  right: 10px;
+  z-index: 1001;
+  padding: 10px 16px;
+  font-size: 1rem;
+  background: #f47c31;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'NexaBook', Arial, sans-serif;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  display: none;
+}
+
+@media (max-width: 480px) {
+  #removeRouteBtn {
+    right: 10px;
+    bottom: 12px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
-  body,
-  .info-box,
-  .maplibregl-popup-content,
-  .maplibregl-popup-content-wrapper,
-  .maplibregl-popup-tip,
-  .activity-control select {
-    background-color: #232323;
+  body {
+    background-color: #181818;
     color: #f4f4f4;
   }
 
-  .maplibregl-popup-anchor-top .maplibregl-popup-tip { border-bottom-color: #232323 !important; }
-  .maplibregl-popup-anchor-bottom .maplibregl-popup-tip { border-top-color: #232323 !important; }
-  .maplibregl-popup-anchor-left .maplibregl-popup-tip { border-right-color: #232323 !important; }
-  .maplibregl-popup-anchor-right .maplibregl-popup-tip { border-left-color: #232323 !important; }
+  header {
+    background-color: #f47c31;
+    color: #fff;
+  }
 
-}
+  .info-box {
+    background: #232323;
+    color: #f4f4f4;
+  }
+
+  .btn {
+    background: #f47c31;
+    color: #fff;
+  }
+
+  .leaflet-control-zoom a,
+  .leaflet-control-layers-toggle,
+  .leaflet-control-layers-expanded,
+  .leaflet-popup-content-wrapper,
+  .leaflet-popup-tip,
+  .leaflet-routing-container {
+    background-color: #232323 !important;
+    color: #f4f4f4 !important;
+  }
+
+  .leaflet-control-zoom a:hover,
+  .leaflet-control-layers-toggle:hover {
+    background-color: #333 !important;
+  }
+
+  .leaflet-control-zoom a:active,
+  .leaflet-control-layers-toggle:active {
+    background-color: #444 !important;
+  }
