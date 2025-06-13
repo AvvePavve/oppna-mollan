@@ -170,7 +170,7 @@ fetch('data/byggnader_mollan.geojson', { cache: "force-cache" })
 
 // ===== Adressmarkörer =====
 const addressIcon = L.icon({
-  iconUrl: 'marker.png',
+  iconUrl: 'blue-pin.png',
   iconSize: [44, 44],
   iconAnchor: [22, 35],
   popupAnchor: [0, -35],
