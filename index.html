@@ -1,43 +1,55 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Öppna Möllan 2025</title>
+  <meta charset="utf-8" />
+  <title>Öppna Möllan - 2025</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
-  <!-- Leaflet CSS och JS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#f47c31" />
 
-  <!-- MapLibre GL JS -->
-  <script src="https://unpkg.com/maplibre-gl@5.0.1/dist/maplibre-gl.js"></script>
-  <link href="https://unpkg.com/maplibre-gl@5.0.1/dist/maplibre-gl.css" rel="stylesheet" />
+  <link rel="icon" type="image/x-icon" href="/oppna-mollan/favicon.ico?" />
+  <link rel="icon" type="image/png" href="/oppna-mollan/favicon.png?" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <meta name="apple-touch-title" content="Öppna Möllan" />
+  <meta property="og:image" content="apple-touch-icon.png" />
 
-  <!-- MapLibre integration med Leaflet -->
-  <script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet@0.1.0/leaflet-maplibre-gl.js"></script>
+  <meta name="description" content="Webbkarta över öppna innergårdar på Möllevången under Öppna Möllan 2025." />
 
-  <!-- Routing (OSRM) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
-  <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.min.js"></script>
-
-  <!-- Egen CSS -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
+  <noscript>
+    <div class="noscript-warning">
+      Denna webbplats kräver JavaScript för att fungera korrekt.
+    </div>
+  </noscript>
+
+  <div class="info-overlay" id="infoOverlay">
+    <div class="info-box">
+      <h2>Välkommen till Öppna Möllan 2025!</h2>
+      <p>Här kan du se vilka innergårdar på och runt Möllevången som håller öppet idag. Klicka på punkterna för att se vilka aktiviteter som kommer att hållas i på de olika gårdarna.</p>
+      <button class="btn" onclick="closeInfo()" aria-label="Stäng informationsrutan">Stäng</button>
+    </div>
+  </div>
+
   <header>
-    <h1>Öppna Möllan 2025</h1>
+    <a class="logo-link" href="https://www.facebook.com/events/569497915741012?locale=sv_SE" rel="noopener">
+      <img src="Vit_emblem.png" alt="Öppna Möllan logotyp" />
+    </a>
+    <h1>ÖPPNA MÖLLAN - 2025</h1>
   </header>
 
-  <main>
-    <div id="map"></div>
-    <div id="info-panel" class="info-panel hidden"></div>
-    <button id="close-info" class="control-btn hidden" onclick="closeInfo()">Stäng</button>
-    <div id="remove-route-container" class="leaflet-bottom leaflet-left">
-      <button id="remove-route" class="control-btn hidden">Ta bort rutt</button>
-    </div>
-  </main>
+  <div id="map"></div>
+  <button id="removeRouteBtn" style="display:none;">Ta bort rutt</button>
 
-  <!-- Din anpassade logik -->
-  <script src="main.js"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.min.js"></script>
+  <script src="main.js" defer></script>
 </body>
 </html>
