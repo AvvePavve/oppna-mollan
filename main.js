@@ -63,6 +63,14 @@ async function uppdateraAktiviteter() {
   if (map.getSource('adresser')) {
     map.getSource('adresser').setData(adresserData);
   }
+
+  // Debug: visa omatchade adresser
+  const inkommandeAdresser = formSvar.map(f => f.adress);
+  const matchadeAdresser = adresserData.features.map(f => normaliseraAdress(f.properties.Adress || ""));
+  const omatchade = inkommandeAdresser.filter(a => !matchadeAdresser.includes(a));
+  if (omatchade.length > 0) {
+    console.warn("Formulärsvar utan matchande adress i GeoJSON:", omatchade);
+  }
 }
 
 async function visaRutt(destLngLat) {
@@ -110,33 +118,6 @@ window.taBortRutt = function () {
   }
   const removeBtn = document.getElementById('removeRouteBtn');
   if (removeBtn) removeBtn.style.display = 'none';
-}
-  const url = `https://routing.openstreetmap.de/routed-foot/route/v1/foot/${userCoords.join(',')};${destLngLat.join(',')}?overview=full&geometries=geojson`;
-  const res = await fetch(url);
-  const json = await res.json();
-  const route = json.routes[0].geometry;
-
-  if (map.getSource('route')) {
-    map.getSource('route').setData({ type: 'Feature', geometry: route });
-  } else {
-    map.addSource('route', {
-      type: 'geojson',
-      data: { type: 'Feature', geometry: route }
-    });
-    map.addLayer({
-      id: 'route-line',
-      type: 'line',
-      source: 'route',
-      layout: {
-        'line-cap': 'round',
-        'line-join': 'round'
-      },
-      paint: {
-        'line-color': '#67aae2',
-        'line-width': 5
-      }
-    });
-  }
 }
 
 map.on('load', async () => {
