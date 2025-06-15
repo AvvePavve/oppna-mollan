@@ -165,23 +165,7 @@ map.on('load', async () => {
     data: adresserData
   });
 
-  map.loadImage('blue-marker.png', (err, image) => {
-    if (!err && !map.hasImage('blue-marker')) {
-      map.addImage('blue-marker', image);
-    }
-
-    map.addLayer({
-      id: 'adresser-symboler',
-      type: 'symbol',
-      source: 'adresser',
-      filter: ['==', ['get', 'oppen'], 'Ja'],
-      layout: {
-        'icon-image': 'blue-marker',
-        'icon-size': 0.9,
-        'icon-anchor': 'bottom'
-      }
-    });
-  });
+  
 
   map.loadImage('blue-marker.png', (err, image) => {
     if (!err && !map.hasImage('blue-marker')) {
@@ -213,6 +197,21 @@ map.on('load', async () => {
   });
 
   await uppdateraAktiviteter();
+
+  // Skapa lagret efter att data har uppdaterats och bilden finns
+  if (!map.getLayer('adresser-symboler') && map.hasImage('blue-marker')) {
+    map.addLayer({
+      id: 'adresser-symboler',
+      type: 'symbol',
+      source: 'adresser',
+      filter: ['==', ['get', 'oppen'], 'Ja'],
+      layout: {
+        'icon-image': 'blue-marker',
+        'icon-size': 0.9,
+        'icon-anchor': 'bottom'
+      }
+    });
+  }
   setInterval(uppdateraAktiviteter, 120000);
 });
 
