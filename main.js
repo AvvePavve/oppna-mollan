@@ -165,22 +165,26 @@ map.on('load', async () => {
     data: adresserData
   });
 
+  // Säkerställ att vi lägger till laget först, även utan bild
+  map.addLayer({
+    id: 'adresser-symboler',
+    type: 'symbol',
+    source: 'adresser',
+    filter: ['==', ['get', 'oppen'], 'Ja'],
+    layout: {
+      'icon-image': 'blue-marker',
+      'icon-size': 0.9,
+      'icon-anchor': 'bottom'
+    }
+  });
+
   map.loadImage('blue-marker.png', (err, image) => {
     if (!err && !map.hasImage('blue-marker')) {
       map.addImage('blue-marker', image);
     }
 
-    map.addLayer({
-      id: 'adresser-symboler',
-      type: 'symbol',
-      source: 'adresser',
-      filter: ['==', ['get', 'oppen'], 'Ja'],
-      layout: {
-        'icon-image': 'blue-marker',
-        'icon-size': 0.9,
-        'icon-anchor': 'bottom'
-      }
-    });
+    // Ikon läggs in i laget direkt — redan definierat ovan
+  });
   });
 
   map.on('click', 'adresser-symboler', (e) => {
@@ -254,7 +258,7 @@ navigator.geolocation?.watchPosition(pos => {
     });
   }
 
-  map.flyTo({ center: userCoords, zoom: 16 });
+  // map.flyTo({ center: userCoords, zoom: 16 }); // Inaktiverad för att undvika att störa användaren
 }, err => {
   console.warn('Kunde inte hämta plats:', err.message);
 }, {
