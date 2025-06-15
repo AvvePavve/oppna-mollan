@@ -1,5 +1,3 @@
-// === Ny implementation av main.js med Leaflet.VectorGrid och dark mode ===
-
 function closeInfo() {
   document.getElementById("infoOverlay").style.display = "none";
 }
@@ -10,41 +8,26 @@ const map = L.map('map', { layers: [] }).setView(defaultCenter, defaultZoom);
 
 const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
 
-const vectorTileLight = L.vectorGrid.protobuf(
-  'https://tiles.stadiamaps.com/data/v3/{z}/{x}/{y}.pbf?api_key=9a2de762-ebe1-42e7-bcd2-0260d8917ae6',
-  {
-    vectorTileLayerStyles: {
-      road: { color: '#999', weight: 1 },
-      water: { fill: true, fillColor: '#a0c8f0', fillOpacity: 1, color: '#a0c8f0' },
-      building: { fill: true, fillColor: '#d9d5c9', fillOpacity: 0.8, color: '#d9d5c9' },
-      landuse: { fill: true, fillColor: '#e0e0e0', fillOpacity: 1, color: '#e0e0e0' },
-    },
-    interactive: false,
-  }
-);
-
-const vectorTileDark = L.vectorGrid.protobuf(
-  'https://tiles.stadiamaps.com/data/v3/{z}/{x}/{y}.pbf?api_key=9a2de762-ebe1-42e7-bcd2-0260d8917ae6',
-  {
-    vectorTileLayerStyles: {
-      road: { color: '#666', weight: 1 },
-      water: { fill: true, fillColor: '#334455', fillOpacity: 1, color: '#334455' },
-      building: { fill: true, fillColor: '#3c3c3c', fillOpacity: 0.8, color: '#3c3c3c' },
-      landuse: { fill: true, fillColor: '#2a2a2a', fillOpacity: 1, color: '#2a2a2a' },
-    },
-    interactive: false,
-  }
-);
+let vectorBase;
 
 function setBaseMap() {
-  if (prefersDark.matches) {
-    if (map.hasLayer(vectorTileLight)) map.removeLayer(vectorTileLight);
-    if (!map.hasLayer(vectorTileDark)) map.addLayer(vectorTileDark);
-  } else {
-    if (map.hasLayer(vectorTileDark)) map.removeLayer(vectorTileDark);
-    if (!map.hasLayer(vectorTileLight)) map.addLayer(vectorTileLight);
-  }
+  if (vectorBase) map.removeLayer(vectorBase);
+
+  const styleUrl = prefersDark.matches
+    ? 'https://tiles.stadiamaps.com/styles/alidade_smooth_dark.json'
+    : 'https://tiles.stadiamaps.com/styles/alidade_smooth.json';
+
+  vectorBase = L.maplibreGL({
+    style: styleUrl,
+    attribution:
+      '&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a>, ' +
+      '&copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a>, ' +
+      '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
+  });
+
+  map.addLayer(vectorBase);
 }
+
 setBaseMap();
 prefersDark.addEventListener('change', setBaseMap);
 
@@ -137,6 +120,7 @@ function addBuildingSidesFromLayer(layerGroup) {
     }
   });
 }
+
 fetch('data/byggnader_mollan.geojson', { cache: "force-cache" })
   .then(response => response.json())
   .then(data => {
