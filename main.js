@@ -1,3 +1,4 @@
+
 import maplibregl from 'https://cdn.skypack.dev/maplibre-gl';
 
 const defaultCenter = [13.011586184559851, 55.591988278009765];
@@ -17,15 +18,58 @@ const map = new maplibregl.Map({
   container: 'map',
   style: styleUrl,
   center: defaultCenter,
-  zoom: defaultZoom
+  zoom: defaultZoom,
+  hash: true
 });
 
+map.addControl(new maplibregl.NavigationControl(), 'top-right');
+
+const updateControlTheme = () => {
+  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  document.querySelectorAll('.maplibregl-ctrl').forEach(ctrl => {
+    ctrl.style.backgroundColor = isDark ? '#1e1e1e' : '#fff';
+    ctrl.style.color = isDark ? '#fff' : '#000';
+    ctrl.style.border = '1px solid ' + (isDark ? '#444' : '#ccc');
+  });
+};
+
+updateControlTheme();
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
   const newStyle = window.matchMedia('(prefers-color-scheme: dark)').matches
     ? `https://tiles.stadiamaps.com/styles/alidade_smooth_dark.json?api_key=${STADIA_API_KEY}`
     : `https://tiles.stadiamaps.com/styles/alidade_smooth.json?api_key=${STADIA_API_KEY}`;
+
+  map.once('style.load', () => {
+    updateControlTheme();
+    visaLagerIgen();
+  });
+
   map.setStyle(newStyle);
 });
+
+function visaLagerIgen() {
+  map.loadImage('blue-marker.png', (err, image) => {
+    if (!err && !map.hasImage('blue-marker')) {
+      map.addImage('blue-marker', image);
+    }
+
+    if (!map.getSource('adresser')) return;
+
+    if (!map.getLayer('adresser-symboler')) {
+      map.addLayer({
+        id: 'adresser-symboler',
+        type: 'symbol',
+        source: 'adresser',
+        filter: ['==', ['get', 'oppen'], 'Ja'],
+        layout: {
+          'icon-image': 'blue-marker',
+          'icon-size': 0.9,
+          'icon-anchor': 'bottom'
+        }
+      });
+    }
+  });
+}
 
 function normaliseraAdress(adress) {
   return adress
@@ -85,7 +129,6 @@ async function uppdateraAktiviteter() {
     });
   }
 
-  // Debug: visa omatchade adresser
   const inkommandeAdresser = formSvar.map(f => f.adress);
   const matchadeAdresser = adresserData.features.map(f => normaliseraAdress(f.properties.Adress || ""));
   const omatchade = inkommandeAdresser.filter(a => !matchadeAdresser.includes(a));
@@ -126,12 +169,10 @@ async function visaRutt(destLngLat) {
     });
   }
 
-  // Visa ta bort-knapp
   const removeBtn = document.getElementById('removeRouteBtn');
   if (removeBtn) removeBtn.style.display = 'block';
-} 
+}
 
-// Ta bort ruttfunktion
 window.taBortRutt = function () {
   if (map.getSource('route')) {
     map.removeLayer('route-line');
@@ -139,17 +180,13 @@ window.taBortRutt = function () {
   }
   const removeBtn = document.getElementById('removeRouteBtn');
   if (removeBtn) removeBtn.style.display = 'none';
-}
+};
 
 map.on('load', async () => {
   const byggnaderData = await fetch('data/byggnader_mollan.geojson').then(res => res.json());
   const adresserData = await fetch('data/adresser.geojson').then(res => res.json());
 
-  map.addSource('byggnader', {
-    type: 'geojson',
-    data: byggnaderData
-  });
-
+  map.addSource('byggnader', { type: 'geojson', data: byggnaderData });
   map.addLayer({
     id: 'tak',
     type: 'fill',
@@ -160,20 +197,8 @@ map.on('load', async () => {
     }
   });
 
-  map.addSource('adresser', {
-    type: 'geojson',
-    data: adresserData
-  });
-
-  
-
-  map.loadImage('blue-marker.png', (err, image) => {
-    if (!err && !map.hasImage('blue-marker')) {
-      map.addImage('blue-marker', image);
-    }
-
-    // Ikon läggs in i laget direkt — redan definierat ovan
-  });
+  map.addSource('adresser', { type: 'geojson', data: adresserData });
+  visaLagerIgen();
 
   map.on('click', 'adresser-symboler', (e) => {
     const props = e.features[0].properties;
@@ -197,44 +222,27 @@ map.on('load', async () => {
   });
 
   await uppdateraAktiviteter();
-
-  // Skapa lagret efter att data har uppdaterats och bilden finns
-  if (!map.getLayer('adresser-symboler') && map.hasImage('blue-marker')) {
-    map.addLayer({
-      id: 'adresser-symboler',
-      type: 'symbol',
-      source: 'adresser',
-      filter: ['==', ['get', 'oppen'], 'Ja'],
-      layout: {
-        'icon-image': 'blue-marker',
-        'icon-size': 0.9,
-        'icon-anchor': 'bottom'
-      }
-    });
-  }
   setInterval(uppdateraAktiviteter, 120000);
 });
 
 navigator.geolocation?.watchPosition(pos => {
   userCoords = [pos.coords.longitude, pos.coords.latitude];
 
-  if (!map.getSource('user')) {
-    map.addSource('user', {
-      type: 'geojson',
-      data: {
-        type: 'FeatureCollection',
-        features: [
-          {
-            type: 'Feature',
-            geometry: {
-              type: 'Point',
-              coordinates: userCoords
-            }
-          }
-        ]
+  const userFeature = {
+    type: 'FeatureCollection',
+    features: [
+      {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: userCoords
+        }
       }
-    });
+    ]
+  };
 
+  if (!map.getSource('user')) {
+    map.addSource('user', { type: 'geojson', data: userFeature });
     map.addLayer({
       id: 'user-marker',
       type: 'circle',
@@ -247,21 +255,8 @@ navigator.geolocation?.watchPosition(pos => {
       }
     });
   } else {
-    map.getSource('user').setData({
-      type: 'FeatureCollection',
-      features: [
-        {
-          type: 'Feature',
-          geometry: {
-            type: 'Point',
-            coordinates: userCoords
-          }
-        }
-      ]
-    });
+    map.getSource('user').setData(userFeature);
   }
-
-  // map.flyTo({ center: userCoords, zoom: 16 }); // Inaktiverad för att undvika att störa användaren
 }, err => {
   console.warn('Kunde inte hämta plats:', err.message);
 }, {
