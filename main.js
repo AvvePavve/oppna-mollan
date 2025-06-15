@@ -1,5 +1,3 @@
-import 'leaflet-maplibre-gl';
-
 const defaultCenter = [55.591988278009765, 13.011586184559851];
 const defaultZoom = 16;
 
