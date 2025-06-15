@@ -153,6 +153,7 @@ fetch('data/byggnader_mollan.geojson', { cache: "force-cache" })
   .catch(err => console.error("Fel vid inläsning av byggnader:", err));
 
 const aktivitetLayersLive = {};
+let layerControl = null;
 const SHEET_URL = 'https://opensheet.elk.sh/1t5ILyafrrFJNiO2V0QrqbZyFNgTdXcY7SujnOOQHbfI/Formulärsvar 1';
 
 function normaliseraAdress(adress) {
@@ -232,7 +233,10 @@ async function uppdateraAktiviteterFrånGoogleFormulär() {
       layer.addTo(map);
     }
 
-    L.control.layers(null, overlayMaps, { collapsed: true, position: 'topright' }).addTo(map);
+    if (layerControl) {
+      map.removeControl(layerControl);
+    }
+    layerControl = L.control.layers(null, overlayMaps, { collapsed: true, position: 'topright' }).addTo(map);
 
   } catch (err) {
     console.error("Fel vid formulärintegration:", err);
