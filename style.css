@@ -45,10 +45,14 @@ header {
   margin-right: 1rem;
 }
 
-header h1 {
-  margin: 0;
-  font-size: 1.2rem;
-  text-transform: uppercase;
+.wordmark-svg {
+  height: 36px;
+  max-width: 100%;
+}
+@media (max-width: 600px) {
+  .wordmark-svg {
+    height: 28px;
+  }
 }
 
 @media (max-width: 600px) {
