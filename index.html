@@ -4,11 +4,23 @@
   <meta charset="utf-8" />
   <title>Öppna Möllan - 2025</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="theme-color" content="#f47c31" />
 
-  <link rel="icon" href="/oppna-mollan/favicon.ico?" />
+  <link rel="icon" type="image/x-icon" href="/oppna-mollan/favicon.ico?" />
+  <link rel="icon" type="image/png" href="/oppna-mollan/favicon.png?" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <meta name="apple-touch-title" content="Öppna Möllan" />
+  <meta property="og:image" content="apple-touch-icon.png" />
+
+  <meta name="description" content="Webbkarta över öppna innergårdar på Möllevången under Öppna Möllan 2025." />
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
   <link rel="stylesheet" href="style.css" />
-  <link href="https://cdn.skypack.dev/maplibre-gl@3.6.1/dist/maplibre-gl.css" rel="stylesheet" />
 </head>
 <body>
 
@@ -21,8 +33,8 @@
   <div class="info-overlay" id="infoOverlay">
     <div class="info-box">
       <h2>Välkommen till Öppna Möllan 2025!</h2>
-      <p>Här kan du se vilka innergårdar på och runt Möllevången som håller öppet idag. Klicka på punkterna för att se vilka aktiviteter som kommer att hållas på de olika gårdarna.</p>
-      <button class="btn" onclick="document.getElementById('infoOverlay').style.display = 'none'">Stäng</button>
+      <p>Här kan du se vilka innergårdar på och runt Möllevången som håller öppet idag. Klicka på punkterna för att se vilka aktiviteter som kommer att hållas i på de olika gårdarna.</p>
+      <button class="btn" onclick="closeInfo()" aria-label="Stäng informationsrutan">Stäng</button>
     </div>
   </div>
 
@@ -34,12 +46,10 @@
   </header>
 
   <div id="map"></div>
+  <button id="removeRouteBtn" style="display:none;">Ta bort rutt</button>
 
-  <!-- Ta bort rutt-knapp -->
-  <button id="removeRouteBtn" class="btn" onclick="taBortRutt()" style="display:none; position: fixed; bottom: 30px; right: 10px; z-index: 1000;">
-    Ta bort rutt
-  </button>
-
-  <script type="module" src="main.js"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.min.js"></script>
+  <script src="main.js" defer></script>
 </body>
 </html>
