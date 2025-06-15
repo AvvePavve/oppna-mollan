@@ -44,17 +44,14 @@ function setBaseMap() {
     if (map.hasLayer(vectorTileDark)) map.removeLayer(vectorTileDark);
     if (!map.hasLayer(vectorTileLight)) map.addLayer(vectorTileLight);
   }
-} else {
-    map.removeLayer(vectorTileDark);
-    vectorTileLight.addTo(map);
-  }
 }
-
 setBaseMap();
 prefersDark.addEventListener('change', setBaseMap);
 
 map.createPane('byggnader');
 map.getPane('byggnader').style.zIndex = 200;
+map.createPane('byggnadssidor');
+map.getPane('byggnadssidor').style.zIndex = 150;
 map.createPane('userPane');
 map.getPane('userPane').style.zIndex = 1000;
 
@@ -128,6 +125,7 @@ function addBuildingSidesFromLayer(layerGroup) {
           geometry: { type: "Polygon", coordinates: wallCoords }
         };
         L.geoJSON(wallFeature, {
+          pane: 'byggnadssidor',
           style: {
             color: wallColor,
             weight: 0.5,
