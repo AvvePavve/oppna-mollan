@@ -5,22 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Öppna Möllan 2025</title>
 
-  <!-- Leaflet -->
+  <!-- Leaflet CSS och JS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <!-- Leaflet Routing -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
-  <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+  <!-- MapLibre GL JS -->
+  <script src="https://unpkg.com/maplibre-gl@5.0.1/dist/maplibre-gl.js"></script>
+  <link href="https://unpkg.com/maplibre-gl@5.0.1/dist/maplibre-gl.css" rel="stylesheet" />
 
-  <!-- MapLibre GL -->
-  <link href="https://unpkg.com/maplibre-gl@3.6.1/dist/maplibre-gl.css" rel="stylesheet" />
-  <script src="https://unpkg.com/maplibre-gl@3.6.1/dist/maplibre-gl.js"></script>
-
-  <!-- Leaflet + MapLibre glue -->
+  <!-- MapLibre integration med Leaflet -->
   <script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet@0.1.0/leaflet-maplibre-gl.js"></script>
 
-  <!-- Egna stilar -->
+  <!-- Routing (OSRM) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+  <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.min.js"></script>
+
+  <!-- Egen CSS -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -28,14 +28,16 @@
     <h1>Öppna Möllan 2025</h1>
   </header>
 
-  <div id="map"></div>
+  <main>
+    <div id="map"></div>
+    <div id="info-panel" class="info-panel hidden"></div>
+    <button id="close-info" class="control-btn hidden" onclick="closeInfo()">Stäng</button>
+    <div id="remove-route-container" class="leaflet-bottom leaflet-left">
+      <button id="remove-route" class="control-btn hidden">Ta bort rutt</button>
+    </div>
+  </main>
 
-  <!-- Knapp för att ta bort rutt -->
-  <button id="removeRouteBtn" class="leaflet-bottom leaflet-left control-btn" style="display: none;">
-    Ta bort rutt
-  </button>
-
-  <!-- Din script-bundle -->
-  <script type="module" src="main.js"></script>
+  <!-- Din anpassade logik -->
+  <script src="main.js"></script>
 </body>
 </html>
