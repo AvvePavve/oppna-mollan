@@ -165,17 +165,22 @@ map.on('load', async () => {
     data: adresserData
   });
 
-  // Säkerställ att vi lägger till laget först, även utan bild
-  map.addLayer({
-    id: 'adresser-symboler',
-    type: 'symbol',
-    source: 'adresser',
-    filter: ['==', ['get', 'oppen'], 'Ja'],
-    layout: {
-      'icon-image': 'blue-marker',
-      'icon-size': 0.9,
-      'icon-anchor': 'bottom'
+  map.loadImage('blue-marker.png', (err, image) => {
+    if (!err && !map.hasImage('blue-marker')) {
+      map.addImage('blue-marker', image);
     }
+
+    map.addLayer({
+      id: 'adresser-symboler',
+      type: 'symbol',
+      source: 'adresser',
+      filter: ['==', ['get', 'oppen'], 'Ja'],
+      layout: {
+        'icon-image': 'blue-marker',
+        'icon-size': 0.9,
+        'icon-anchor': 'bottom'
+      }
+    });
   });
 
   map.loadImage('blue-marker.png', (err, image) => {
