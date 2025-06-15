@@ -10,8 +10,8 @@ let routeId = null;
 
 const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 const styleUrl = isDark
-  ? `https://tiles.stadiamaps.com/styles/osm-bright-dark.json?api_key=${STADIA_API_KEY}`
-  : `https://tiles.stadiamaps.com/styles/osm-bright.json?api_key=${STADIA_API_KEY}`;
+  ? `https://tiles.stadiamaps.com/styles/alidade_smooth_dark.json?api_key=${STADIA_API_KEY}`
+  : `https://tiles.stadiamaps.com/styles/alidade_smooth.json?api_key=${STADIA_API_KEY}`;
 
 const map = new maplibregl.Map({
   container: 'map',
@@ -22,8 +22,8 @@ const map = new maplibregl.Map({
 
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
   const newStyle = window.matchMedia('(prefers-color-scheme: dark)').matches
-    ? `https://tiles.stadiamaps.com/styles/osm-bright-dark.json?api_key=${STADIA_API_KEY}`
-    : `https://tiles.stadiamaps.com/styles/osm-bright.json?api_key=${STADIA_API_KEY}`;
+    ? `https://tiles.stadiamaps.com/styles/alidade_smooth_dark.json?api_key=${STADIA_API_KEY}`
+    : `https://tiles.stadiamaps.com/styles/alidade_smooth.json?api_key=${STADIA_API_KEY}`;
   map.setStyle(newStyle);
 });
 
