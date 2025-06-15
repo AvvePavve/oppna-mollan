@@ -29,7 +29,7 @@ header {
   align-items: center;
   background-color: #f47c31;
   color: white;
-  padding: 1rem 1rem 1rem 0;
+  padding: 1rem 1rem 1rem 1rem;
   height: 60px;
   font-family: 'NexaBlack', Arial, sans-serif;
 }
@@ -42,7 +42,7 @@ header {
 
 .logo-link img {
   height: 50px;
-  margin-right: auto;
+  margin-right: 1rem;
 }
 
 header h1 {
