@@ -38,11 +38,26 @@ function normaliseraAdress(adress) {
 }
 
 async function uppdateraAktiviteter() {
-  const [adresserRes, formDataRaw] = await Promise.all([
+  const [adresserRes, formDataRes] = await Promise.all([
     fetch('data/adresser.geojson'),
     fetch(SHEET_URL)
   ]);
+
   const adresserData = await adresserRes.json();
+
+  let formDataRaw;
+  try {
+    formDataRaw = await formDataRes.json();
+  } catch (err) {
+    console.error("Kunde inte tolka formulärdata som JSON:", err);
+    return;
+  }
+
+  if (!Array.isArray(formDataRaw)) {
+    console.error("Formulärdata är inte en lista:", formDataRaw);
+    return;
+  }
+
   const formSvar = formDataRaw.map(row => ({
     adress: normaliseraAdress(row["📍 Gatuadress till din innergård"] || ""),
     aktivitet: row["🕺 Vad kommer hända på innergården?"] || "Ingen aktivitet angiven"
@@ -60,8 +75,14 @@ async function uppdateraAktiviteter() {
     }
   });
 
-  if (map.getSource('adresser')) {
+  if (map.isStyleLoaded() && map.getSource('adresser')) {
     map.getSource('adresser').setData(adresserData);
+  } else {
+    map.once('style.load', () => {
+      if (map.getSource('adresser')) {
+        map.getSource('adresser').setData(adresserData);
+      }
+    });
   }
 
   // Debug: visa omatchade adresser
