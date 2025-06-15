@@ -71,6 +71,11 @@ header h1 {
   .kvarters-ikoner img {
     height: 24px;
   }
+
+  .kvarters-ikoner img:nth-child(2),
+  .kvarters-ikoner img:nth-child(3) {
+    display: none;
+  }
 }
 
 #map {
