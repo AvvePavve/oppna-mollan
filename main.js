@@ -38,9 +38,13 @@ const vectorTileDark = L.vectorGrid.protobuf(
 
 function setBaseMap() {
   if (prefersDark.matches) {
-    map.removeLayer(vectorTileLight);
-    vectorTileDark.addTo(map);
+    if (map.hasLayer(vectorTileLight)) map.removeLayer(vectorTileLight);
+    if (!map.hasLayer(vectorTileDark)) map.addLayer(vectorTileDark);
   } else {
+    if (map.hasLayer(vectorTileDark)) map.removeLayer(vectorTileDark);
+    if (!map.hasLayer(vectorTileLight)) map.addLayer(vectorTileLight);
+  }
+} else {
     map.removeLayer(vectorTileDark);
     vectorTileLight.addTo(map);
   }
