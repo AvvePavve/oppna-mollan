@@ -1,57 +1,41 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Öppna Möllan 2025</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
   <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <!-- MapLibre -->
-  <link href="https://unpkg.com/maplibre-gl@5.0.1/dist/maplibre-gl.css" rel="stylesheet" />
-  <script src="https://unpkg.com/maplibre-gl@5.0.1/dist/maplibre-gl.js"></script>
+  <!-- Leaflet Routing -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+  <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 
-  <!-- Leaflet integration med MapLibre -->
+  <!-- MapLibre GL -->
+  <link href="https://unpkg.com/maplibre-gl@3.6.1/dist/maplibre-gl.css" rel="stylesheet" />
+  <script src="https://unpkg.com/maplibre-gl@3.6.1/dist/maplibre-gl.js"></script>
+
+  <!-- Leaflet + MapLibre glue -->
   <script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet@0.1.0/leaflet-maplibre-gl.js"></script>
 
-  <!-- Leaflet Routing Machine -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
-  <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.min.js"></script>
-
-  <style>
-    html, body, #map {
-      height: 100%;
-      margin: 0;
-    }
-    .user-location-icon {
-      background-color: #4a90e2;
-      border-radius: 50%;
-      width: 18px;
-      height: 18px;
-      box-shadow: 0 0 6px #fff;
-    }
-    #removeRouteBtn {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      z-index: 1100;
-      display: none;
-      background-color: #fff;
-      padding: 5px 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-family: sans-serif;
-      cursor: pointer;
-    }
-  </style>
+  <!-- Egna stilar -->
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div id="map"></div>
-  <button id="removeRouteBtn">Ta bort rutt</button>
+  <header>
+    <h1>Öppna Möllan 2025</h1>
+  </header>
 
-  <!-- Din JavaScript-kod -->
-  <script src="main.js"></script>
+  <div id="map"></div>
+
+  <!-- Knapp för att ta bort rutt -->
+  <button id="removeRouteBtn" class="leaflet-bottom leaflet-left control-btn" style="display: none;">
+    Ta bort rutt
+  </button>
+
+  <!-- Din script-bundle -->
+  <script type="module" src="main.js"></script>
 </body>
 </html>
