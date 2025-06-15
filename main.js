@@ -185,7 +185,6 @@ map.on('load', async () => {
 
     // Ikon läggs in i laget direkt — redan definierat ovan
   });
-  });
 
   map.on('click', 'adresser-symboler', (e) => {
     const props = e.features[0].properties;
