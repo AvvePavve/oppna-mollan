@@ -1,38 +1,56 @@
+// === Ny implementation av main.js med Leaflet.VectorGrid och dark mode ===
+
 function closeInfo() {
   document.getElementById("infoOverlay").style.display = "none";
 }
-
-const lightTiles = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.{ext}?api_key=9a2de762-ebe1-42e7-bcd2-0260d8917ae6', {
-  minZoom: 0,
-  maxZoom: 20,
-  attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  ext: 'png'
-});
-
-const darkTiles = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.{ext}?api_key=9a2de762-ebe1-42e7-bcd2-0260d8917ae6', {
-  minZoom: 0,
-  maxZoom: 20,
-  attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  ext: 'png'
-});
 
 const defaultCenter = [55.591988278009765, 13.011586184559851];
 const defaultZoom = 16;
 const map = L.map('map', { layers: [] }).setView(defaultCenter, defaultZoom);
 
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+const vectorTileLight = L.vectorGrid.protobuf(
+  'https://tiles.stadiamaps.com/data/v3/{z}/{x}/{y}.pbf?api_key=9a2de762-ebe1-42e7-bcd2-0260d8917ae6',
+  {
+    vectorTileLayerStyles: {
+      road: { color: '#999', weight: 1 },
+      water: { fill: true, fillColor: '#a0c8f0', fillOpacity: 1, color: '#a0c8f0' },
+      building: { fill: true, fillColor: '#d9d5c9', fillOpacity: 0.8, color: '#d9d5c9' },
+      landuse: { fill: true, fillColor: '#e0e0e0', fillOpacity: 1, color: '#e0e0e0' },
+    },
+    interactive: false,
+  }
+);
+
+const vectorTileDark = L.vectorGrid.protobuf(
+  'https://tiles.stadiamaps.com/data/v3/{z}/{x}/{y}.pbf?api_key=9a2de762-ebe1-42e7-bcd2-0260d8917ae6',
+  {
+    vectorTileLayerStyles: {
+      road: { color: '#666', weight: 1 },
+      water: { fill: true, fillColor: '#334455', fillOpacity: 1, color: '#334455' },
+      building: { fill: true, fillColor: '#3c3c3c', fillOpacity: 0.8, color: '#3c3c3c' },
+      landuse: { fill: true, fillColor: '#2a2a2a', fillOpacity: 1, color: '#2a2a2a' },
+    },
+    interactive: false,
+  }
+);
+
 function setBaseMap() {
-  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  if (isDark) {
-    if (map.hasLayer(lightTiles)) map.removeLayer(lightTiles);
-    if (!map.hasLayer(darkTiles)) darkTiles.addTo(map);
+  if (prefersDark.matches) {
+    map.removeLayer(vectorTileLight);
+    vectorTileDark.addTo(map);
   } else {
-    if (map.hasLayer(darkTiles)) map.removeLayer(darkTiles);
-    if (!map.hasLayer(lightTiles)) lightTiles.addTo(map);
+    map.removeLayer(vectorTileDark);
+    vectorTileLight.addTo(map);
   }
 }
-setBaseMap();
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', setBaseMap);
 
+setBaseMap();
+prefersDark.addEventListener('change', setBaseMap);
+
+map.createPane('byggnader');
+map.getPane('byggnader').style.zIndex = 200;
 map.createPane('userPane');
 map.getPane('userPane').style.zIndex = 1000;
 
@@ -50,30 +68,21 @@ const userIcon = L.divIcon({
 
 if (navigator.geolocation) {
   navigator.geolocation.watchPosition(
-    position => {
-      const lat = position.coords.latitude;
-      const lng = position.coords.longitude;
+    pos => {
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
       userLatLng = [lat, lng];
-
       if (userMarker) {
         userMarker.setLatLng(userLatLng);
       } else {
-        userMarker = L.marker(userLatLng, {
-          icon: userIcon,
-          pane: 'userPane'
-        }).addTo(map).bindPopup("Du är här!");
-
+        userMarker = L.marker(userLatLng, { icon: userIcon, pane: 'userPane' })
+          .addTo(map)
+          .bindPopup("Du är här!");
         map.setView(userLatLng, 16);
       }
     },
-    error => {
-      console.warn("Plats kunde inte hämtas:", error.message);
-    },
-    {
-      enableHighAccuracy: true,
-      maximumAge: 20000,
-      timeout: 10000
-    }
+    err => console.warn("Platsfel:", err.message),
+    { enableHighAccuracy: true, maximumAge: 20000, timeout: 10000 }
   );
 }
 
@@ -139,6 +148,7 @@ fetch('data/byggnader_mollan.geojson', { cache: "force-cache" })
       }
     });
     const takLayer = L.geoJSON(offsetData, {
+      pane: 'byggnader',
       style: {
         color: '#f47c31',
         weight: 1,
@@ -183,7 +193,6 @@ async function uppdateraAktiviteterFrånGoogleFormulär() {
       const geoAdress = normaliseraAdress(feature.properties.Adress || "");
       const match = formSvar.find(entry => geoAdress === entry.adress);
       if (match) {
-        console.log("MATCH:", geoAdress, "<=>", match.adress);
         feature.properties.Aktivitet = match.aktivitet;
         feature.properties.oppen = "Ja";
       } else {
@@ -191,13 +200,6 @@ async function uppdateraAktiviteterFrånGoogleFormulär() {
         delete feature.properties.Aktivitet;
       }
     });
-
-    const inkommandeAdresser = formSvar.map(f => f.adress);
-    const matchadeAdresser = geoJson.features.map(f => normaliseraAdress(f.properties.Adress || ""));
-    const omatchade = inkommandeAdresser.filter(a => !matchadeAdresser.includes(a));
-    if (omatchade.length > 0) {
-      console.warn("Formulärsvar utan matchande adress i GeoJSON:", omatchade);
-    }
 
     for (const layer of Object.values(aktivitetLayersLive)) {
       layer.clearLayers();
