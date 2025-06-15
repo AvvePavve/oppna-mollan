@@ -55,9 +55,19 @@ header {
   }
 }
 
+.kvarters-ikoner {
+  margin-left: auto;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.kvarters-ikoner img {
+  height: 32px;
+}
+
 @media (max-width: 600px) {
-  header h1 {
-    font-size: 1rem;
+  .kvarters-ikoner img {
+    height: 24px;
   }
 }
 
