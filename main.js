@@ -1,31 +1,29 @@
+// === main.js med MapLibre, Stadia Maps och dark mode ===
+
 function closeInfo() {
   document.getElementById("infoOverlay").style.display = "none";
 }
 
 const defaultCenter = [55.591988278009765, 13.011586184559851];
 const defaultZoom = 16;
-const map = L.map('map', { layers: [] }).setView(defaultCenter, defaultZoom);
+const map = L.map('map', { zoomControl: true }).setView(defaultCenter, defaultZoom);
 
 const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-
-let vectorBase;
+let maplibreLayer;
 
 function setBaseMap() {
-  if (vectorBase) map.removeLayer(vectorBase);
+  const style = prefersDark.matches
+    ? `https://tiles.stadiamaps.com/styles/alidade_smooth_dark.json?api_key=9a2de762-ebe1-42e7-bcd2-0260d8917ae6`
+    : `https://tiles.stadiamaps.com/styles/alidade_smooth.json?api_key=9a2de762-ebe1-42e7-bcd2-0260d8917ae6`;
 
-  const styleUrl = prefersDark.matches
-    ? 'https://tiles.stadiamaps.com/styles/alidade_smooth_dark.json'
-    : 'https://tiles.stadiamaps.com/styles/alidade_smooth.json';
+  if (maplibreLayer) {
+    map.removeLayer(maplibreLayer);
+  }
 
-  vectorBase = L.maplibreGL({
-    style: styleUrl,
-    attribution:
-      '&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a>, ' +
-      '&copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a>, ' +
-      '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
-  });
-
-  map.addLayer(vectorBase);
+  maplibreLayer = L.maplibreGL({
+    style: style,
+    attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  }).addTo(map);
 }
 
 setBaseMap();
@@ -38,6 +36,7 @@ map.getPane('byggnadssidor').style.zIndex = 150;
 map.createPane('userPane');
 map.getPane('userPane').style.zIndex = 1000;
 
+// — Platsmarkör
 let userMarker;
 let userLatLng;
 let routingControl;
@@ -148,6 +147,7 @@ fetch('data/byggnader_mollan.geojson', { cache: "force-cache" })
   })
   .catch(err => console.error("Fel vid inläsning av byggnader:", err));
 
+// === Google Formulär-integration ===
 const aktivitetLayersLive = {};
 const SHEET_URL = 'https://opensheet.elk.sh/1t5ILyafrrFJNiO2V0QrqbZyFNgTdXcY7SujnOOQHbfI/Formulärsvar 1';
 
@@ -230,6 +230,7 @@ async function uppdateraAktiviteterFrånGoogleFormulär() {
 uppdateraAktiviteterFrånGoogleFormulär();
 setInterval(uppdateraAktiviteterFrånGoogleFormulär, 120000);
 
+// === Routing
 document.addEventListener('click', function (e) {
   if (e.target.classList.contains('route-btn')) {
     const lat = parseFloat(e.target.getAttribute('data-lat'));
