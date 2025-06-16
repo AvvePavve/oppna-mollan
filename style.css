@@ -160,6 +160,10 @@ header h1 {
   display: none !important;
 }
 
+.leaflet-popup-pane {
+  z-index: 1100 !important;
+}
+
 .leaflet-popup-content {
   font-family: 'NexaBook', Arial, sans-serif;
   font-size: 1rem;
