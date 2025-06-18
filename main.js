@@ -181,7 +181,7 @@ async function uppdateraAktiviteterFrånGoogleFormulär() {
     const geoJson = await geoRes.json();
 
     geoJson.features.forEach(feature => {
-      const geoAdress = normaliseraAdress(feature.properties.Adress || "");
+      const geoAdress = normaliseraAdress(feature.properties.beladress || "");
       const match = formSvar.find(entry => geoAdress === entry.adress);
       if (match) {
         console.log("MATCH:", geoAdress, "<=>", match.adress);
@@ -194,7 +194,7 @@ async function uppdateraAktiviteterFrånGoogleFormulär() {
     });
 
     const inkommandeAdresser = formSvar.map(f => f.adress);
-    const matchadeAdresser = geoJson.features.map(f => normaliseraAdress(f.properties.Adress || ""));
+    const matchadeAdresser = geoJson.features.map(f => normaliseraAdress(f.properties.beladress || ""));
     const omatchade = inkommandeAdresser.filter(a => !matchadeAdresser.includes(a));
     if (omatchade.length > 0) {
       console.warn("Formulärsvar utan matchande adress i GeoJSON:", omatchade);
@@ -215,7 +215,7 @@ async function uppdateraAktiviteterFrånGoogleFormulär() {
         const latLng = [coord[1], coord[0]];
         const marker = L.marker(latLng, { icon: addressIcon });
         const popup = `
-          <strong>Adress:</strong> ${feature.properties.Adress}<br>
+          <strong>Adress:</strong> ${feature.properties.beladress}<br>
           <strong>Aktivitet:</strong> ${aktivitet}<br>
           <button class="btn route-btn" data-lat="${latLng[0]}" data-lng="${latLng[1]}">Visa rutt</button>
         `;
