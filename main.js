@@ -126,7 +126,7 @@ function addBuildingSidesFromLayer(layerGroup) {
     }
   });
 }
-fetch('data/byggnader_mollan.geojson', { cache: "force-cache" })
+fetch('data/byggnader_mollan_rev.geojson', { cache: "force-cache" })
   .then(response => response.json())
   .then(data => {
     const offsetData = cloneGeoJSON(data);
@@ -177,7 +177,7 @@ async function uppdateraAktiviteterFrånGoogleFormulär() {
       aktivitet: row["🕺 Vad kommer hända på innergården?"] || "Ingen aktivitet angiven"
     }));
 
-    const geoRes = await fetch('data/adresser.geojson');
+    const geoRes = await fetch('data/adresser_rev.geojson');
     const geoJson = await geoRes.json();
 
     geoJson.features.forEach(feature => {
