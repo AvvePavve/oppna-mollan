@@ -39,11 +39,10 @@ header {
   align-items: center;
   text-decoration: none;
   height: 100%;
-  padding-left: 0.5rem;
 }
 
 .logo-link img {
-  height: 36px;
+  height: 46px;
   object-fit: contain;
 }
 
@@ -226,7 +225,7 @@ body.no-scroll {
   display: flex;
   align-items: center;
   height: 100%;
-  margin-top: -2px;
+  margin-top: -3px;
   align-self: center;
 }
 
