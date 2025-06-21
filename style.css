@@ -184,6 +184,7 @@ header h1 {
   }
 }
 
+/* === Hamburgarmeny === */
 .menu-wrapper {
   margin-left: auto;
   position: relative;
@@ -201,7 +202,7 @@ header h1 {
   font-family: 'NexaBlack', Arial, sans-serif;
 }
 
-/* Drawer-menu (slide-in) */
+/* Slide-in Drawer */
 .menu-drawer {
   position: fixed;
   top: 0;
@@ -212,7 +213,7 @@ header h1 {
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
-  padding-top: 60px; /* matchar header-höjd */
+  padding-top: 60px;
   transition: right 0.3s ease;
   z-index: 2000;
 }
@@ -234,6 +235,7 @@ header h1 {
   color: white;
 }
 
+/* === Dark mode === */
 @media (prefers-color-scheme: dark) {
   body {
     background-color: #181818;
@@ -289,4 +291,3 @@ header h1 {
     color: white;
   }
 }
-
