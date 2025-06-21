@@ -313,8 +313,7 @@ const menuToggle = document.getElementById("menuToggle");
 const menuDrawer = document.getElementById("menuDrawer");
 const menuClose = document.getElementById("menuClose");
 
-menuToggle.addEventListener("click", (e) => {
-  e.stopPropagation();
+menuToggle.addEventListener("click", () => {
   menuDrawer.classList.toggle("open");
   document.body.classList.toggle("no-scroll");
 });
@@ -329,12 +328,6 @@ document.addEventListener("click", (event) => {
   if (!isClickInside) {
     menuDrawer.classList.remove("open");
     document.body.classList.remove("no-scroll");
+    setTimeout(() => window.scrollTo(0, 0), 10); // Förhindra scroll-glitch
   }
-});
-
-menuDrawer.querySelectorAll("a").forEach(link => {
-  link.addEventListener("click", () => {
-    menuDrawer.classList.remove("open");
-    document.body.classList.remove("no-scroll");
-  });
 });
