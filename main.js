@@ -173,8 +173,8 @@ async function uppdateraAktiviteterFrånGoogleFormulär() {
     if (!Array.isArray(formData)) throw new Error("Datan från formuläret kunde inte tolkas som en lista.");
 
     const formSvar = formData.map(row => ({
-      adress: normaliseraAdress(row["📍 Gatuadress till din innergård"] || ""),
-      aktivitet: row["🕺 Vad kommer hända på innergården?"] || "Ingen aktivitet angiven"
+      adress: normaliseraAdress(row["\ud83d\udccd Gatuadress till din innerg\u00e5rd"] || ""),
+      aktivitet: row["\ud83d\udd7a Vad kommer h\u00e4nda p\u00e5 innerg\u00e5rden?"] || "Ingen aktivitet angiven"
     }));
 
     const geoRes = await fetch('data/adresser_rev.geojson');
@@ -231,7 +231,7 @@ async function uppdateraAktiviteterFrånGoogleFormulär() {
     layerControl = L.control.layers(null, overlayMaps, { collapsed: true, position: 'topright' }).addTo(map);
 
   } catch (err) {
-    console.error("Fel vid formulärintegration:", err);
+    console.error("Fel vid formul\u00e4rintegration:", err);
   }
 }
 
@@ -264,7 +264,7 @@ fetch('data/gazarondellen.geojson')
         const latlng = layer.getLatLng();
         const popup = `
           <strong>${feature.properties.name || "Gazarondellen"}</strong><br>
-          <strong>Aktivitet:</strong> "Länka till program"<br>
+          <strong>Aktivitet:</strong> "L\u00e4nka till program"<br>
           <button class="btn route-btn" data-lat="${latlng.lat}" data-lng="${latlng.lng}">Visa rutt</button>
         `;
         layer.bindPopup(popup);
@@ -272,12 +272,12 @@ fetch('data/gazarondellen.geojson')
     }).addTo(map);
   })
   .catch(error => {
-    console.error("Fel vid inläsning av gazarondellen.geojson:", error);
+    console.error("Fel vid inl\u00e4sning av gazarondellen.geojson:", error);
   });
 
 function routeTo(destinationLatLng) {
   if (!userLatLng) {
-    alert("Din plats är inte tillgänglig än!");
+    alert("Din plats \u00e4r inte tillg\u00e4nglig \u00e4n!");
     return;
   }
   if (routingControl) {
@@ -329,6 +329,13 @@ document.addEventListener("click", (event) => {
   if (!isClickInside) {
     menuDrawer.classList.remove("open");
     document.body.classList.remove("no-scroll");
-    setTimeout(() => window.scrollTo(0, 0), 10); // Förhindra scroll-glitch
+    setTimeout(() => window.scrollTo(0, 0), 10);
   }
 });
+
+function fixViewportHeight() {
+  const vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
+window.addEventListener('resize', fixViewportHeight);
+fixViewportHeight();
