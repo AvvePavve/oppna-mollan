@@ -27,7 +27,7 @@ body {
 header {
   display: flex;
   align-items: center;
-  background-color: #f47c31;
+  background-color: #fffef6;
   color: white;
   padding: 1rem 1rem 1rem 0.5rem;
   height: 60px;
@@ -62,27 +62,6 @@ header h1 {
     transform: translateX(-50%);
     font-size: 1rem;
     white-space: nowrap;
-  }
-}
-
-.kvarters-ikoner {
-  margin-left: auto;
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
-.kvarters-ikoner img {
-  height: 32px;
-}
-
-@media (max-width: 600px) {
-  .kvarters-ikoner img {
-    height: 34px;
-  }
-
-  .kvarters-ikoner img:nth-child(2),
-  .kvarters-ikoner img:nth-child(3) {
-    display: none;
   }
 }
 
