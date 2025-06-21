@@ -203,8 +203,7 @@ body.no-scroll {
   color: #18171c;
   margin-left: auto;
   display: flex;
-  align-items: center; /* Centrera vertikalt i headern */
-  height: 100%;
+  align-items: center;
 }
 
 .menu-drawer {
