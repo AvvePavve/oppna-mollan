@@ -329,7 +329,6 @@ document.addEventListener("click", (event) => {
   if (!isClickInside) {
     menuDrawer.classList.remove("open");
     document.body.classList.remove("no-scroll");
-    setTimeout(() => window.scrollTo(0, 0), 10);
   }
 });
 
