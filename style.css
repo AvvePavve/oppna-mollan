@@ -1,3 +1,8 @@
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
 @font-face {
   font-family: 'NexaBook';
   src: url('fonts/nexabook.otf') format('opentype');
@@ -67,7 +72,7 @@ header {
 }
 
 #map {
-  height: calc(100vh - 60px);
+  height: calc(var(--vh, 1vh) * 100 - 60px);
   width: 100%;
   position: relative;
 }
@@ -298,3 +303,4 @@ body.no-scroll {
     background: #f47c31;
     color: #fff;
   }
+}
