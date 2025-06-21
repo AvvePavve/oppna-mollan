@@ -190,16 +190,21 @@ header h1 {
   z-index: 3000;
 }
 
+body.no-scroll {
+  overflow: hidden;
+}
+
 .menu-toggle {
   font-size: 1.5rem;
   background: none;
   border: none;
   cursor: pointer;
   font-weight: bold;
-  color: inherit;
+  color: #18171c;
   margin-left: auto;
-  align-self: center;
-  font-family: 'NexaBlack', Arial, sans-serif;
+  display: flex;
+  align-items: center; /* Centrera vertikalt i headern */
+  height: 100%;
 }
 
 .menu-drawer {
