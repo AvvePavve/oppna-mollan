@@ -212,7 +212,6 @@ async function uppdateraAktiviteterFrånGoogleFormulär() {
       const geoAdress = normaliseraAdress(feature.properties.beladress || "");
       const match = formSvar.find(entry => geoAdress === entry.adress);
       if (match) {
-        console.log("MATCH:", geoAdress, "<=>", match.adress);
         feature.properties.Aktivitet = match.aktivitet;
         feature.properties.oppen = "Ja";
       } else {
@@ -220,13 +219,6 @@ async function uppdateraAktiviteterFrånGoogleFormulär() {
         delete feature.properties.Aktivitet;
       }
     });
-
-    const inkommandeAdresser = formSvar.map(f => f.adress);
-    const matchadeAdresser = geoJson.features.map(f => normaliseraAdress(f.properties.beladress || ""));
-    const omatchade = inkommandeAdresser.filter(a => !matchadeAdresser.includes(a));
-    if (omatchade.length > 0) {
-      console.warn("Formulärsvar utan matchande adress i GeoJSON:", omatchade);
-    }
 
     for (const layer of Object.values(aktivitetLayersLive)) {
       layer.clearLayers();
@@ -317,10 +309,14 @@ removeRouteBtn.addEventListener('click', () => {
   }
 });
 
+// =====================
+// Hamburgarmeny (slide-in)
+// =====================
 const menuToggle = document.getElementById("menuToggle");
 const menuDrawer = document.getElementById("menuDrawer");
 
-menuToggle.addEventListener("click", () => {
+menuToggle.addEventListener("click", (e) => {
+  e.stopPropagation();
   menuDrawer.classList.toggle("open");
 });
 
@@ -329,4 +325,11 @@ document.addEventListener("click", (event) => {
   if (!isClickInside) {
     menuDrawer.classList.remove("open");
   }
+});
+
+// Valfritt: stäng menyn vid klick på länk
+menuDrawer.querySelectorAll("a").forEach(link => {
+  link.addEventListener("click", () => {
+    menuDrawer.classList.remove("open");
+  });
 });
