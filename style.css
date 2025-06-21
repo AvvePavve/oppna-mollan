@@ -30,7 +30,7 @@ header {
   justify-content: space-between;
   background-color: #fffef6;
   height: 60px;
-  padding: 1rem 1rem 1rem 0.5rem;
+  padding: 1rem 0.7rem 1rem 0.5rem;
   position: relative;
 }
 
@@ -169,8 +169,7 @@ header {
   background-color: #fffef6 !important;
 }
 
-.leaflet-control-layers-toggle,
-.leaflet-control-layers-expanded {
+.leaflet-control-layers-toggle {
   border-radius: 10px !important;
 }
 
@@ -230,7 +229,7 @@ body.no-scroll {
   display: flex;
   align-items: center;
   height: 100%;
-  margin-top: -5px;
+  margin-top: -6px;
   align-self: center;
 }
 
