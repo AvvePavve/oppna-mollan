@@ -30,7 +30,7 @@ header {
   justify-content: space-between;
   background-color: #fffef6;
   height: 60px;
-  padding: 0 1rem;
+  padding: 1rem 1rem 1rem 0.5rem;
   position: relative;
 }
 
@@ -39,7 +39,7 @@ header {
   align-items: center;
   text-decoration: none;
   height: 100%;
-  padding-left: 0.25rem; /* Justerad för att flytta logotypen lite åt vänster */
+  padding-left: 0.5rem;
 }
 
 .logo-link img {
@@ -225,10 +225,10 @@ body.no-scroll {
   color: #18171c;
   display: flex;
   align-items: center;
-  height: auto;
+  height: 100%;
   padding: 0.25rem 0.5rem;
-  margin-top: 4px;
-  align-self: flex-start;
+  margin-top: 0; /* Justerat så punkterna inte trycks nedåt */
+  align-self: center;
 }
 
 .menu-drawer {
