@@ -229,7 +229,7 @@ body.no-scroll {
   display: flex;
   align-items: center;
   height: 100%;
-  margin-top: -8px;
+  margin-top: -10px;
   align-self: center;
 }
 
