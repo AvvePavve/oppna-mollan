@@ -62,7 +62,7 @@ header {
 
 @media (max-width: 600px) {
   .wordmark-wrapper img {
-    height: 36px;
+    height: 38px;
   }
 }
 
@@ -76,7 +76,7 @@ header {
   padding: 10px 16px;
   font-size: 1rem;
   background: #f47c31;
-  color: white;
+  color: #fffef6;
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -187,7 +187,7 @@ header {
   padding: 10px 16px;
   font-size: 1rem;
   background: #f47c31;
-  color: white;
+  color: #fffef6;
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -225,7 +225,7 @@ body.no-scroll {
   display: flex;
   align-items: center;
   height: 100%;
-  margin-top: -4px;
+  margin-top: -4.5px;
   align-self: center;
 }
 
@@ -258,7 +258,7 @@ body.no-scroll {
 
 .menu-drawer a:hover {
   background-color: #f47c31;
-  color: white;
+  color: #fffef6;
 }
 
 .menu-close {
@@ -293,38 +293,3 @@ body.no-scroll {
     background: #f47c31;
     color: #fff;
   }
-
-  .leaflet-control-zoom a,
-  .leaflet-control-layers-toggle,
-  .leaflet-control-layers-expanded,
-  .leaflet-popup-content-wrapper,
-  .leaflet-popup-tip,
-  .leaflet-routing-container {
-    background-color: #232323 !important;
-    color: #f4f4f4 !important;
-  }
-
-  .leaflet-control-zoom a:hover,
-  .leaflet-control-layers-toggle:hover {
-    background-color: #333 !important;
-  }
-
-  .leaflet-control-zoom a:active,
-  .leaflet-control-layers-toggle:active {
-    background-color: #444 !important;
-  }
-
-  .menu-drawer {
-    background-color: #232323;
-  }
-
-  .menu-drawer a {
-    color: #f4f4f4;
-    border-bottom: 1px solid #333;
-  }
-
-  .menu-drawer a:hover {
-    background-color: #f47c31;
-    color: white;
-  }
-}
