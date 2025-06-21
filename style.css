@@ -184,7 +184,6 @@ header h1 {
   }
 }
 
-/* === Hamburgarmeny === */
 .menu-wrapper {
   margin-left: auto;
   position: relative;
@@ -192,17 +191,17 @@ header h1 {
 }
 
 .menu-toggle {
+  font-size: 1.5rem;
   background: none;
   border: none;
-  font-size: 1.8rem;
+  cursor: pointer;
   font-weight: bold;
   color: inherit;
-  cursor: pointer;
-  padding: 0.2rem 0.6rem;
+  margin-left: auto;
+  align-self: center;
   font-family: 'NexaBlack', Arial, sans-serif;
 }
 
-/* Slide-in Drawer */
 .menu-drawer {
   position: fixed;
   top: 0;
@@ -233,6 +232,17 @@ header h1 {
 .menu-drawer a:hover {
   background-color: #f47c31;
   color: white;
+}
+
+.menu-close {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #18171c;
+  position: absolute;
+  top: 0.75rem;
+  right: 1rem;
+  cursor: pointer;
 }
 
 /* === Dark mode === */
