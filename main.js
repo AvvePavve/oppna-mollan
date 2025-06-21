@@ -316,3 +316,17 @@ removeRouteBtn.addEventListener('click', () => {
     removeRouteBtn.style.display = 'none';
   }
 });
+
+const menuToggle = document.getElementById("menuToggle");
+const menuDrawer = document.getElementById("menuDrawer");
+
+menuToggle.addEventListener("click", () => {
+  menuDrawer.classList.toggle("open");
+});
+
+document.addEventListener("click", (event) => {
+  const isClickInside = menuDrawer.contains(event.target) || menuToggle.contains(event.target);
+  if (!isClickInside) {
+    menuDrawer.classList.remove("open");
+  }
+});
