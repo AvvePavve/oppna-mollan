@@ -152,34 +152,6 @@ fetch('data/byggnader_mollan_rev.geojson', { cache: "force-cache" })
   })
   .catch(err => console.error("Fel vid inläsning av byggnader:", err));
 
-const gazaIcon = L.icon({
-  iconUrl: 'Svart_emblem.png',
-  iconSize: [32, 32],
-  iconAnchor: [16, 32],
-  popupAnchor: [0, -32]
-});
-
-fetch('data/gazarondellen.geojson')
-  .then(response => response.json())
-  .then(data => {
-    L.geoJSON(data, {
-      pointToLayer: (feature, latlng) => {
-        return L.marker(latlng, { icon: gazaIcon });
-      },
-      onEachFeature: (feature, layer) => {
-        const latlng = layer.getLatLng();
-        const popup = `
-          <strong>${feature.properties.name || "Gazarondellen"}</strong><br>
-          <button class="btn route-btn" data-lat="${latlng.lat}" data-lng="${latlng.lng}">Visa rutt</button>
-        `;
-        layer.bindPopup(popup);
-      }
-    }).addTo(map);
-  })
-  .catch(error => {
-    console.error("Fel vid inläsning av gazarondellen.geojson:", error);
-  });
-
 const aktivitetLayersLive = {};
 let layerControl = null;
 const SHEET_URL = 'https://opensheet.elk.sh/1t5ILyafrrFJNiO2V0QrqbZyFNgTdXcY7SujnOOQHbfI/Formulärsvar 1';
@@ -273,6 +245,35 @@ document.addEventListener('click', function (e) {
     routeTo([lat, lng]);
   }
 });
+
+const gazaIcon = L.icon({
+  iconUrl: 'Svart_emblem.png',
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32]
+});
+
+fetch('data/gazarondellen.geojson')
+  .then(response => response.json())
+  .then(data => {
+    L.geoJSON(data, {
+      pointToLayer: (feature, latlng) => {
+        return L.marker(latlng, { icon: gazaIcon });
+      },
+      onEachFeature: (feature, layer) => {
+        const latlng = layer.getLatLng();
+        const popup = `
+          <strong>${feature.properties.name || "Gazarondellen"}</strong><br>
+          <strong>Aktivitet:</strong> "Länka till program"<br>
+          <button class="btn route-btn" data-lat="${latlng.lat}" data-lng="${latlng.lng}">Visa rutt</button>
+        `;
+        layer.bindPopup(popup);
+      }
+    }).addTo(map);
+  })
+  .catch(error => {
+    console.error("Fel vid inläsning av gazarondellen.geojson:", error);
+  });
 
 function routeTo(destinationLatLng) {
   if (!userLatLng) {
