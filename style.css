@@ -43,7 +43,7 @@ header {
 }
 
 .logo-link img {
-  height: 38px;
+  height: 36px;
   object-fit: contain;
 }
 
@@ -57,13 +57,13 @@ header {
 }
 
 .wordmark-wrapper img {
-  height: 36px;
+  height: 42px;
   object-fit: contain;
 }
 
 @media (max-width: 600px) {
   .wordmark-wrapper img {
-    height: 30px;
+    height: 36px;
   }
 }
 
