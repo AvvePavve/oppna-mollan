@@ -226,8 +226,7 @@ body.no-scroll {
   display: flex;
   align-items: center;
   height: 100%;
-  padding: 0.25rem 0.5rem;
-  margin-top: 0; /* Justerat så punkterna inte trycks nedåt */
+  margin-top: -2px;
   align-self: center;
 }
 
