@@ -5,14 +5,14 @@ function closeInfo() {
 const lightTiles = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.{ext}?api_key=9a2de762-ebe1-42e7-bcd2-0260d8917ae6', {
   minZoom: 0,
   maxZoom: 20,
-  attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  attribution: '&copy; <a href="https://www.stadiamaps.com/">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
   ext: 'png'
 });
 
 const darkTiles = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.{ext}?api_key=9a2de762-ebe1-42e7-bcd2-0260d8917ae6', {
   minZoom: 0,
   maxZoom: 20,
-  attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  attribution: '&copy; <a href="https://www.stadiamaps.com/">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
   ext: 'png'
 });
 
@@ -309,15 +309,17 @@ removeRouteBtn.addEventListener('click', () => {
   }
 });
 
-// =====================
-// Hamburgarmeny (slide-in)
-// =====================
 const menuToggle = document.getElementById("menuToggle");
 const menuDrawer = document.getElementById("menuDrawer");
+const menuClose = document.getElementById("menuClose");
 
 menuToggle.addEventListener("click", (e) => {
   e.stopPropagation();
   menuDrawer.classList.toggle("open");
+});
+
+menuClose.addEventListener("click", () => {
+  menuDrawer.classList.remove("open");
 });
 
 document.addEventListener("click", (event) => {
@@ -327,7 +329,6 @@ document.addEventListener("click", (event) => {
   }
 });
 
-// Valfritt: stäng menyn vid klick på länk
 menuDrawer.querySelectorAll("a").forEach(link => {
   link.addEventListener("click", () => {
     menuDrawer.classList.remove("open");
