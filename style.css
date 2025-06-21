@@ -30,7 +30,7 @@ header {
   justify-content: space-between;
   background-color: #fffef6;
   height: 60px;
-  padding: 1rem 1rem 1rem 0rem;
+  padding: 1rem 1rem 1rem 0.5rem;
   position: relative;
 }
 
@@ -225,7 +225,7 @@ body.no-scroll {
   display: flex;
   align-items: center;
   height: 100%;
-  margin-top: -3px;
+  margin-top: -4px;
   align-self: center;
 }
 
