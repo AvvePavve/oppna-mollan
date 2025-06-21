@@ -51,7 +51,7 @@ header {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  height: 36px;
+  height: 42px;
   display: flex;
   align-items: center;
   pointer-events: none;
@@ -65,7 +65,7 @@ header {
 
 @media (max-width: 600px) {
   .wordmark-wrapper img {
-    height: 30px;
+    height: 36px;
   }
 }
 
