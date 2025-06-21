@@ -169,6 +169,11 @@ header {
   background-color: #fffef6 !important;
 }
 
+.leaflet-control-layers-toggle,
+.leaflet-control-layers-expanded {
+  border-radius: 10px !important;
+}
+
 .leaflet-control-zoom a:hover,
 .leaflet-control-layers-toggle:hover {
   background-color: #fffef6 !important;
@@ -216,7 +221,7 @@ body.no-scroll {
 }
 
 .menu-toggle {
-  font-size: 1.5rem;
+  font-size: 2rem;
   background: none;
   border: none;
   cursor: pointer;
@@ -225,7 +230,7 @@ body.no-scroll {
   display: flex;
   align-items: center;
   height: 100%;
-  margin-top: -4.5px;
+  margin-top: -5px;
   align-self: center;
 }
 
