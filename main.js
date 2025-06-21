@@ -316,21 +316,25 @@ const menuClose = document.getElementById("menuClose");
 menuToggle.addEventListener("click", (e) => {
   e.stopPropagation();
   menuDrawer.classList.toggle("open");
+  document.body.classList.toggle("no-scroll");
 });
 
 menuClose.addEventListener("click", () => {
   menuDrawer.classList.remove("open");
+  document.body.classList.remove("no-scroll");
 });
 
 document.addEventListener("click", (event) => {
   const isClickInside = menuDrawer.contains(event.target) || menuToggle.contains(event.target);
   if (!isClickInside) {
     menuDrawer.classList.remove("open");
+    document.body.classList.remove("no-scroll");
   }
 });
 
 menuDrawer.querySelectorAll("a").forEach(link => {
   link.addEventListener("click", () => {
     menuDrawer.classList.remove("open");
+    document.body.classList.remove("no-scroll");
   });
 });
