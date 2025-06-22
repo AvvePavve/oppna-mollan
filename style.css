@@ -283,6 +283,12 @@ body.no-scroll {
   cursor: pointer;
 }
 
+body::after {
+  content: '';
+  display: block;
+  height: 80px;
+}
+
 /* === Dark mode === */
 @media (prefers-color-scheme: dark) {
   body {
