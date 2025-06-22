@@ -340,8 +340,8 @@ function fixViewportHeight() {
 window.addEventListener('resize', fixViewportHeight);
 window.addEventListener('orientationchange', fixViewportHeight);
 window.addEventListener('focus', fixViewportHeight);
-// window.addEventListener('touchstart', () => {
-//  setTimeout(fixViewportHeight, 300);
-// });
+window.addEventListener('touchstart', () => {
+  setTimeout(fixViewportHeight, 300);
+});
 
 fixViewportHeight();
