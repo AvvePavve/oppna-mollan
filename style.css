@@ -1,8 +1,6 @@
 html, body {
-  height: auto;
-  min-height: 100%;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
+  height: 100%;
+  overflow: hidden;
 }
 
 @font-face {
@@ -281,12 +279,6 @@ body.no-scroll {
   top: 0.75rem;
   right: 1rem;
   cursor: pointer;
-}
-
-body::after {
-  content: '';
-  display: block;
-  height: 80px;
 }
 
 /* === Dark mode === */
