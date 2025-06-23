@@ -78,8 +78,8 @@ if (navigator.geolocation) {
 }
 
 const addressIcon = L.icon({
-  iconUrl: 'blue-marker.png',
-  iconSize: [24, 24],
+  iconUrl: 'GPS.svg',
+  iconSize: [20, 20],
   iconAnchor: [12, 23],
   popupAnchor: [0, -30],
   shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
@@ -247,7 +247,7 @@ document.addEventListener('click', function (e) {
 });
 
 const gazaIcon = L.icon({
-  iconUrl: 'Svart_emblem.png',
+  iconUrl: 'Logotyp_Nal.svg',
   iconSize: [32, 32],
   iconAnchor: [16, 32],
   popupAnchor: [0, -32]
