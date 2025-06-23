@@ -361,7 +361,7 @@ document.getElementById("openAboutOverlay").addEventListener("click", function (
 
 document.getElementById("openAaaOverlay").addEventListener("click", function (e) {
   e.preventDefault();
-  openOverlay("aaaOverlay");
+  openOverlay("AaaOverlay");
 });
 
 function fixViewportHeight() {
