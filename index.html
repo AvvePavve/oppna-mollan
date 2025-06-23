@@ -39,13 +39,27 @@
 
   <div class="info-overlay" id="aboutOverlay" style="display: none;">
     <div class="info-box">
-      <button class="menu-close" onclick="closeAbout()" aria-label="Stäng">&times;</button>
+      <button class="menu-close" onclick="closeOverlay('aboutOverlay')" aria-label="Stäng">&times;</button>
       <h2>Om Öppna Möllan</h2>
       <p>På Möllan har vi en lång tradition av att göra saker tillsammans.</p>
       <p>Sedan 2019 fortsätter vi traditionen genom Öppna Möllan: att expandera det gemensamma, lösa upp gränser och låta staden vara en plats för liv.</p>
       <p>I år sker Öppna Möllan på lördag 6 september och runt om på innergårdarna hålls under dagen olika typer av arrangemang. Allt ifrån loppisar till teaterföreställningar och mycket mer. Klicka runt här i kartan eller kom till oss i rondellen om du undrar över något!</p>
       <div class="about-svg-wrapper">
         <img src="Kvarter2.svg" alt="Kvarter">
+      </div>
+    </div>
+  </div>
+
+  <div class="info-overlay" id="aboutAaaOverlay" style="display: none;">
+    <div class="info-box">
+      <button class="menu-close" onclick="closeOverlay('aboutOverlay')" aria-label="Stäng">&times;</button>
+      <h2>Om Allt åt alla</h2>
+      <p>Allt åt alla Malmö arbetar långsiktigt och öppet med att understödja Malmöborna i alla stadens konflikter, för att tillsammans skapa ett nytt Malmö format efter våra hjärtans begär.</p>
+      <p>Vi har funnits sen 2009 och är framför allt aktiva i frågor om rätten till staden och bostäder.</p>
+      <p>Förutom att arrangera Öppna Möllan organiserar vi bland annat hyresgäster att kämpa mot sina hyresvärdar i frågor om underhåll och hyresnivåer.</p>
+      <p>Läs mer på vår hemsida.</p>
+      <div class="about-svg-wrapper">
+        <img src="Trad.svg" alt="Träd">
       </div>
     </div>
   </div>
@@ -64,7 +78,7 @@
         <button class="menu-close" id="menuClose" aria-label="Stäng meny">&times;</button>
         <a href="#" id="openAboutOverlay">Om Öppna Möllan</a>
         <a href="https://www.facebook.com/events/569497915741012?locale=sv_SE" target="_blank" rel="noopener">Facebook-event</a>
-        <a href="https://alltatalla.se/" target="_blank" rel="noopener">Allt åt alla</a>
+        <a href="#" id="openAaaOverlay">Om Allt åt alla</a>
       </nav>
     </div>
   </header>
