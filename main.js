@@ -97,9 +97,9 @@ if (navigator.geolocation) {
 
 const addressIcon = L.icon({
   iconUrl: 'GPS.svg',
-  iconSize: [11, 19],
-  iconAnchor: [6, 19],
-  popupAnchor: [0, -19],
+  iconSize: [13, 23],
+  iconAnchor: [7, 23],
+  popupAnchor: [0, -23],
 //  shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
 //  shadowSize: [35, 35],
 //  shadowAnchor: [12, 35]
@@ -266,9 +266,9 @@ document.addEventListener('click', function (e) {
 
 const gazaIcon = L.icon({
   iconUrl: 'Logotyp_Nal.svg',
-  iconSize: [32, 32],
-  iconAnchor: [16, 32],
-  popupAnchor: [0, -32]
+  iconSize: [38, 38],
+  iconAnchor: [19, 38],
+  popupAnchor: [0, -38]
 });
 
 fetch('data/gazarondellen.geojson')
