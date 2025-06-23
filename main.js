@@ -337,20 +337,29 @@ document.addEventListener("click", (event) => {
   }
 });
 
-function closeOverlay(id) {
-  const el = document.getElementById(id);
-  if (el) {
-    el.style.display = "none";
-    document.body.classList.remove("no-scroll");
-  }
-}
-
 function openOverlay(id) {
   const el = document.getElementById(id);
   if (el) {
-    el.style.display = "flex";
-    document.body.classList.add("no-scroll");
     menuDrawer.classList.remove("open");
+    document.body.classList.remove("no-scroll");
+    setTimeout(() => {
+      el.style.display = "flex";
+      requestAnimationFrame(() => {
+        el.classList.add("show");
+        document.body.classList.add("no-scroll");
+      });
+    }, 300);
+  }
+}
+
+function closeOverlay(id) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.classList.remove("show");
+    setTimeout(() => {
+      el.style.display = "none";
+      document.body.classList.remove("no-scroll");
+    }, 300);
   }
 }
 
