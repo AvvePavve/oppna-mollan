@@ -131,7 +131,8 @@ header {
   }
 }
 
-#aboutOverlay .info-box {
+#aboutOverlay .info-box,
+#AaaOverlay .info-box {
   margin-top: 100px;
   margin-bottom: 100px;
   max-height: calc(100vh - 200px); /* 80 top + 40 bottom */
