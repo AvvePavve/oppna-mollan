@@ -314,7 +314,12 @@ const menuToggle = document.getElementById("menuToggle");
 const menuDrawer = document.getElementById("menuDrawer");
 const menuClose = document.getElementById("menuClose");
 
-menuToggle.addEventListener("click", () => {
+menuToggle.addEventListener("click", (e) => {
+  const aboutOpen = document.getElementById("aboutOverlay").style.display === "flex";
+  if (aboutOpen) {
+    e.stopPropagation(); // blockera öppning
+    return;
+  }
   menuDrawer.classList.toggle("open");
   document.body.classList.toggle("no-scroll");
 });
