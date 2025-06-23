@@ -79,9 +79,9 @@ if (navigator.geolocation) {
 
 const addressIcon = L.icon({
   iconUrl: 'GPS.svg',
-  iconSize: [15, 15],
-  iconAnchor: [12, 23],
-  popupAnchor: [0, -30],
+  iconSize: [11, 19],
+  iconAnchor: [6, 19],
+  popupAnchor: [0, -19],
 //  shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
 //  shadowSize: [35, 35],
 //  shadowAnchor: [12, 35]
