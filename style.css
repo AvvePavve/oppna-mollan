@@ -37,8 +37,19 @@ header {
   height: 60px;
   padding: 1rem 0.7rem 1rem 0.5rem;
   position: relative;
-  border-bottom: 2px solid rgba(0, 0, 0, 0.10);
   z-index: 2100;
+}
+
+header::after {
+  content: "";
+  position: absolute;
+  bottom: -2px; /* ↓ för att hamna utanför headern */
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(0, 0, 0, 0.25); /* ← transparent linje */
+  pointer-events: none;
+  z-index: 2101;
 }
 
 .logo-link {
