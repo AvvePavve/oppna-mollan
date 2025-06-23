@@ -282,7 +282,7 @@ fetch('data/gazarondellen.geojson')
         const latlng = layer.getLatLng();
         const popup = `
           <strong>${feature.properties.name || "Gazarondellen"}</strong><br>
-          <strong>Aktivitet:</strong> "L\u00e4nka till program"<br>
+          <strong>Aktivitet:</strong> Se schema i menyn till vänster.<br>
           <button class="btn route-btn" data-lat="${latlng.lat}" data-lng="${latlng.lng}">Visa rutt</button>
         `;
         layer.bindPopup(popup);
