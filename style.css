@@ -159,6 +159,8 @@ header {
   #aboutOverlay .info-box,
   #AaaOverlay .info-box,
   #SchemaOverlay .info-box {
+    width: clamp(240px, 85%, 320px);
+    padding: 1.5rem;
     margin-top: 100px;
     margin-bottom: 100px;
     max-height: calc(100vh - 200px); /* 60 top + 30 bottom */
