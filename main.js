@@ -337,16 +337,31 @@ document.addEventListener("click", (event) => {
   }
 });
 
-function closeAbout() {
-  document.getElementById("aboutOverlay").style.display = "none";
-  document.body.classList.remove("no-scroll");
+function closeOverlay(id) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.style.display = "none";
+    document.body.classList.remove("no-scroll");
+  }
+}
+
+function openOverlay(id) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.style.display = "flex";
+    document.body.classList.add("no-scroll");
+    menuDrawer.classList.remove("open");
+  }
 }
 
 document.getElementById("openAboutOverlay").addEventListener("click", function (e) {
   e.preventDefault();
-  document.getElementById("aboutOverlay").style.display = "flex";
-  document.body.classList.add("no-scroll");
-  menuDrawer.classList.remove("open");
+  openOverlay("aboutOverlay");
+});
+
+document.getElementById("openAaaOverlay").addEventListener("click", function (e) {
+  e.preventDefault();
+  openOverlay("aaaOverlay");
 });
 
 function fixViewportHeight() {
