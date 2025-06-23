@@ -155,6 +155,19 @@ header {
   position: relative
 }
 
+#aboutOverlay .info-box::after,
+#AaaOverlay .info-box::after,
+#SchemaOverlay .info-box::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2rem;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(255, 254, 246, 0), rgba(255, 254, 246, 1));
+}
+
 @media (max-width: 600px) {
   #aboutOverlay .info-box,
   #AaaOverlay .info-box,
