@@ -170,7 +170,7 @@ header {
   #AaaOverlay .menu-close,
   #SchemaOverlay .menu-close {
     position: absolute;
-    top: 1rem;
+    top: 0.7rem;
     right: 1rem;
   }
 }
