@@ -82,9 +82,9 @@ const addressIcon = L.icon({
   iconSize: [20, 20],
   iconAnchor: [12, 23],
   popupAnchor: [0, -30],
-  shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
-  shadowSize: [35, 35],
-  shadowAnchor: [12, 35]
+//  shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
+//  shadowSize: [35, 35],
+//  shadowAnchor: [12, 35]
 });
 
 const buildingOffset = { lng: -0.00002, lat: 0.00007 };
