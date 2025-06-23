@@ -299,6 +299,18 @@ body.no-scroll {
   cursor: pointer;
 }
 
+.about-svg-wrapper {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.about-svg-wrapper img {
+  width: 140px;
+  max-width: 100%;
+  height: auto;
+  display: inline-block;
+}
+
 /* === Dark mode === */
 @media (prefers-color-scheme: dark) {
   body {
