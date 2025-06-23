@@ -136,6 +136,7 @@ header {
   margin-bottom: 100px;
   max-height: calc(100vh - 200px); /* 80 top + 40 bottom */
   overflow-y: auto;
+  position: relative
 }
 
 @media (max-width: 600px) {
