@@ -332,6 +332,18 @@ document.addEventListener("click", (event) => {
   }
 });
 
+function closeAbout() {
+  document.getElementById("aboutOverlay").style.display = "none";
+  document.body.classList.remove("no-scroll");
+}
+
+document.getElementById("openAboutOverlay").addEventListener("click", function (e) {
+  e.preventDefault();
+  document.getElementById("aboutOverlay").style.display = "flex";
+  document.body.classList.add("no-scroll");
+  menuDrawer.classList.remove("open");
+});
+
 function fixViewportHeight() {
   const vh = window.innerHeight * 0.01;
   document.documentElement.style.setProperty('--vh', `${vh}px`);
