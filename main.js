@@ -20,6 +20,19 @@ const defaultCenter = [55.591988278009765, 13.011586184559851];
 const defaultZoom = 16;
 const map = L.map('map', { layers: [] }).setView(defaultCenter, defaultZoom);
 
+const bounds = L.latLngBounds(
+  [55.53, 12.90],  // sydväst
+  [55.65, 13.12]   // nordost
+);
+
+map.setMaxBounds(bounds);
+map.setMinZoom(14);  // valfri: förhindra för långt utzoom
+map.setMaxZoom(20);  // redan satt i tile-lagret, men går att sätta här också
+
+map.on('drag', () => {
+  map.panInsideBounds(bounds, { animate: false });
+});
+
 // Temporärt inaktiverad dark mode:
 // function setBaseMap() {
 //   const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
