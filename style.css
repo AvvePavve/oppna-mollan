@@ -113,6 +113,11 @@ header {
   pointer-events: auto;
 }
 
+#infoOverlay {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
 .info-box {
   background: #fffef6;
   color: #333;
