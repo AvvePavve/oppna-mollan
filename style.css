@@ -131,6 +131,19 @@ header {
   }
 }
 
+#aboutOverlay .info-box {
+  margin-top: 80px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+}
+
+@media (max-width: 600px) {
+  #aboutOverlay .info-box {
+    margin-top: 60px;
+    max-height: calc(100vh - 80px);
+  }
+}
+
 .user-location-icon,
 .leaflet-marker-pane .leaflet-marker-icon.user-location {
   width: 18px;
