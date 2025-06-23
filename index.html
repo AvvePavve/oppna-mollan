@@ -37,6 +37,16 @@
     </div>
   </div>
 
+  <div class="info-overlay" id="aboutOverlay" style="display: none;">
+    <div class="info-box">
+      <img src="Signatur.svg" alt="Öppna Möllan" style="width: 160px; margin-bottom: 1rem;" />
+      <h2>Om Öppna Möllan</h2>
+      <p>På Möllan har vi en lång tradition av att göra saker tillsammans. Sedan 2019 fortsätter vi traditionen genom Öppna Möllan: att expandera det gemensamma, lösa upp gränser och låta staden vara en plats för liv. I år sker Öppna Möllan på lördag 6 september och runt om på innergårdarna hålls under dagen olika typer av arrangemang. Allt ifrån loppisar till teaterföreställningar och mycket mer. Klicka runt här i kartan eller kom till oss i rondellen om du undrar över något!</p>
+      <p>Arrangeras av <a href="https://alltatalla.se/" target="_blank" rel="noopener">Allt åt alla Malmö</a>.</p>
+      <button class="btn" onclick="closeAbout()">Stäng</button>
+    </div>
+  </div>
+
   <header>
     <a class="logo-link" href="https://www.facebook.com/events/569497915741012?locale=sv_SE" rel="noopener">
       <img src="emblem_mork.png" alt="Öppna Möllan logotyp" />
@@ -49,7 +59,7 @@
       <button class="menu-toggle" aria-label="Meny" id="menuToggle">...</button>
       <nav class="menu-drawer" id="menuDrawer">
         <button class="menu-close" id="menuClose" aria-label="Stäng meny">&times;</button>
-        <a href="#info">Om Öppna Möllan</a>
+        <a href="#" id="openAboutOverlay">Om Öppna Möllan</a>
         <a href="https://www.facebook.com/events/569497915741012?locale=sv_SE" target="_blank" rel="noopener">Facebook-event</a>
         <a href="https://alltatalla.se/" target="_blank" rel="noopener">Allt åt alla</a>
       </nav>
