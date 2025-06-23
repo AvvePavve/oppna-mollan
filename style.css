@@ -132,17 +132,17 @@ header {
 }
 
 #aboutOverlay .info-box {
-  margin-top: 80px;
-  margin-bottom: 40px;
-  max-height: calc(100vh - 120px); /* 80 top + 40 bottom */
+  margin-top: 100px;
+  margin-bottom: 100px;
+  max-height: calc(100vh - 200px); /* 80 top + 40 bottom */
   overflow-y: auto;
 }
 
 @media (max-width: 600px) {
   #aboutOverlay .info-box {
-    margin-top: 60px;
-    margin-bottom: 30px;
-    max-height: calc(100vh - 90px); /* 60 top + 30 bottom */
+    margin-top: 100px;
+    margin-bottom: 100px;
+    max-height: calc(100vh - 200px); /* 60 top + 30 bottom */
   }
 }
 
