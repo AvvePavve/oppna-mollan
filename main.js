@@ -364,6 +364,11 @@ document.getElementById("openAaaOverlay").addEventListener("click", function (e)
   openOverlay("AaaOverlay");
 });
 
+document.getElementById("openSchemaOverlay").addEventListener("click", function (e) {
+  e.preventDefault();
+  openOverlay("SchemaOverlay");
+});
+
 function fixViewportHeight() {
   const vh = window.innerHeight * 0.01;
   document.documentElement.style.setProperty('--vh', `${vh}px`);
