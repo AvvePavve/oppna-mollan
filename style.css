@@ -133,14 +133,16 @@ header {
 
 #aboutOverlay .info-box {
   margin-top: 80px;
-  max-height: calc(100vh - 100px);
+  margin-bottom: 40px;
+  max-height: calc(100vh - 120px); /* 80 top + 40 bottom */
   overflow-y: auto;
 }
 
 @media (max-width: 600px) {
   #aboutOverlay .info-box {
     margin-top: 60px;
-    max-height: calc(100vh - 80px);
+    margin-bottom: 30px;
+    max-height: calc(100vh - 90px); /* 60 top + 30 bottom */
   }
 }
 
