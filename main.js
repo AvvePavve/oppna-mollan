@@ -20,18 +20,23 @@ const defaultCenter = [55.591988278009765, 13.011586184559851];
 const defaultZoom = 16;
 const map = L.map('map', { layers: [] }).setView(defaultCenter, defaultZoom);
 
-function setBaseMap() {
-  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  if (isDark) {
-    if (map.hasLayer(lightTiles)) map.removeLayer(lightTiles);
-    if (!map.hasLayer(darkTiles)) darkTiles.addTo(map);
-  } else {
-    if (map.hasLayer(darkTiles)) map.removeLayer(darkTiles);
-    if (!map.hasLayer(lightTiles)) lightTiles.addTo(map);
-  }
-}
-setBaseMap();
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', setBaseMap);
+// Temporärt inaktiverad dark mode:
+// function setBaseMap() {
+//   const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+//   if (isDark) {
+//     if (map.hasLayer(lightTiles)) map.removeLayer(lightTiles);
+//     if (!map.hasLayer(darkTiles)) darkTiles.addTo(map);
+//   } else {
+//     if (map.hasLayer(darkTiles)) map.removeLayer(darkTiles);
+//     if (!map.hasLayer(lightTiles)) lightTiles.addTo(map);
+//   }
+// }
+
+// setBaseMap();
+// window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', setBaseMap);
+
+// Använd alltid ljusa kartan:
+lightTiles.addTo(map);
 
 map.createPane('userPane');
 map.getPane('userPane').style.zIndex = 1000;
