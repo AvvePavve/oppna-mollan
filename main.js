@@ -409,3 +409,7 @@ window.addEventListener('touchstart', () => {
 });
 
 fixViewportHeight();
+
+window.addEventListener("load", () => {
+  openOverlay("infoOverlay");
+});
