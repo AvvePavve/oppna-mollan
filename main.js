@@ -26,8 +26,8 @@ const bounds = L.latLngBounds(
 );
 
 map.setMaxBounds(bounds);
-map.setMinZoom(14);  // valfri: förhindra för långt utzoom
-map.setMaxZoom(20);  // redan satt i tile-lagret, men går att sätta här också
+map.setMinZoom(14);
+map.setMaxZoom(20);
 
 map.on('drag', () => {
   map.panInsideBounds(bounds, { animate: false });
@@ -97,9 +97,9 @@ if (navigator.geolocation) {
 
 const addressIcon = L.icon({
   iconUrl: 'GPS.svg',
-  iconSize: [13, 23],
-  iconAnchor: [7, 23],
-  popupAnchor: [0, -23],
+  iconSize: [16, 28],
+  iconAnchor: [8, 28],
+  popupAnchor: [0, -28],
 //  shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
 //  shadowSize: [35, 35],
 //  shadowAnchor: [12, 35]
