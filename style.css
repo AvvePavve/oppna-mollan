@@ -38,6 +38,7 @@ header {
   padding: 1rem 0.7rem 1rem 0.5rem;
   position: relative;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  z-index: 2100;
 }
 
 .logo-link {
