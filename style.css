@@ -150,6 +150,13 @@ header {
   }
 }
 
+.info-box a {
+  color: #f47c31;
+  text-decoration: underline;
+  font-family: 'NexaBold', Arial, sans-serif;
+  transition: color 0.3s;
+}
+
 .user-location-icon,
 .leaflet-marker-pane .leaflet-marker-icon.user-location {
   width: 18px;
