@@ -345,7 +345,7 @@ body.no-scroll {
   display: inline-block;
 }
 
-/* === Dark mode === */
+/* === Dark mode === 
 @media (prefers-color-scheme: dark) {
   body {
     background-color: #181818;
@@ -366,4 +366,4 @@ body.no-scroll {
     background: #f47c31;
     color: #fff;
   }
-}
+} */
