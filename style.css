@@ -254,7 +254,8 @@ header {
 }
 
 .leaflet-control {
-  box-shadow: none !important;
+  /*box-shadow: none !important;*/
+  border: none !important!
 }
 
 #removeRouteBtn {
