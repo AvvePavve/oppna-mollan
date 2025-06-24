@@ -253,17 +253,6 @@ header {
   background-color: #fcf1b6 !important;
 }
 
-/* === Leaflet UI-anpassning: platt stil utan skugga === */
-.leaflet-control .leaflet-bar {
-  box-shadow: none !important;
-  /*background: transparent !important;*/
-}
-
-.leaflet-control-zoom a,
-.leaflet-control-layers-toggle,
-.leaflet-control-layers-expanded {
-  border: 1px solid rgba(0, 0, 0, 0.25) !important;
-
 #removeRouteBtn {
   position: fixed;
   bottom: 30px;
