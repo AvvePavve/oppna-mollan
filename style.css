@@ -253,6 +253,14 @@ header {
   background-color: #fcf1b6 !important;
 }
 
+/* === Leaflet UI-anpassning: platt stil utan skugga === */
+.leaflet-control,
+.leaflet-control .leaflet-bar {
+  box-shadow: none !important;
+  border: none !important;
+  background: transparent !important;
+}
+
 .leaflet-control-zoom a,
 .leaflet-control-layers-toggle,
 .leaflet-control-layers-expanded {
