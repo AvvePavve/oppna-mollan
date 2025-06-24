@@ -37,7 +37,6 @@ header {
   height: 60px;
   padding: 1rem 0.7rem 1rem 0.5rem;
   position: relative;
-  z-index: 2100;
 }
 
 header::after {
@@ -49,7 +48,7 @@ header::after {
   height: 2px;
   background: rgba(0, 0, 0, 0.20); /* ← transparent linje */
   pointer-events: none;
-  z-index: 2101;
+  z-index: 1999
 }
 
 .logo-link {
