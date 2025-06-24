@@ -257,7 +257,7 @@ header {
 .leaflet-control-layers-toggle,
 .leaflet-control-layers-expanded {
   box-shadow: none !important;
-  border: none !important;
+  border: 1px solid rgba(0, 0, 0, 0.25) !important;
   outline: none !important;
 }
 
