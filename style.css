@@ -206,6 +206,12 @@ header {
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
 }
 
+/*TEST!!!*/
+
+.leaflet-control .leaflet-bar {
+  box-shadow: none !important;
+}
+
 .leaflet-routing-container {
   display: none !important;
 }
