@@ -253,9 +253,12 @@ header {
   background-color: #fcf1b6 !important;
 }
 
-.leaflet-control {
-  /*box-shadow: none !important;*/
-  border: none !important!
+.leaflet-control-zoom a,
+.leaflet-control-layers-toggle,
+.leaflet-control-layers-expanded {
+  box-shadow: none !important;
+  border: none !important;
+  outline: none !important;
 }
 
 #removeRouteBtn {
