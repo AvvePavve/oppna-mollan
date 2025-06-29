@@ -1,8 +1,29 @@
+/* === Variabler === */
+:root {
+  --color-bg: #fffef6;
+  --color-text: #333;
+  --color-accent: #f47c31;
+  --color-overlay: rgba(0, 0, 0, 0.6);
+  --color-wall: #faf4b7;
+}
+
+/* === Grundläggande layout === */
 html, body {
   height: 100%;
   overflow: hidden;
+  margin: 0;
+  padding: 0;
+  font-family: 'NexaBook', Arial, sans-serif;
+  background-color: var(--color-bg);
+  color: white;
+  scroll-behavior: smooth;
 }
 
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* === Typsnitt === */
 @font-face {
   font-family: 'NexaBook';
   src: url('fonts/nexabook.otf') format('opentype');
@@ -16,42 +37,19 @@ html, body {
   src: url('fonts/nexablack.otf') format('opentype');
 }
 
-*, *::before, *::after {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  font-family: 'NexaBook', Arial, sans-serif;
-  background-color: #fffef6;
-  color: white;
-  scroll-behavior: smooth;
-}
-
+/* === Header === */
 header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #fffef6;
+  background-color: var(--color-bg);
   height: 60px;
-  padding: 1rem 1rem 1rem 1rem;
+  padding: 1rem;
   position: relative;
   border-bottom: 1px solid rgba(0, 0, 0, 0.25);
 }
 
-.logo-link {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  height: 100%;
-}
-
-.logo-link img {
-  height: 46px;
-  object-fit: contain;
-}
-
+/* Wordmark centrerad */
 .wordmark-wrapper {
   position: absolute;
   left: 50%;
@@ -65,24 +63,25 @@ header {
   height: 42px;
   object-fit: contain;
 }
-
 @media (max-width: 600px) {
   .wordmark-wrapper img {
     height: 40px;
   }
 }
 
+/* === Karta === */
 #map {
   height: calc(var(--vh, 1vh) * 100 - 60px);
   width: 100%;
   position: relative;
 }
 
+/* === Knappar === */
 .btn {
   padding: 10px 16px;
   font-size: 1rem;
-  background: #f47c31;
-  color: #fffef6;
+  background: var(--color-accent);
+  color: var(--color-bg);
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -90,38 +89,31 @@ header {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   transition: background 0.3s, color 0.3s;
 }
-
 .btn:focus {
   outline: 2px solid #333;
   outline-offset: 2px;
 }
 
+/* === Overlayer === */
 .info-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: var(--color-overlay);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 2000;
   opacity: 0;
-  transition: opacity 0.3s ease;
   pointer-events: none;
+  transition: opacity 0.3s ease;
 }
-
 .info-overlay.show {
   opacity: 1;
   pointer-events: auto;
 }
-
-#infoOverlay {
-  opacity: 1 !important;
-  pointer-events: auto !important;
-}
-
 .info-box {
-  background: #fffef6;
-  color: #333;
+  background: var(--color-bg);
+  color: var(--color-text);
   padding: 2rem;
   border-radius: 10px;
   max-width: 90%;
@@ -130,12 +122,16 @@ header {
   text-align: center;
   font-family: 'NexaBook', Arial, sans-serif;
 }
-
 .info-box h2 {
   margin-top: 0;
   font-family: 'NexaBold', Arial, sans-serif;
 }
-
+.info-box a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  font-family: 'NexaBold', Arial, sans-serif;
+  transition: color 0.3s;
+}
 @media (max-width: 480px) {
   .info-box {
     width: 90%;
@@ -144,101 +140,37 @@ header {
     padding: 1.5rem;
   }
 }
+.info-box .about-svg-wrapper {
+  text-align: center;
+  margin-top: 1rem;
+}
+.about-svg-wrapper img {
+  width: 150px;
+  max-width: 100%;
+  height: auto;
+  display: inline-block;
+}
 
+/* Särskilda overlayer med extra padding */
 #aboutOverlay .info-box,
 #AaaOverlay .info-box,
 #SchemaOverlay .info-box {
-  margin-top: 100px;
-  margin-bottom: 100px;
+  margin: 100px auto;
   max-height: calc(100vh - 200px);
   text-align: left;
   overflow-y: auto;
   position: relative;
 }
-
 @media (max-width: 600px) {
   #aboutOverlay .info-box,
   #AaaOverlay .info-box,
   #SchemaOverlay .info-box {
     width: clamp(240px, 85%, 320px);
     padding: 2.5rem 1.5rem 1.5rem;
-    margin-top: 100px;
-    margin-bottom: 100px;
-    max-height: calc(100vh - 200px);
-  }
-
-  #aboutOverlay .menu-close,
-  #AaaOverlay .menu-close,
-  #SchemaOverlay .menu-close {
-    position: absolute;
-    top: 0.7rem;
-    right: 1rem;
   }
 }
 
-.info-box a {
-  color: #f47c31;
-  text-decoration: underline;
-  font-family: 'NexaBold', Arial, sans-serif;
-  transition: color 0.3s;
-}
-
-.user-location-icon,
-.leaflet-marker-pane .leaflet-marker-icon.user-location {
-  width: 18px;
-  height: 18px;
-  background-color: #6278b3;
-  border-radius: 50%;
-  border: 2px solid white;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
-}
-
-.leaflet-routing-container {
-  display: none !important;
-}
-
-.leaflet-popup-pane {
-  z-index: 1100 !important;
-}
-
-.leaflet-popup-content {
-  background: #fffef6;
-  font-family: 'NexaBook', Arial, sans-serif;
-  font-size: 1rem;
-  line-height: 1.4;
-}
-
-.leaflet-popup-content strong {
-  font-family: 'NexaBold', Arial, sans-serif;
-}
-
-.leaflet-popup-content .route-btn {
-  margin-top: 0.65rem;
-  display: inline-block;
-}
-
-.leaflet-control-zoom a,
-.leaflet-control-layers-toggle,
-.leaflet-control-layers-expanded,
-.leaflet-popup-content-wrapper,
-.leaflet-popup-tip,
-.leaflet-routing-container {
-  background-color: #fffef6 !important;
-}
-
-.leaflet-control-zoom a:hover,
-.leaflet-control-layers-toggle:hover,
-.leaflet-control-locate:hover {
-  background-color: #fffef6 !important;
-}
-
-.leaflet-control-zoom a:active,
-.leaflet-control-layers-toggle:active,
-.leaflet-control-locate:active {
-  background-color: #fcf1b6 !important;
-}
-
-/* Hamburgermeny */
+/* === Meny === */
 .menu-toggle {
   width: 32px;
   height: 32px;
@@ -253,50 +185,39 @@ header {
   align-items: center;
   justify-content: center;
 }
-
 .menu-wrapper {
   margin-left: auto;
   position: relative;
   z-index: 3000;
 }
-
-body.no-scroll {
-  overflow: hidden;
-}
-
 .menu-drawer {
   position: fixed;
   top: 0;
   right: -250px;
   height: 100vh;
   width: 250px;
-  background-color: #fffef6;
+  background-color: var(--color-bg);
   border-left: 1px solid rgba(0, 0, 0, 0.25);
-  /* box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2); */
   display: flex;
   flex-direction: column;
   padding-top: 60px;
   transition: right 0.3s ease;
   z-index: 2000;
 }
-
 .menu-drawer.open {
   right: 0;
 }
-
 .menu-drawer a {
   padding: 1rem;
   text-decoration: none;
-  color: #333;
+  color: var(--color-text);
   font-family: 'NexaBook', Arial, sans-serif;
   border-bottom: 1px solid #eee;
 }
-
 .menu-drawer a:hover {
-  background-color: #f47c31;
-  color: #fffef6;
+  background-color: var(--color-accent);
+  color: var(--color-bg);
 }
-
 .menu-close {
   background: none;
   border: none;
@@ -307,63 +228,81 @@ body.no-scroll {
   right: 1rem;
   cursor: pointer;
 }
-
-.about-svg-wrapper {
-  text-align: center;
-  margin-top: 1rem;
+body.no-scroll {
+  overflow: hidden;
 }
 
-.about-svg-wrapper img {
-  width: 150px;
-  max-width: 100%;
-  height: auto;
-  display: inline-block;
+/* === Leaflet-element === */
+:where(
+  .leaflet-control-zoom a,
+  .leaflet-control-layers-toggle,
+  .leaflet-control-layers-expanded,
+  .leaflet-popup-content-wrapper,
+  .leaflet-popup-tip
+) {
+  background-color: var(--color-bg) !important;
+}
+:where(
+  .leaflet-control-zoom a:hover,
+  .leaflet-control-layers-toggle:hover,
+  .leaflet-control-locate:hover
+) {
+  background-color: var(--color-bg) !important;
+}
+:where(
+  .leaflet-control-zoom a:active,
+  .leaflet-control-layers-toggle:active,
+  .leaflet-control-locate:active
+) {
+  background-color: #fcf1b6 !important;
 }
 
-/* === Macha lagerväljare och platsknapp === */
-/* Platsknappen */
-.leaflet-control-locate {
-  display: block;
-  width: 40px !important;
-  height: 40px !important;
-  background-color: #fffef6 !important;
-  background-image: url('locate.svg');
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 30px 30px !important;
-  border-radius: 4px;
-  border: 1px solid rgba(0, 0, 0, 0.25) !important;
-  box-shadow: none !important;
-}
-
-/* Lagerväljarens ikon */
+/* Kontrollikoner */
+.leaflet-control-locate,
 .leaflet-control-layers-toggle {
   width: 40px !important;
   height: 40px !important;
-  background-image: url('funnel.svg') !important;
   border-radius: 4px !important;
+  border: 1px solid rgba(0, 0, 0, 0.25) !important;
+  box-shadow: none !important;
+  background-repeat: no-repeat;
+  background-position: center;
   background-size: 30px 30px !important;
-  border: 1px solid rgba(0, 0, 0, 0.25) !important;
-  box-shadow: none !important;
+}
+.leaflet-control-locate {
+  background-image: url('locate.svg');
+}
+.leaflet-control-layers-toggle {
+  background-image: url('funnel.svg') !important;
 }
 
-.leaflet-control-layers {
-  border: none !important;
-  box-shadow: none !important;
-  border-radius: 4px !important;
+/* Popuprutor */
+.leaflet-popup-content {
+  background: var(--color-bg);
+  font-family: 'NexaBook', Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+.leaflet-popup-content strong {
+  font-family: 'NexaBold', Arial, sans-serif;
+}
+.leaflet-popup-content .route-btn {
+  margin-top: 0.65rem;
+  display: inline-block;
 }
 
-.leaflet-control-layers-expanded {
-  border: 1px solid rgba(0, 0, 0, 0.25) !important;
-  box-shadow: none !important;
-  background: #fffef6 !important;
-  border-radius: 4px !important;
+/* Användarikon */
+.user-location-icon,
+.leaflet-marker-pane .leaflet-marker-icon.user-location {
+  width: 18px;
+  height: 18px;
+  background-color: #6278b3;
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
 }
 
-.leaflet-control-layers-list {
-  border: none !important
-}
-
+/* Spinner */
 #spinnerOverlay {
   position: fixed;
   inset: 0;
@@ -375,7 +314,7 @@ body.no-scroll {
 }
 .spinner {
   border: 4px solid #f3f3f3;
-  border-top: 4px solid #f47c31;
+  border-top: 4px solid var(--color-accent);
   border-radius: 50%;
   width: 40px;
   height: 40px;
@@ -386,25 +325,24 @@ body.no-scroll {
   100% { transform: rotate(360deg); }
 }
 
-/* === Dark mode === 
+/* === Dark mode (aktivera vid behov) === */
+/*
 @media (prefers-color-scheme: dark) {
   body {
     background-color: #181818;
     color: #f4f4f4;
   }
-
   header {
-    background-color: #fffef6;
+    background-color: #181818;
     color: #fff;
   }
-
   .info-box {
     background: #232323;
     color: #f4f4f4;
   }
-
   .btn {
-    background: #f47c31;
+    background: var(--color-accent);
     color: #fff;
   }
-} */
+}
+*/
