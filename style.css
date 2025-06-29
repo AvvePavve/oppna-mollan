@@ -40,19 +40,6 @@ header {
   border-bottom: 1px solid rgba(0, 0, 0, 0.25);
 }
 
-/*header::after {
-  content: "";
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: rgba(0, 0, 0, 0.20);
-  pointer-events: none;
-  z-index: 1999
-}
-*/
-
 .logo-link {
   display: flex;
   align-items: center;
@@ -163,10 +150,10 @@ header {
 #SchemaOverlay .info-box {
   margin-top: 100px;
   margin-bottom: 100px;
-  max-height: calc(100vh - 200px); /* 80 top + 40 bottom */
+  max-height: calc(100vh - 200px);
   text-align: left;
   overflow-y: auto;
-  position: relative
+  position: relative;
 }
 
 @media (max-width: 600px) {
@@ -177,7 +164,7 @@ header {
     padding: 2.5rem 1.5rem 1.5rem;
     margin-top: 100px;
     margin-bottom: 100px;
-    max-height: calc(100vh - 200px); /* 60 top + 30 bottom */
+    max-height: calc(100vh - 200px);
   }
 
   #aboutOverlay .menu-close,
@@ -198,6 +185,11 @@ header {
 
 .leaflet-bar a {
   font-family: 'NexaBook', Arial, sans-serif;
+
+  /* NYTT: samma storlek på alla knappar */
+  width: 26px;
+  height: 26px;
+  line-height: 26px;
 }
 
 .user-location-icon,
@@ -239,17 +231,12 @@ header {
 .leaflet-control-layers-expanded,
 .leaflet-popup-content-wrapper,
 .leaflet-popup-tip,
-.leaflet-routing-container,
-.leaflet-control-locate {
+.leaflet-routing-container {
   background-color: #fffef6 !important;
-  width: 26px;
-  height: 26px;
-  line-height: 26px;
-  border-radius: 4px;
 }
 
 .leaflet-control-layers-toggle {
-  border-radius: 10px !important;
+  border-radius: 4px !important;
   background-image: url('funnel.svg') !important;
   background-repeat: no-repeat;
   background-position: center;
@@ -257,14 +244,12 @@ header {
 }
 
 .leaflet-control-zoom a:hover,
-.leaflet-control-layers-toggle:hover,
-.leaflet-control-locate:hover {
+.leaflet-control-layers-toggle:hover {
   background-color: #fffef6 !important;
 }
 
 .leaflet-control-zoom a:active,
-.leaflet-control-layers-toggle:active,
-.leaflet-control-locate:active {
+.leaflet-control-layers-toggle:active {
   background-color: #fcf1b6 !important;
 }
 
@@ -311,16 +296,20 @@ body.no-scroll {
   overflow: hidden;
 }
 
+/* Uppdaterad hamburgermeny */
 .menu-toggle {
-  width: 26px;
-  height: 26px;
+  width: 32px;
+  height: 32px;
   background: none;
   border: none;
   cursor: pointer;
   background-image: url('bars.svg');
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 18px 18px;
+  background-size: 20px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .menu-drawer {
