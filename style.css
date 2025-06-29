@@ -257,6 +257,13 @@ header {
   background-color: #fcf1b6 !important;
 }
 
+.leaflet-control-locate {
+  background-image: url('locate.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 18px 18px;
+}
+
 #removeRouteBtn {
   position: fixed;
   bottom: 30px;
