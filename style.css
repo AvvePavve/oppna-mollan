@@ -359,6 +359,31 @@ body.no-scroll {
   display: inline-block;
 }
 
+#locateBtn {
+  position: fixed;
+  bottom: 30px;
+  left: 10px;
+  z-index: 1001;
+  padding: 10px 16px;
+  font-size: 1rem;
+  background: #f47c31;
+  color: #fffef6;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'NexaBook', Arial, sans-serif;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+@media (max-width: 480px) {
+  #locateBtn {
+    bottom: 12px;
+    left: 10px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+}
+
 /* === Dark mode === 
 @media (prefers-color-scheme: dark) {
   body {
