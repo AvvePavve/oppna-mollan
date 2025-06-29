@@ -241,19 +241,6 @@ header {
   background-size: 18px 18px;
 }
 
-.leaflet-control-locate a {
-  width: 26px;
-  height: 26px;
-  display: block;
-  background: #fffef6 url('locate.svg') no-repeat center;
-  background-size: 18px 18px;
-  border-radius: 4px;
-}
-
-.leaflet-control-locate a:hover {
-  background-color: #fcf1b6;
-}
-
 .leaflet-control-zoom a:hover,
 .leaflet-control-layers-toggle:hover {
   background-color: #fffef6 !important;
@@ -262,6 +249,18 @@ header {
 .leaflet-control-zoom a:active,
 .leaflet-control-layers-toggle:active {
   background-color: #fcf1b6 !important;
+}
+
+/* FIX: platsknappen korrekt storlek */
+.leaflet-control-locate {
+  display: block;
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  background-image: url('locate.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 18px 18px;
 }
 
 #removeRouteBtn {
