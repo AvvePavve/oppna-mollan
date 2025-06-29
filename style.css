@@ -331,6 +331,7 @@ body.no-scroll {
   background-position: center;
   background-size: 32px 32px !important;
   border-radius: 4px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.2);
 }
 
 /* Lagerväljarens ikon */
@@ -340,6 +341,7 @@ body.no-scroll {
   background-image: url('funnel.svg') !important;
   border-radius: 10px !important;
   background-size: 30px 30px !important;
+  box-shadow: 0 0 2px rgba(0,0,0,0.2);
 }
 
 #spinnerOverlay {
