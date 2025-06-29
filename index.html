@@ -4,13 +4,14 @@
   <meta charset="utf-8" />
   <title>Öppna Möllan</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="referrer" content="strict-origin-when-cross-origin">
 
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="theme-color" content="#fffef6" />
 
-  <link rel="icon" type="image/png" href="/oppna-mollan/Svart_emblem.png?" />
+  <link rel="icon" type="image/png" href="Svart_emblem.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <meta name="apple-touch-title" content="Öppna Möllan" />
 
@@ -39,74 +40,69 @@
     </div>
   </noscript>
 
-  <div class="info-overlay" id="infoOverlay">
+  <!-- Overlays -->
+  <div class="info-overlay" id="infoOverlay" role="dialog" aria-modal="true" aria-labelledby="infoTitle">
     <div class="info-box">
-      <h2>Välkommen till<br>Öppna Möllan</h2>
-      <p>Här kan du se vilka innergårdar på och runt Möllevången som håller öppet idag. Klicka på punkterna för att se vilka aktiviteter som kommer att hållas i på de olika gårdarna.</p>
-      <button class="btn" onclick="closeInfo()" aria-label="Stäng informationsrutan">Stäng</button>
+      <h2 id="infoTitle">Välkommen till<br>Öppna Möllan</h2>
+      <p>Här kan du se vilka innergårdar på och runt Möllevången som håller öppet idag. Klicka på punkterna för att se vilka aktiviteter som kommer att hållas på de olika gårdarna.</p>
+      <button class="btn" onclick="closeOverlay('infoOverlay')" aria-label="Stäng informationsrutan">Stäng</button>
     </div>
   </div>
 
-  <div class="info-overlay" id="aboutOverlay" style="display: none;">
+  <div class="info-overlay" id="aboutOverlay" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
     <div class="info-box">
       <button class="menu-close" onclick="closeOverlay('aboutOverlay')" aria-label="Stäng">&times;</button>
-      <h2>Om Öppna Möllan</h2>
+      <h2 id="aboutTitle">Om Öppna Möllan</h2>
       <p>På Möllan har vi en lång tradition av att göra saker tillsammans.</p>
       <p>Sedan 2019 fortsätter vi traditionen genom Öppna Möllan: att expandera det gemensamma, lösa upp gränser och låta staden vara en plats för liv.</p>
       <p>I år sker Öppna Möllan på lördag 6 september och runt om på innergårdarna hålls under dagen olika typer av arrangemang. Allt ifrån loppisar till teaterföreställningar och mycket mer. Klicka runt här i kartan eller kom till oss i rondellen om du undrar över något!</p>
       <div class="about-svg-wrapper">
-        <img src="Kvarter2.svg" alt="Kvarter">
+        <img src="Kvarter2.svg" alt="Kvarter" loading="lazy">
       </div>
     </div>
   </div>
 
-  <div class="info-overlay" id="AaaOverlay" style="display: none;">
+  <div class="info-overlay" id="AaaOverlay" role="dialog" aria-modal="true" aria-labelledby="aaaTitle">
     <div class="info-box">
       <button class="menu-close" onclick="closeOverlay('AaaOverlay')" aria-label="Stäng">&times;</button>
-      <h2>Om Allt åt alla</h2>
+      <h2 id="aaaTitle">Om Allt åt alla</h2>
       <p>Allt åt alla Malmö arbetar långsiktigt och öppet med att understödja Malmöborna i alla stadens konflikter, för att tillsammans skapa ett nytt Malmö format efter våra hjärtans begär.</p>
       <p>Vi har funnits sen 2009 och är framför allt aktiva i frågor om rätten till staden och bostäder.</p>
       <p>Förutom att arrangera Öppna Möllan organiserar vi bland annat hyresgäster att kämpa mot sina hyresvärdar i frågor om underhåll och hyresnivåer.</p>
-      <p><a href="https://alltatalla.se/" target="_blank" rel="noopener">Läs mer på vår hemsida</a>.</p>
+      <p><a href="https://alltatalla.se/" target="_blank" rel="noopener noreferrer">Läs mer på vår hemsida</a>.</p>
       <div class="about-svg-wrapper">
-        <img src="Logotyp.svg" alt="Logotyp">
+        <img src="Logotyp.svg" alt="Logotyp" loading="lazy">
       </div>
     </div>
   </div>
 
-  <div class="info-overlay" id="SchemaOverlay" style="display: none;">
+  <div class="info-overlay" id="SchemaOverlay" role="dialog" aria-modal="true" aria-labelledby="schemaTitle">
     <div class="info-box">
       <button class="menu-close" onclick="closeOverlay('SchemaOverlay')" aria-label="Stäng">&times;</button>
-      <h2>Schemat i rondellen</h2>
+      <h2 id="schemaTitle">Schemat i rondellen</h2>
       <p>10:00 - Öppningstal</p>
       <p>10:00 - 12:00 - Pyssel / Ansiktsmålning</p>
       <p>11:00 - Bostadspolitiskt manifest</p>
       <p>13:00 - Samtal med forskare om Gaza</p>
       <p>15:00 - Livepodd</p>
       <div class="about-svg-wrapper">
-        <img src="Trad.svg" alt="Träd">
+        <img src="Trad.svg" alt="Träd" loading="lazy">
       </div>
     </div>
   </div>
 
   <header>
-    <!--
-    <a class="logo-link" href="https://alltatalla.se/" rel="noopener">
-      <img src="emblem_mork.png" alt="Öppna Möllan logotyp" /> 
-    </a>
-    -->
     <div class="wordmark-wrapper">
       <img src="Signatur.svg" alt="Öppna Möllan" class="wordmark" />
     </div>
-
     <div class="menu-wrapper">
       <button class="menu-toggle" aria-label="Meny" id="menuToggle"></button>
       <nav class="menu-drawer" id="menuDrawer">
         <button class="menu-close" id="menuClose" aria-label="Stäng meny">&times;</button>
-        <a href="#" id="openSchemaOverlay">Schemat i rondellen</a>
-        <a href="#" id="openAboutOverlay">Om Öppna Möllan</a>
-        <a href="#" id="openAaaOverlay">Om Allt åt alla</a>
-        <a href="https://www.facebook.com/events/569497915741012?locale=sv_SE" target="_blank" rel="noopener">Facebook-event</a>
+        <a href="#" data-overlay="SchemaOverlay">Schemat i rondellen</a>
+        <a href="#" data-overlay="aboutOverlay">Om Öppna Möllan</a>
+        <a href="#" data-overlay="AaaOverlay">Om Allt åt alla</a>
+        <a href="https://www.facebook.com/events/569497915741012?locale=sv_SE" target="_blank" rel="noopener noreferrer">Facebook-event</a>
       </nav>
     </div>
   </header>
@@ -119,8 +115,7 @@
   <script src="main.js" defer></script>
 
   <div id="spinnerOverlay" style="display:none;">
-  <div class="spinner"></div>
+    <div class="spinner"></div>
   </div>
-
 </body>
 </html>
