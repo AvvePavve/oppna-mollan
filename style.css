@@ -318,8 +318,7 @@ body.no-scroll {
 }
 
 /* === Macha lagerväljare och platsknapp === */
-.leaflet-bar a,
-.leaflet-control-locate {
+.leaflet-bar a {
   display: block;
   width: 34px;
   height: 34px;
@@ -334,11 +333,15 @@ body.no-scroll {
 /* Lagerväljarens ikon */
 .leaflet-control-layers-toggle {
   background-image: url('funnel.svg') !important;
+  border-radius: 10px !important;
 }
 
 /* Platsknappens ikon */
 .leaflet-control-locate {
-  background-image: url('locate.svg') !important;
+  background-image: url('locate.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 18px 18px;
 }
 
 /* === Dark mode === 
