@@ -196,6 +196,10 @@ header {
   transition: color 0.3s;
 }
 
+.leaflet-bar a {
+  font-family: 'NexaBook', Arial, sans-serif;
+}
+
 .user-location-icon,
 .leaflet-marker-pane .leaflet-marker-icon.user-location {
   width: 18px;
