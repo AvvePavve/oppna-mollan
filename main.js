@@ -77,7 +77,7 @@ const locateControl = L.Control.extend({
     const button = L.DomUtil.create('a', '', container);
     button.href = '#';
     button.title = 'Visa min plats';
-    button.innerHTML = '📍';
+    button.textContent = 'Visa min plats';
 
     L.DomEvent.on(button, 'click', L.DomEvent.stopPropagation)
               .on(button, 'click', L.DomEvent.preventDefault)
