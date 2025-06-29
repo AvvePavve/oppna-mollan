@@ -66,60 +66,51 @@ const userIcon = L.divIcon({
   popupAnchor: [0, -9],
 });
 
-const locateControl = L.Control.extend({
-  options: {
-    position: 'topleft'
+L.Control.Locate = L.Control.extend({
+  onAdd: function(map) {
+    const link = L.DomUtil.create('a', 'leaflet-control-locate');
+    link.href = '#';
+    link.title = 'Visa min plats';
+
+    L.DomEvent.on(link, 'click', L.DomEvent.stop)
+      .on(link, 'click', () => {
+        if (!navigator.geolocation) {
+          alert("Geolocation stöds inte av din webbläsare.");
+          return;
+        }
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            const userLatLng = [lat, lng];
+
+            if (!this._marker) {
+              this._marker = L.marker(userLatLng).addTo(map);
+            } else {
+              this._marker.setLatLng(userLatLng);
+            }
+
+            map.setView(userLatLng, 16);
+          },
+          error => alert("Kunde inte hämta din plats: " + error.message),
+          { enableHighAccuracy: true, timeout: 10000 }
+        );
+      });
+
+    return link;
   },
 
-  onAdd: function (map) {
-    const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
-
-    const button = L.DomUtil.create('a', 'leaflet-control-locate', container);
-    button.href = '#';
-    button.title = 'Visa min plats';
-    button.innerHTML = '';
-
-    L.DomEvent.on(button, 'click', L.DomEvent.stopPropagation)
-              .on(button, 'click', L.DomEvent.preventDefault)
-              .on(button, 'click', () => {
-                if (!navigator.geolocation) {
-                  alert("Geolocation stöds inte av din webbläsare.");
-                  return;
-                }
-
-                navigator.geolocation.getCurrentPosition(
-                  position => {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
-                    userLatLng = [lat, lng];
-
-                    if (userMarker) {
-                      userMarker.setLatLng(userLatLng);
-                    } else {
-                      userMarker = L.marker(userLatLng, {
-                        icon: userIcon,
-                        pane: 'userPane'
-                      }).addTo(map).bindPopup("Du är här!");
-                    }
-
-                    map.setView(userLatLng, 16);
-                    userMarker.openPopup();
-                  },
-                  error => {
-                    alert("Kunde inte hämta din plats: " + error.message);
-                  },
-                  {
-                    enableHighAccuracy: true,
-                    timeout: 10000
-                  }
-                );
-              });
-
-    return container;
+  onRemove: function(map) {
+    // inget särskilt behövs
   }
 });
 
-map.addControl(new locateControl());
+// Lägg till kontrollen
+L.control.locate = function(opts) {
+  return new L.Control.Locate(opts);
+};
+
+L.control.locate({ position: 'topleft' }).addTo(map);
 
 const addressIcon = L.icon({
   iconUrl: 'GPS.svg',
