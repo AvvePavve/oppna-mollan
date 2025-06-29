@@ -341,15 +341,17 @@ body.no-scroll {
   width: 36px !important;
   height: 36px !important;
   background-image: url('funnel.svg') !important;
-  border-radius: 10px !important;
+  border-radius: 4px !important;
   background-size: 30px 30px !important;
   border: 1px solid #ddd !important;
   box-shadow: none !important;
 }
 
-.leaflet-bar {
-  border: none !important;
+.leaflet-control-layers-list {
+  border: 1px solid rgba(0, 0, 0, 0.25) !important;
   box-shadow: none !important;
+  background: #fffef6 !important;
+  border-radius: 4px !important;
 }
 
 #spinnerOverlay {
