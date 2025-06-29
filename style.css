@@ -227,12 +227,14 @@ header {
 }
 
 .leaflet-control-zoom a:hover,
-.leaflet-control-layers-toggle:hover {
+.leaflet-control-layers-toggle:hover,
+.leaflet-control-locate:hover {
   background-color: #fffef6 !important;
 }
 
 .leaflet-control-zoom a:active,
-.leaflet-control-layers-toggle:active {
+.leaflet-control-layers-toggle:active,
+.leaflet-control-locate:active {
   background-color: #fcf1b6 !important;
 }
 
@@ -321,20 +323,23 @@ body.no-scroll {
 /* Platsknappen */
 .leaflet-control-locate {
   display: block;
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   background-color: #fffef6 !important;
   background-image: url('locate.svg');
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 40px 40px;
+  background-size: 36px 36px;
   border-radius: 4px;
 }
 
 /* Lagerväljarens ikon */
 .leaflet-control-layers-toggle {
+  width: 42px;
+  height: 42px
   background-image: url('funnel.svg') !important;
   border-radius: 10px !important;
+  background-size: 36px 36px;
 }
 
 /* === Dark mode === 
