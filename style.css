@@ -242,6 +242,10 @@ header {
 .leaflet-routing-container,
 .leaflet-control-locate {
   background-color: #fffef6 !important;
+  width: 26px;
+  height: 26px;
+  line-height: 26px;
+  border-radius: 4px;
 }
 
 .leaflet-control-layers-toggle {
@@ -259,7 +263,8 @@ header {
 }
 
 .leaflet-control-zoom a:active,
-.leaflet-control-layers-toggle:active {
+.leaflet-control-layers-toggle:active,
+.leaflet-control-locate:active {
   background-color: #fcf1b6 !important;
 }
 
