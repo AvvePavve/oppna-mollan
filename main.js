@@ -66,39 +66,60 @@ const userIcon = L.divIcon({
   popupAnchor: [0, -9],
 });
 
-document.getElementById("locateBtn").addEventListener("click", () => {
-  if (!navigator.geolocation) {
-    alert("Geolocation stöds inte av din webbläsare.");
-    return;
+const locateControl = L.Control.extend({
+  options: {
+    position: 'topleft'
+  },
+
+  onAdd: function (map) {
+    const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+
+    const button = L.DomUtil.create('a', '', container);
+    button.href = '#';
+    button.title = 'Visa min plats';
+    button.innerHTML = '📍';
+
+    L.DomEvent.on(button, 'click', L.DomEvent.stopPropagation)
+              .on(button, 'click', L.DomEvent.preventDefault)
+              .on(button, 'click', () => {
+                if (!navigator.geolocation) {
+                  alert("Geolocation stöds inte av din webbläsare.");
+                  return;
+                }
+
+                navigator.geolocation.getCurrentPosition(
+                  position => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    userLatLng = [lat, lng];
+
+                    if (userMarker) {
+                      userMarker.setLatLng(userLatLng);
+                    } else {
+                      userMarker = L.marker(userLatLng, {
+                        icon: userIcon,
+                        pane: 'userPane'
+                      }).addTo(map).bindPopup("Du är här!");
+                    }
+
+                    map.setView(userLatLng, 16);
+                    userMarker.openPopup();
+                  },
+                  error => {
+                    alert("Kunde inte hämta din plats: " + error.message);
+                  },
+                  {
+                    enableHighAccuracy: true,
+                    timeout: 10000
+                  }
+                );
+              });
+
+    return container;
   }
-
-  navigator.geolocation.getCurrentPosition(
-    position => {
-      const lat = position.coords.latitude;
-      const lng = position.coords.longitude;
-      userLatLng = [lat, lng];
-
-      if (userMarker) {
-        userMarker.setLatLng(userLatLng);
-      } else {
-        userMarker = L.marker(userLatLng, {
-          icon: userIcon,
-          pane: 'userPane'
-        }).addTo(map).bindPopup("Du är här!");
-      }
-
-      map.setView(userLatLng, 16);
-      userMarker.openPopup();
-    },
-    error => {
-      alert("Kunde inte hämta din plats: " + error.message);
-    },
-    {
-      enableHighAccuracy: true,
-      timeout: 10000
-    }
-  );
 });
+
+map.addControl(new locateControl());
 
 const addressIcon = L.icon({
   iconUrl: 'GPS.svg',
