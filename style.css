@@ -312,18 +312,15 @@ body.no-scroll {
 }
 
 .menu-toggle {
-  font-size: 2rem;
+  width: 26px;
+  height: 26px;
   background: none;
   border: none;
   cursor: pointer;
-  font-weight: bold;
-  color: #18171c;
-  display: flex;
-  align-items: center;
-  height: 100%;
-  margin-bottom: 2px;
-  margin-top: -12px;
-  align-self: center;
+  background-image: url('bars.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 18px 18px;
 }
 
 .menu-drawer {
