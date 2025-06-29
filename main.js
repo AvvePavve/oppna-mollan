@@ -1,382 +1,276 @@
-function closeInfo() {
-  document.getElementById("infoOverlay").style.display = "none";
-}
+// === Hjälpfunktioner ===
+const utils = {
+  async getUserLocation({ highAccuracy = true, timeout = 10000 } = {}) {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        reject(new Error("Geolocation stöds inte av din webbläsare."));
+      } else {
+        navigator.geolocation.getCurrentPosition(
+          pos => resolve([pos.coords.latitude, pos.coords.longitude]),
+          err => reject(new Error("Kunde inte hämta din plats: " + err.message)),
+          { enableHighAccuracy: highAccuracy, timeout }
+        );
+      }
+    });
+  },
 
-const lightTiles = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.{ext}?api_key=9a2de762-ebe1-42e7-bcd2-0260d8917ae6', {
+  normaliseraAdress(adress) {
+    return adress
+      .toLowerCase()
+      .replace(/[^a-z0-9åäö\s]/gi, '')
+      .replace(/\d{3}\s?\d{2}/g, '')
+      .replace(/malmö/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  },
+
+  createPopupHtml({ adress, aktivitet, latlng }) {
+    return `
+      ${adress ? `<strong>Adress:</strong> ${adress}<br>` : ""}
+      <strong>Aktivitet:</strong> ${aktivitet}<br>
+      <button class="btn route-btn" data-lat="${latlng[0]}" data-lng="${latlng[1]}">Visa rutt</button>
+    `;
+  },
+
+  getOrCreateLayerGroup(store, key) {
+    if (!store[key]) {
+      store[key] = L.layerGroup();
+    }
+    return store[key];
+  },
+
+  toggleMenu(open) {
+    if (open) {
+      menuDrawer.classList.add("open");
+      document.body.classList.add("no-scroll");
+    } else {
+      menuDrawer.classList.remove("open");
+      document.body.classList.remove("no-scroll");
+    }
+  }
+};
+
+// === Ikoner ===
+const icons = {
+  user: L.divIcon({
+    className: 'user-location-icon',
+    iconSize: [18, 18],
+    iconAnchor: [9, 9],
+    popupAnchor: [0, -9]
+  }),
+  address: L.icon({
+    iconUrl: 'GPS.svg',
+    iconSize: [13, 22],
+    iconAnchor: [6, 22],
+    popupAnchor: [0, -22]
+  }),
+  gaza: L.icon({
+    iconUrl: 'Logotyp_Nal.svg',
+    iconSize: [38, 38],
+    iconAnchor: [19, 38],
+    popupAnchor: [0, -38]
+  })
+};
+
+// === Kartinitiering ===
+const lightTiles = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
   minZoom: 0,
   maxZoom: 20,
-  attribution: '&copy; <a href="https://www.stadiamaps.com/">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-  ext: 'png'
+  attribution: '&copy; <a href="https://www.stadiamaps.com/">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 });
 
-const darkTiles = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.{ext}?api_key=9a2de762-ebe1-42e7-bcd2-0260d8917ae6', {
-  minZoom: 0,
-  maxZoom: 20,
-  attribution: '&copy; <a href="https://www.stadiamaps.com/">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-  ext: 'png'
-});
+const map = L.map('map', { layers: [lightTiles], zoomControl: false })
+  .setView([55.591988278009765, 13.011586184559851], 16)
+  .setMaxBounds(L.latLngBounds([55.53, 12.90], [55.65, 13.12]))
+  .setMinZoom(14)
+  .setMaxZoom(20);
 
-const defaultCenter = [55.591988278009765, 13.011586184559851];
-const defaultZoom = 16;
-const map = L.map('map', { layers: [], zoomControl: false }).setView(defaultCenter, defaultZoom);
+map.on('drag', () => map.panInsideBounds(map.getMaxBounds(), { animate: false }));
 
-const bounds = L.latLngBounds(
-  [55.53, 12.90],  // sydväst
-  [55.65, 13.12]   // nordost
-);
-
-map.setMaxBounds(bounds);
-map.setMinZoom(14);
-map.setMaxZoom(20);
-
-map.on('drag', () => {
-  map.panInsideBounds(bounds, { animate: false });
-});
-
-// Temporärt inaktiverad dark mode:
-// function setBaseMap() {
-//   const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-//   if (isDark) {
-//     if (map.hasLayer(lightTiles)) map.removeLayer(lightTiles);
-//     if (!map.hasLayer(darkTiles)) darkTiles.addTo(map);
-//   } else {
-//     if (map.hasLayer(darkTiles)) map.removeLayer(darkTiles);
-//     if (!map.hasLayer(lightTiles)) lightTiles.addTo(map);
-//   }
-// }
-
-// setBaseMap();
-// window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', setBaseMap);
-
-// Använd alltid ljusa kartan:
-lightTiles.addTo(map);
-
-map.createPane('userPane');
-map.getPane('userPane').style.zIndex = 1000;
-
-let userMarker;
-let userLatLng;
-let routingControl;
-const removeRouteBtn = document.getElementById('removeRouteBtn');
-
-const userIcon = L.divIcon({
-  className: 'user-location-icon',
-  iconSize: [18, 18],
-  iconAnchor: [9, 9],
-  popupAnchor: [0, -9],
-});
+// === Användarposition ===
+map.createPane('userPane').style.zIndex = 1000;
+let userMarker = null;
+let userLatLng = null;
+let routingControl = null;
 
 L.Control.Locate = L.Control.extend({
-  onAdd: function(map) {
+  onAdd: function() {
     const container = L.DomUtil.create('div', 'leaflet-control');
     const link = L.DomUtil.create('a', 'leaflet-bar leaflet-control-locate', container);
     link.href = '#';
     link.title = 'Visa min plats';
-
-    L.DomEvent.on(link, 'click', L.DomEvent.stop)
-      .on(link, 'click', () => {
-        if (!navigator.geolocation) {
-          alert("Geolocation stöds inte av din webbläsare.");
-          return;
+    L.DomEvent.on(link, 'click', L.DomEvent.stop).on(link, 'click', async () => {
+      try {
+        const latlng = await utils.getUserLocation();
+        userLatLng = latlng;
+        if (!userMarker) {
+          userMarker = L.marker(latlng, { icon: icons.user, pane: 'userPane' }).addTo(map).bindPopup("Du är här!");
+        } else {
+          userMarker.setLatLng(latlng);
         }
-        navigator.geolocation.getCurrentPosition(
-          position => {
-            const lat = position.coords.latitude;
-            const lng = position.coords.longitude;
-            userLatLng = [lat, lng];
-
-            if (!userMarker) {
-              userMarker = L.marker(userLatLng, {
-                icon: userIcon,
-                pane: 'userPane'
-              }).addTo(map).bindPopup("Du är här!");
-            } else {
-              userMarker.setLatLng(userLatLng);
-            }
-
-            map.setView(userLatLng, 16);
-            userMarker.openPopup();
-          },
-          error => alert("Kunde inte hämta din plats: " + error.message),
-          { enableHighAccuracy: true, timeout: 10000 }
-        );
-      });
-
+        map.setView(latlng, 16);
+        userMarker.openPopup();
+      } catch (err) {
+        alert(err.message);
+      }
+    });
     return container;
   },
-  onRemove: function(map) {}
+  onRemove: function() {}
 });
 
-
-// Lägg till kontrollen
-L.control.locate = function(opts) {
-  return new L.Control.Locate(opts);
-};
-
+L.control.locate = opts => new L.Control.Locate(opts);
 L.control.locate({ position: 'topleft' }).addTo(map);
 
-const addressIcon = L.icon({
-  iconUrl: 'GPS.svg',
-  iconSize: [13, 22],
-  iconAnchor: [6, 22],
-  popupAnchor: [0, -22],
-//  shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
-//  shadowSize: [35, 35],
-//  shadowAnchor: [12, 35]
-});
-
+// === Byggnader ===
 const buildingOffset = { lng: -0.00002, lat: 0.00007 };
-function cloneGeoJSON(geojson) {
-  return {
-    ...geojson,
-    features: geojson.features.map(f => ({
-      ...f,
-      geometry: JSON.parse(JSON.stringify(f.geometry)),
-      properties: { ...f.properties }
-    }))
-  };
-}
+
 function addBuildingSidesFromLayer(layerGroup) {
   const wallColor = '#faf4b7';
   layerGroup.eachLayer(layer => {
-    const geom = layer.feature && layer.feature.geometry;
-    if (geom && geom.type === "Polygon") {
-      const coords = geom.coordinates[0];
+    const coords = layer.feature?.geometry?.coordinates?.[0];
+    if (coords) {
       for (let i = 0; i < coords.length - 1; i++) {
         const base1 = coords[i];
         const base2 = coords[i + 1];
         const top1 = [base1[0] + buildingOffset.lng, base1[1] + buildingOffset.lat];
         const top2 = [base2[0] + buildingOffset.lng, base2[1] + buildingOffset.lat];
-        const wallCoords = [[base1, base2, top2, top1, base1]];
-        const wallFeature = {
+        L.geoJSON({
           type: "Feature",
-          geometry: { type: "Polygon", coordinates: wallCoords }
-        };
-        L.geoJSON(wallFeature, {
-          style: {
-            color: wallColor,
-            weight: 0.5,
-            fillColor: wallColor,
-            fillOpacity: 1
-          }
+          geometry: { type: "Polygon", coordinates: [[base1, base2, top2, top1, base1]] }
+        }, {
+          style: { color: wallColor, weight: 0.5, fillColor: wallColor, fillOpacity: 1 }
         }).addTo(map);
       }
     }
   });
 }
-fetch('data/byggnader_mollan_rev.geojson', { cache: "force-cache" })
-  .then(response => response.json())
+
+fetch('data/byggnader_mollan_rev.geojson')
+  .then(res => res.json())
   .then(data => {
-    const offsetData = cloneGeoJSON(data);
-    offsetData.features.forEach(feature => {
-      if (feature.geometry.type === "Polygon") {
-        feature.geometry.coordinates[0] = feature.geometry.coordinates[0].map(coord => [
-          coord[0] + buildingOffset.lng,
-          coord[1] + buildingOffset.lat
+    const offsetData = JSON.parse(JSON.stringify(data));
+    offsetData.features.forEach(f => {
+      if (f.geometry.type === "Polygon") {
+        f.geometry.coordinates[0] = f.geometry.coordinates[0].map(c => [
+          c[0] + buildingOffset.lng,
+          c[1] + buildingOffset.lat
         ]);
       }
     });
-    const takLayer = L.geoJSON(offsetData, {
-      style: {
-        color: '#f47c31',
-        weight: 1,
-        fillColor: '#f47c31',
-        fillOpacity: 1
-      }
-    });
-    const originalLayer = L.geoJSON(data);
-    addBuildingSidesFromLayer(originalLayer);
-    takLayer.addTo(map);
-  })
-  .catch(err => console.error("Fel vid inläsning av byggnader:", err));
+    L.geoJSON(data).eachLayer(l => addBuildingSidesFromLayer(L.layerGroup([l])));
+    L.geoJSON(offsetData, {
+      style: { color: '#f47c31', weight: 1, fillColor: '#f47c31', fillOpacity: 1 }
+    }).addTo(map);
+  });
 
+// === Aktiviteter ===
 const aktivitetLayersLive = {};
 let layerControl = null;
-const SHEET_URL = 'https://opensheet.elk.sh/1t5ILyafrrFJNiO2V0QrqbZyFNgTdXcY7SujnOOQHbfI/Formulärsvar 1';
-
-function normaliseraAdress(adress) {
-  return adress
-    .toLowerCase()
-    .replace(/[^a-z0-9åäö\s]/gi, '')
-    .replace(/\d{3}\s?\d{2}/g, '')
-    .replace(/malmö/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
+let cachedGeoJson = null;
+let lastUpdate = 0;
 
 async function uppdateraAktiviteterFrånGoogleFormulär() {
+  if (Date.now() - lastUpdate < 60000) return;
+  lastUpdate = Date.now();
   try {
-    const response = await fetch(SHEET_URL);
-    const formData = await response.json();
-    if (!Array.isArray(formData)) throw new Error("Datan från formuläret kunde inte tolkas som en lista.");
+    const [formRes, geoRes] = await Promise.all([
+      fetch('https://opensheet.elk.sh/1t5ILyafrrFJNiO2V0QrqbZyFNgTdXcY7SujnOOQHbfI/Formulärsvar 1'),
+      cachedGeoJson ? Promise.resolve({ json: () => cachedGeoJson }) : fetch('data/adresser_rev.geojson')
+    ]);
+    const formData = await formRes.json();
+    if (!cachedGeoJson) cachedGeoJson = await geoRes.json();
+    const geoJson = JSON.parse(JSON.stringify(cachedGeoJson));
 
     const formSvar = formData.map(row => ({
-      adress: normaliseraAdress(row["\ud83d\udccd Gatuadress till din innerg\u00e5rd"] || ""),
-      aktivitet: row["\ud83d\udd7a Vad kommer h\u00e4nda p\u00e5 innerg\u00e5rden?"] || "Ingen aktivitet angiven"
+      adress: utils.normaliseraAdress(row["📍 Gatuadress till din innergård"] || ""),
+      aktivitet: row["🕺 Vad kommer hända på innergården?"] || "Ingen aktivitet angiven",
+      kategori: row["Kategori"] || "Övrigt"
     }));
 
-    const geoRes = await fetch('data/adresser_rev.geojson');
-    const geoJson = await geoRes.json();
-
-    geoJson.features.forEach(feature => {
-      const geoAdress = normaliseraAdress(feature.properties.beladress || "");
+    geoJson.features.forEach(f => {
+      const geoAdress = utils.normaliseraAdress(f.properties.beladress || "");
       const match = formSvar.find(entry => geoAdress === entry.adress);
       if (match) {
-        feature.properties.Aktivitet = match.aktivitet;
-        feature.properties.oppen = "Ja";
+        f.properties = { ...f.properties, Aktivitet: match.aktivitet, Kategori: match.kategori, oppen: "Ja" };
       } else {
-        feature.properties.oppen = "Nej";
-        delete feature.properties.Aktivitet;
+        f.properties = { ...f.properties, oppen: "Nej" };
       }
     });
 
-    for (const layer of Object.values(aktivitetLayersLive)) {
-      layer.clearLayers();
-    }
-
-    const filtered = geoJson.features.filter(f => f.properties.oppen === "Ja");
-    filtered.forEach(feature => {
-      const aktivitet = feature.properties.Aktivitet;
-      const coords = feature.geometry.type === "MultiPoint"
-        ? feature.geometry.coordinates
-        : [feature.geometry.coordinates];
-
-      coords.forEach(coord => {
-        const latLng = [coord[1], coord[0]];
-        const marker = L.marker(latLng, { icon: addressIcon });
-        const popup = `
-          <strong>Adress:</strong> ${feature.properties.beladress}<br>
-          <strong>Aktivitet:</strong> ${aktivitet}<br>
-          <button class="btn route-btn" data-lat="${latLng[0]}" data-lng="${latLng[1]}">Visa rutt</button>
-        `;
-        marker.bindPopup(popup);
-        if (!aktivitetLayersLive[aktivitet]) {
-          aktivitetLayersLive[aktivitet] = L.layerGroup();
-        }
-        aktivitetLayersLive[aktivitet].addLayer(marker);
+    Object.values(aktivitetLayersLive).forEach(l => l.clearLayers());
+    geoJson.features.filter(f => f.properties.oppen === "Ja").forEach(f => {
+      const coords = f.geometry.type === "MultiPoint" ? f.geometry.coordinates : [f.geometry.coordinates];
+      coords.forEach(c => {
+        const latlng = [c[1], c[0]];
+        const marker = L.marker(latlng, { icon: icons.address }).bindPopup(
+          utils.createPopupHtml({ adress: f.properties.beladress, aktivitet: f.properties.Aktivitet, latlng })
+        );
+        utils.getOrCreateLayerGroup(aktivitetLayersLive, f.properties.Kategori).addLayer(marker);
       });
     });
 
-    const overlayMaps = {};
-    for (const [aktivitet, layer] of Object.entries(aktivitetLayersLive)) {
-      overlayMaps[aktivitet] = layer;
-      layer.addTo(map);
-    }
-
-    if (layerControl) {
-      map.removeControl(layerControl);
-    }
-    layerControl = L.control.layers(null, overlayMaps, { collapsed: true, position: 'topright' }).addTo(map);
-
+    if (layerControl) map.removeControl(layerControl);
+    layerControl = L.control.layers(null, aktivitetLayersLive, { collapsed: true, position: 'topright' }).addTo(map);
   } catch (err) {
-    console.error("Fel vid formul\u00e4rintegration:", err);
+    console.error("Fel vid formulärintegration:", err);
   }
 }
-
 uppdateraAktiviteterFrånGoogleFormulär();
 setInterval(uppdateraAktiviteterFrånGoogleFormulär, 120000);
 
-document.addEventListener('click', function (e) {
-  if (e.target.classList.contains('route-btn')) {
-    const lat = parseFloat(e.target.getAttribute('data-lat'));
-    const lng = parseFloat(e.target.getAttribute('data-lng'));
-    routeTo([lat, lng]);
-  }
-});
-
-const gazaIcon = L.icon({
-  iconUrl: 'Logotyp_Nal.svg',
-  iconSize: [38, 38],
-  iconAnchor: [19, 38],
-  popupAnchor: [0, -38]
-});
-
-fetch('data/gazarondellen.geojson')
-  .then(response => response.json())
-  .then(data => {
-    L.geoJSON(data, {
-      pointToLayer: (feature, latlng) => {
-        return L.marker(latlng, { icon: gazaIcon });
-      },
-      onEachFeature: (feature, layer) => {
-        const latlng = layer.getLatLng();
-        const popup = `
-          <strong>${feature.properties.name || "Gazarondellen"}</strong><br>
-          <strong>Aktivitet:</strong> Se schema i menyn till höger.<br>
-          <button class="btn route-btn" data-lat="${latlng.lat}" data-lng="${latlng.lng}">Visa rutt</button>
-        `;
-        layer.bindPopup(popup);
-      }
-    }).addTo(map);
-  })
-  .catch(error => {
-    console.error("Fel vid inl\u00e4sning av gazarondellen.geojson:", error);
-  });
-
-function routeTo(destinationLatLng) {
-  function startRouting(fromLatLng) {
-    map.setView(fromLatLng, 16);
-
-    if (routingControl) {
-      map.removeControl(routingControl);
-    }
-    routingControl = L.Routing.control({
-      waypoints: [L.latLng(fromLatLng), L.latLng(destinationLatLng)],
-      show: false,
-      addWaypoints: false,
-      draggableWaypoints: false,
-      routeWhileDragging: false,
-      createMarker: () => null,
-      lineOptions: { styles: [{ color: '#67aae2', weight: 5 }] },
-      router: L.Routing.osrmv1({
-        serviceUrl: 'https://routing.openstreetmap.de/routed-foot/route/v1',
-        profile: 'foot',
-        language: 'sv',
-        steps: false
-      })
-    }).addTo(map);
-
-    removeRouteBtn.style.display = 'block';
-    document.getElementById("spinnerOverlay").style.display = "none";
-  }
-
-  if (userLatLng) {
-    startRouting(userLatLng);
-  } else {
-    if (!navigator.geolocation) {
-      alert("Geolocation stöds inte av din webbläsare.");
-      return;
-    }
-
-    // Visa spinner
+// === Rutter ===
+async function routeTo(destinationLatLng) {
+  if (!userLatLng) {
     document.getElementById("spinnerOverlay").style.display = "flex";
-
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-        userLatLng = [lat, lng];
-
-        if (!userMarker) {
-          userMarker = L.marker(userLatLng, {
-            icon: userIcon,
-            pane: 'userPane'
-          }).addTo(map).bindPopup("Du är här!");
-        } else {
-          userMarker.setLatLng(userLatLng);
-        }
-
-        startRouting(userLatLng);
-      },
-      error => {
-        document.getElementById("spinnerOverlay").style.display = "none";
-        alert("Kunde inte hämta din plats: " + error.message);
-      },
-      { enableHighAccuracy: true, timeout: 10000 }
-    );
+    try {
+      userLatLng = await utils.getUserLocation();
+      if (!userMarker) {
+        userMarker = L.marker(userLatLng, { icon: icons.user, pane: 'userPane' }).addTo(map).bindPopup("Du är här!");
+      } else {
+        userMarker.setLatLng(userLatLng);
+      }
+    } catch (err) {
+      alert(err.message);
+      return;
+    } finally {
+      document.getElementById("spinnerOverlay").style.display = "none";
+    }
   }
+
+  map.setView(userLatLng, 16);
+  if (routingControl) map.removeControl(routingControl);
+  routingControl = L.Routing.control({
+    waypoints: [L.latLng(userLatLng), L.latLng(destinationLatLng)],
+    show: false,
+    addWaypoints: false,
+    draggableWaypoints: false,
+    createMarker: () => null,
+    lineOptions: { styles: [{ color: '#67aae2', weight: 5 }] },
+    router: L.Routing.osrmv1({
+      serviceUrl: 'https://routing.openstreetmap.de/routed-foot/route/v1',
+      profile: 'foot',
+      language: 'sv',
+      steps: false
+    })
+  }).addTo(map);
+  removeRouteBtn.style.display = 'block';
 }
 
+// === Event delegation ===
+document.addEventListener('click', e => {
+  if (e.target.matches('.route-btn')) {
+    const lat = parseFloat(e.target.dataset.lat);
+    const lng = parseFloat(e.target.dataset.lng);
+    routeTo([lat, lng]);
+  } else if (e.target.matches('[data-overlay]')) {
+    e.preventDefault();
+    utils.toggleMenu(false);
+    openOverlay(e.target.dataset.overlay);
+  }
+});
+
+// === Rensa rutt ===
 removeRouteBtn.addEventListener('click', () => {
   if (routingControl) {
     map.removeControl(routingControl);
@@ -385,38 +279,17 @@ removeRouteBtn.addEventListener('click', () => {
   }
 });
 
-const menuToggle = document.getElementById("menuToggle");
-const menuDrawer = document.getElementById("menuDrawer");
-const menuClose = document.getElementById("menuClose");
-
-menuToggle.addEventListener("click", (e) => {
-  const aboutOpen = document.getElementById("aboutOverlay").style.display === "flex";
-  if (aboutOpen) {
-    e.stopPropagation(); // blockera öppning
-    return;
-  }
-  menuDrawer.classList.toggle("open");
-  document.body.classList.toggle("no-scroll");
+// === Meny ===
+menuToggle.addEventListener("click", () => utils.toggleMenu(!menuDrawer.classList.contains("open")));
+menuClose.addEventListener("click", () => utils.toggleMenu(false));
+document.addEventListener("click", e => {
+  if (!menuDrawer.contains(e.target) && !menuToggle.contains(e.target)) utils.toggleMenu(false);
 });
 
-menuClose.addEventListener("click", () => {
-  menuDrawer.classList.remove("open");
-  document.body.classList.remove("no-scroll");
-});
-
-document.addEventListener("click", (event) => {
-  const isClickInside = menuDrawer.contains(event.target) || menuToggle.contains(event.target);
-  if (!isClickInside) {
-    menuDrawer.classList.remove("open");
-    document.body.classList.remove("no-scroll");
-  }
-});
-
+// === Overlays ===
 function openOverlay(id) {
   const el = document.getElementById(id);
   if (el) {
-    menuDrawer.classList.remove("open");
-    document.body.classList.remove("no-scroll");
     setTimeout(() => {
       el.style.display = "flex";
       requestAnimationFrame(() => {
@@ -426,7 +299,6 @@ function openOverlay(id) {
     }, 300);
   }
 }
-
 function closeOverlay(id) {
   const el = document.getElementById(id);
   if (el) {
@@ -438,31 +310,12 @@ function closeOverlay(id) {
   }
 }
 
-document.getElementById("openAboutOverlay").addEventListener("click", function (e) {
-  e.preventDefault();
-  openOverlay("aboutOverlay");
-});
-
-document.getElementById("openAaaOverlay").addEventListener("click", function (e) {
-  e.preventDefault();
-  openOverlay("AaaOverlay");
-});
-
-document.getElementById("openSchemaOverlay").addEventListener("click", function (e) {
-  e.preventDefault();
-  openOverlay("SchemaOverlay");
-});
-
+// === Viewport höjd ===
 function fixViewportHeight() {
-  const vh = window.innerHeight * 0.01;
-  document.documentElement.style.setProperty('--vh', `${vh}px`);
+  document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
 }
-
 window.addEventListener('resize', fixViewportHeight);
 window.addEventListener('orientationchange', fixViewportHeight);
 window.addEventListener('focus', fixViewportHeight);
-window.addEventListener('touchstart', () => {
-  setTimeout(fixViewportHeight, 300);
-});
-
+window.addEventListener('touchstart', () => setTimeout(fixViewportHeight, 300));
 fixViewportHeight();
