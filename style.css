@@ -323,23 +323,23 @@ body.no-scroll {
 /* Platsknappen */
 .leaflet-control-locate {
   display: block;
-  width: 42px;
-  height: 42px;
+  width: 42px !important;
+  height: 42px !important;
   background-color: #fffef6 !important;
   background-image: url('locate.svg');
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 36px 36px;
+  background-size: 36px 36px !important;
   border-radius: 4px;
 }
 
 /* Lagerväljarens ikon */
 .leaflet-control-layers-toggle {
-  width: 42px;
-  height: 42px
+  width: 42px !important;
+  height: 42px !important;
   background-image: url('funnel.svg') !important;
   border-radius: 10px !important;
-  background-size: 36px 36px;
+  background-size: 36px 36px !important;
 }
 
 /* === Dark mode === 
