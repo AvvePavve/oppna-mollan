@@ -342,9 +342,9 @@ body.no-scroll {
   background-size: 30px 30px !important;
 }
 
-.leaflet-bar {
-  border: 1px solid #ccc;
-  box-shadow: 0 0 2px rgba(0,0,0,0.2);
+.leaflet-bar a {
+  border: 1px solid #ddd !important;
+  box-shadow: none !important;
 }
 
 #spinnerOverlay {
