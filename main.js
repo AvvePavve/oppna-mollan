@@ -117,9 +117,9 @@ L.control.locate({ position: 'topleft' }).addTo(map);
 
 const addressIcon = L.icon({
   iconUrl: 'GPS.svg',
-  iconSize: [16, 28],
-  iconAnchor: [8, 28],
-  popupAnchor: [0, -28],
+  iconSize: [13, 22],
+  iconAnchor: [6, 22],
+  popupAnchor: [0, -22],
 //  shadowUrl: 'https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png',
 //  shadowSize: [35, 35],
 //  shadowAnchor: [12, 35]
