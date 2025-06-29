@@ -18,7 +18,7 @@ const darkTiles = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth
 
 const defaultCenter = [55.591988278009765, 13.011586184559851];
 const defaultZoom = 16;
-const map = L.map('map', { layers: [] }).setView(defaultCenter, defaultZoom);
+const map = L.map('map', { layers: [], zoomControl: false }).setView(defaultCenter, defaultZoom);
 
 const bounds = L.latLngBounds(
   [55.53, 12.90],  // sydväst
@@ -66,8 +66,13 @@ const userIcon = L.divIcon({
   popupAnchor: [0, -9],
 });
 
-if (navigator.geolocation) {
-  navigator.geolocation.watchPosition(
+document.getElementById("locateBtn").addEventListener("click", () => {
+  if (!navigator.geolocation) {
+    alert("Geolocation stöds inte av din webbläsare.");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
     position => {
       const lat = position.coords.latitude;
       const lng = position.coords.longitude;
@@ -80,20 +85,20 @@ if (navigator.geolocation) {
           icon: userIcon,
           pane: 'userPane'
         }).addTo(map).bindPopup("Du är här!");
-
-        map.setView(userLatLng, 16);
       }
+
+      map.setView(userLatLng, 16);
+      userMarker.openPopup();
     },
     error => {
-      console.warn("Plats kunde inte hämtas:", error.message);
+      alert("Kunde inte hämta din plats: " + error.message);
     },
     {
       enableHighAccuracy: true,
-      maximumAge: 20000,
       timeout: 10000
     }
   );
-}
+});
 
 const addressIcon = L.icon({
   iconUrl: 'GPS.svg',
