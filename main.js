@@ -69,7 +69,7 @@ const userIcon = L.divIcon({
 L.Control.Locate = L.Control.extend({
   onAdd: function(map) {
     // Skapa en container som beter sig som en standard Leaflet-kontroll
-    const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+    const container = L.DomUtil.create('div', 'leaflet-control');
 
     const link = L.DomUtil.create('a', 'leaflet-control-locate', container);
     link.href = '#';
