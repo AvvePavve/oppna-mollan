@@ -74,10 +74,10 @@ const locateControl = L.Control.extend({
   onAdd: function (map) {
     const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
 
-    const button = L.DomUtil.create('a', '', container);
+    const button = L.DomUtil.create('a', 'leaflet-control-locate', container);
     button.href = '#';
     button.title = 'Visa min plats';
-    button.textContent = 'Visa min plats';
+    button.innerHTML = '';
 
     L.DomEvent.on(button, 'click', L.DomEvent.stopPropagation)
               .on(button, 'click', L.DomEvent.preventDefault)
