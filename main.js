@@ -314,30 +314,67 @@ fetch('data/gazarondellen.geojson')
   });
 
 function routeTo(destinationLatLng) {
-  if (!userLatLng) {
-    alert("Din plats \u00e4r inte tillg\u00e4nglig \u00e4n!");
-    return;
-  }
-  if (routingControl) {
-    map.removeControl(routingControl);
-  }
-  routingControl = L.Routing.control({
-    waypoints: [L.latLng(userLatLng), L.latLng(destinationLatLng)],
-    show: false,
-    addWaypoints: false,
-    draggableWaypoints: false,
-    routeWhileDragging: false,
-    createMarker: () => null,
-    lineOptions: { styles: [{ color: '#67aae2', weight: 5 }] },
-    router: L.Routing.osrmv1({
-      serviceUrl: 'https://routing.openstreetmap.de/routed-foot/route/v1',
-      profile: 'foot',
-      language: 'sv',
-      steps: false
-    })
-  }).addTo(map);
+  function startRouting(fromLatLng) {
+    map.setView(fromLatLng, 16);
 
-  removeRouteBtn.style.display = 'block';
+    if (routingControl) {
+      map.removeControl(routingControl);
+    }
+    routingControl = L.Routing.control({
+      waypoints: [L.latLng(fromLatLng), L.latLng(destinationLatLng)],
+      show: false,
+      addWaypoints: false,
+      draggableWaypoints: false,
+      routeWhileDragging: false,
+      createMarker: () => null,
+      lineOptions: { styles: [{ color: '#67aae2', weight: 5 }] },
+      router: L.Routing.osrmv1({
+        serviceUrl: 'https://routing.openstreetmap.de/routed-foot/route/v1',
+        profile: 'foot',
+        language: 'sv',
+        steps: false
+      })
+    }).addTo(map);
+
+    removeRouteBtn.style.display = 'block';
+    document.getElementById("spinnerOverlay").style.display = "none";
+  }
+
+  if (userLatLng) {
+    startRouting(userLatLng);
+  } else {
+    if (!navigator.geolocation) {
+      alert("Geolocation stöds inte av din webbläsare.");
+      return;
+    }
+
+    // Visa spinner
+    document.getElementById("spinnerOverlay").style.display = "flex";
+
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        userLatLng = [lat, lng];
+
+        if (!userMarker) {
+          userMarker = L.marker(userLatLng, {
+            icon: userIcon,
+            pane: 'userPane'
+          }).addTo(map).bindPopup("Du är här!");
+        } else {
+          userMarker.setLatLng(userLatLng);
+        }
+
+        startRouting(userLatLng);
+      },
+      error => {
+        document.getElementById("spinnerOverlay").style.display = "none";
+        alert("Kunde inte hämta din plats: " + error.message);
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  }
 }
 
 removeRouteBtn.addEventListener('click', () => {
