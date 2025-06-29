@@ -323,23 +323,45 @@ body.no-scroll {
 /* Platsknappen */
 .leaflet-control-locate {
   display: block;
-  width: 46px !important;
-  height: 46px !important;
+  width: 44px !important;
+  height: 44px !important;
   background-color: #fffef6 !important;
   background-image: url('locate.svg');
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 36px 36px !important;
+  background-size: 34px 34px !important;
   border-radius: 4px;
 }
 
 /* Lagerväljarens ikon */
 .leaflet-control-layers-toggle {
-  width: 42px !important;
-  height: 42px !important;
+  width: 40px !important;
+  height: 40px !important;
   background-image: url('funnel.svg') !important;
   border-radius: 10px !important;
-  background-size: 36px 36px !important;
+  background-size: 32px 32px !important;
+}
+
+#spinnerOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+}
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #f47c31;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* === Dark mode === 
