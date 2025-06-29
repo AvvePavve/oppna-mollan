@@ -68,7 +68,10 @@ const userIcon = L.divIcon({
 
 L.Control.Locate = L.Control.extend({
   onAdd: function(map) {
-    const link = L.DomUtil.create('a', 'leaflet-control-locate');
+    // Skapa en container som beter sig som en standard Leaflet-kontroll
+    const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+
+    const link = L.DomUtil.create('a', 'leaflet-control-locate', container);
     link.href = '#';
     link.title = 'Visa min plats';
 
@@ -82,26 +85,30 @@ L.Control.Locate = L.Control.extend({
           position => {
             const lat = position.coords.latitude;
             const lng = position.coords.longitude;
-            const userLatLng = [lat, lng];
+            userLatLng = [lat, lng];
 
-            if (!this._marker) {
-              this._marker = L.marker(userLatLng).addTo(map);
+            if (!userMarker) {
+              userMarker = L.marker(userLatLng, {
+                icon: userIcon,
+                pane: 'userPane'
+              }).addTo(map).bindPopup("Du är här!");
             } else {
-              this._marker.setLatLng(userLatLng);
+              userMarker.setLatLng(userLatLng);
             }
 
             map.setView(userLatLng, 16);
+            userMarker.openPopup();
           },
           error => alert("Kunde inte hämta din plats: " + error.message),
           { enableHighAccuracy: true, timeout: 10000 }
         );
       });
 
-    return link;
+    return container;
   },
 
   onRemove: function(map) {
-    // inget särskilt behövs
+    // inget behövs här
   }
 });
 
