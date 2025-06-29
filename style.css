@@ -271,6 +271,7 @@ body.no-scroll {
   height: 100vh;
   width: 250px;
   background-color: #fffef6;
+  border-left: 1px solid rgba(0, 0, 0, 0.25);
   /* box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2); */
   display: flex;
   flex-direction: column;
@@ -346,8 +347,8 @@ body.no-scroll {
   box-shadow: none !important;
 }
 
-.leaflet-bar a {
-  border: 1px solid #ddd !important;
+.leaflet-bar {
+  border: none !important;
   box-shadow: none !important;
 }
 
