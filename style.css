@@ -321,13 +321,13 @@ body.no-scroll {
 /* Platsknappen */
 .leaflet-control-locate {
   display: block;
-  width: 34px;
-  height: 34px;
+  width: 40px;
+  height: 40px;
   background-color: #fffef6 !important;
   background-image: url('locate.svg');
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 20px 20px;
+  background-size: 40px 40px;
   border-radius: 4px;
 }
 
