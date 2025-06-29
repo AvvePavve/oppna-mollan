@@ -239,7 +239,8 @@ header {
 .leaflet-control-layers-expanded,
 .leaflet-popup-content-wrapper,
 .leaflet-popup-tip,
-.leaflet-routing-container {
+.leaflet-routing-container,
+.leaflet-control-locate {
   background-color: #fffef6 !important;
 }
 
@@ -252,7 +253,8 @@ header {
 }
 
 .leaflet-control-zoom a:hover,
-.leaflet-control-layers-toggle:hover {
+.leaflet-control-layers-toggle:hover,
+.leaflet-control-locate:hover {
   background-color: #fffef6 !important;
 }
 
